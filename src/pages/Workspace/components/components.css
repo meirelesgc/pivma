@@ -1,0 +1,213 @@
+/* Components CSS for Method Workspace */
+
+/* Method Form */
+.method-form-container {
+  padding: 32px;
+  position: relative;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.pivma-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-section label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+  letter-spacing: 0.05em;
+}
+
+.form-group { margin-bottom: 16px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.upload-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.upload-item {
+  background: var(--bg-secondary);
+  border: 1px dashed var(--border-color);
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.upload-item span {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+
+.btn-upload {
+  background: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  padding: 4px 12px;
+  font-size: 11px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.form-overlay-info {
+  margin-top: 24px;
+  padding: 12px;
+  background: rgba(var(--primary-color-rgb), 0.05);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--primary-color);
+}
+
+/* Triage Panel */
+.triage-panel-container { padding: 24px; }
+
+.status-block { margin-top: 16px; }
+
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.status-source {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.score-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.status-value {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.status-description {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.status-divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 24px 0;
+}
+
+.status-meta {
+  font-size: 11px;
+  margin-bottom: 12px;
+}
+
+.triage-footer {
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* History Timeline */
+.process-history-container { padding: 32px; margin-top: 40px; }
+
+.timeline {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-event {
+  display: flex;
+  gap: 20px;
+  padding-bottom: 24px;
+}
+
+.timeline-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.history-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  z-index: 1;
+}
+
+.history-icon.system { border-color: var(--primary-color); color: var(--primary-color); }
+
+.timeline-line {
+  flex: 1;
+  width: 2px;
+  background: var(--border-color);
+}
+
+.event-content {
+  flex: 1;
+  padding-top: 4px;
+}
+
+.event-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.event-actor { font-weight: 600; font-size: 14px; }
+.event-time { font-size: 12px; color: var(--text-tertiary); }
+.event-description { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+.event-type-badge {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 9px;
+  padding: 2px 6px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-tertiary);
+}

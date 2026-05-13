@@ -1,12 +1,16 @@
 import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import useMockStore from '../../store/useMockStore'
+import MethodForm from './components/MethodForm'
+import TriagePanel from './components/TriagePanel'
+import ProcessHistory from './components/ProcessHistory'
 import './Workspace.css'
+import './components/components.css'
 
 const Workspace = () => {
   const navigate = useNavigate()
   const { processId } = useParams()
-  const { user, processes, updateProcessStatus, addContestation, addProcess, setSelectedProcessId } = useMockStore()
+  const { user, processes, updateProcessStatus, addProcess, setSelectedProcessId } = useMockStore()
 
   useEffect(() => {
     setSelectedProcessId(processId || null)
@@ -18,7 +22,7 @@ const Workspace = () => {
   }
 
   const userProcesses = processes.filter(p => p.ownerEmail === user.email)
-  const userDemands = userProcesses.filter(p => p.status.includes('Pendente'))
+  const userDemands = userProcesses.filter(p => p.status.includes('Pendente') || p.bracvamStatus === 'Aguardando Proponente')
   const selectedProcess = processes.find(p => p.id === processId)
 
   const handleNewSubmission = () => {
@@ -28,26 +32,14 @@ const Workspace = () => {
       id,
       name: 'Novo Método em Avaliação',
       updatedAt: new Date().toISOString().split('T')[0],
-      status: 'Em Triagem (IA)',
+      status: 'Rascunho',
       role: 'Proponente',
-      description: 'Método submetido recentemente para análise automatizada.',
+      description: '',
       tasks: []
     }
 
     addProcess(newProcess)
     navigate(`/workspace/${id}`)
-
-    setTimeout(() => {
-      updateProcessStatus(id, 'Pendente / Necessita Ajustes')
-    }, 2000)
-  }
-
-  const handleContest = (id) => {
-    const justification = prompt('Insira sua justificativa técnica para contestar a triagem da IA:')
-    if (justification) {
-      addContestation(id, justification)
-      alert('Contestação registrada. Aguardando validação humana da Equipe BraCVAM.')
-    }
   }
 
   const getStatusClass = (status) => {
@@ -80,30 +72,17 @@ const Workspace = () => {
           </div>
         </div>
 
-        <div className="modern-card" style={{ marginTop: '24px', padding: '40px' }}>
-          <h3>Detalhes do Método</h3>
-          <p className="text-secondary" style={{ marginTop: '16px' }}>{selectedProcess.description}</p>
-          
-          <div style={{ marginTop: '32px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-            <div className="info-box">
-              <span className="label">Papel Atual</span>
-              <div className="value">{selectedProcess.role}</div>
-            </div>
-            <div className="info-box">
-              <span className="label">Última Atualização</span>
-              <div className="value">{selectedProcess.updatedAt}</div>
-            </div>
+        <div className="process-context-grid">
+          <div className="form-column">
+            <MethodForm process={selectedProcess} />
           </div>
+          <div className="triage-column">
+            <TriagePanel process={selectedProcess} />
+          </div>
+        </div>
 
-          {selectedProcess.status.includes('Pendente') && (
-            <div className="alert-box" style={{ marginTop: '32px', backgroundColor: 'var(--bg-secondary)', padding: '24px', borderRadius: '12px', borderLeft: '4px solid var(--accent-primary)' }}>
-              <h4>Ação Necessária: Triagem de IA</h4>
-              <p className="text-small" style={{ marginTop: '8px' }}>A IA identificou pontos que necessitam de sua atenção antes de prosseguir para a validação humana.</p>
-              <button className="btn btn-primary" onClick={() => handleContest(selectedProcess.id)} style={{ marginTop: '16px' }}>
-                Contestar Análise
-              </button>
-            </div>
-          )}
+        <div className="history-row">
+          <ProcessHistory history={selectedProcess.history} />
         </div>
       </main>
     )

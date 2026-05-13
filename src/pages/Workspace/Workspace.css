@@ -207,3 +207,22 @@
   line-height: 1.5;
   color: var(--text-secondary);
 }
+
+/* Process Context Grid */
+.process-context-grid {
+  display: grid;
+  grid-template-columns: 7fr 3fr;
+  gap: 32px;
+  margin-top: 32px;
+}
+
+.history-row {
+  margin-top: 32px;
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .process-context-grid {
+    grid-template-columns: 1fr;
+  }
+}

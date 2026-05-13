@@ -4,18 +4,6 @@ import './Landing.css';
 const Landing = ({ isLight, onThemeToggle }) => {
   return (
     <div className="landing-container">
-      {/* Cabeçalho */}
-      <header className="landing-header">
-        <div className="logo">
-          <div className="logo-icon" />
-          <span className="logo-text">PiVMA</span>
-        </div>
-        <div className="nav-actions">
-          <Link to="/login" className="login-link">Entrar</Link>
-          <button className="btn btn-primary">Nova Submissão</button>
-        </div>
-      </header>
-
       {/* Seção Principal (Hero) */}
       <main className="landing-hero">
         <div className="hero-label">
@@ -30,12 +18,12 @@ const Landing = ({ isLight, onThemeToggle }) => {
           rastreabilidade completa e análise inteligente de dados.
         </p>
         <div className="hero-buttons">
-          <button className="btn btn-primary">
-            Começar Agora
+          <Link to="/login" className="btn btn-primary">
+            Acessar a Plataforma
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-          </button>
+          </Link>
           <button className="btn btn-secondary">Saiba Mais</button>
         </div>
       </main>

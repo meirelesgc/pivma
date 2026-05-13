@@ -12,19 +12,11 @@ const useMockStore = create(
           updatedAt: '2026-05-10',
           status: 'Em Triagem (IA)',
           role: 'Proponente',
+          ownerEmail: 'admin@bracvam.gov.br', // Not owned by Dr. Eduardo
           description: 'Avaliação de irritação ocular em linhagem celular epitelial.',
           tasks: [
             { id: 1, title: 'Revisar relatório de citotoxicidade', deadline: '2026-05-15' }
           ]
-        },
-        {
-          id: 'BRA-2026-002',
-          name: 'Ensaio de Fototoxicidade in vitro',
-          updatedAt: '2026-05-12',
-          status: 'Rascunho',
-          role: 'Proponente',
-          description: 'Determinação do potencial fototóxico de substâncias.',
-          tasks: []
         }
       ],
 
@@ -32,7 +24,7 @@ const useMockStore = create(
       logout: () => set({ user: null }),
       
       addProcess: (process) => set((state) => ({ 
-        processes: [process, ...state.processes] 
+        processes: [{ ...process, ownerEmail: state.user?.email }, ...state.processes] 
       })),
 
       updateProcessStatus: (id, status) => set((state) => ({

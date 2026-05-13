@@ -1,17 +1,16 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Landing from './pages/Landing/Landing'
 import Login from './pages/Login/Login'
 import Workspace from './pages/Workspace/Workspace'
-import useMockStore from './store/useMockStore'
+import MainLayout from './layouts/MainLayout'
+import PrivateLayout from './layouts/PrivateLayout'
 import './App.css'
 
 export default function App() {
   const [isLight, setIsLight] = useState(() => {
     return localStorage.getItem('theme') === 'light'
   })
-
-  const user = useMockStore((state) => state.user)
 
   useEffect(() => {
     if (isLight) {
@@ -28,18 +27,17 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route 
-          path="/" 
-          element={<Landing isLight={isLight} onThemeToggle={onThemeToggle} />} 
-        />
-        <Route 
-          path="/login" 
-          element={<Login />} 
-        />
-        <Route 
-          path="/workspace" 
-          element={user ? <Workspace isLight={isLight} onThemeToggle={onThemeToggle} /> : <Navigate to="/login" />} 
-        />
+        {/* Global Layout (Root) */}
+        <Route element={<MainLayout isLight={isLight} onThemeToggle={onThemeToggle} />}>
+          {/* Public Routes */}
+          <Route path="/" element={<Landing isLight={isLight} onThemeToggle={onThemeToggle} />} />
+          <Route path="/login" element={<Login />} />
+          
+          {/* Private Routes with Sidebar */}
+          <Route element={<PrivateLayout />}>
+            <Route path="/workspace" element={<Workspace isLight={isLight} onThemeToggle={onThemeToggle} />} />
+          </Route>
+        </Route>
       </Routes>
     </Router>
   )

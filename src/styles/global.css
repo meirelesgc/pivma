@@ -1,0 +1,113 @@
+/* Baseline Component Styles */
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--input-height);
+  padding: 0 16px;
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: var(--weight-regular);
+  transition: all var(--transition-speed) var(--transition-curve);
+  gap: 8px;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: scale(1.02);
+  filter: brightness(1.1);
+}
+
+.btn-secondary {
+  background-color: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(0, 156, 59, 0.05);
+}
+
+/* Inputs & Forms */
+.input-field {
+  height: var(--input-height);
+  background-color: var(--background-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-default);
+  padding: 0 12px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-weight: var(--weight-light);
+  font-size: 14px;
+  transition: border-color var(--transition-speed) var(--transition-curve), box-shadow var(--transition-speed);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 156, 59, 0.1);
+}
+
+.checkbox {
+  accent-color: var(--primary-color);
+}
+
+/* Floating Elements & Cards */
+.floating-card {
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-default);
+  box-shadow: var(--shadow-l);
+  padding: 24px;
+  border: 1px solid var(--border-color);
+}
+
+.surface-translucent {
+  background-color: var(--background-translucent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Tables */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color var(--transition-speed) var(--transition-curve);
+}
+
+.data-table tr:hover {
+  background-color: rgba(0, 156, 59, 0.02);
+}
+
+.data-table th {
+  text-align: left;
+  padding: 12px;
+  font-weight: var(--weight-regular);
+  color: var(--text-secondary);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.data-table td {
+  padding: 12px;
+  font-size: 14px;
+}
+
+/* Utility Classes */
+.text-small { font-size: 12px; }
+.text-medium { font-size: 15px; }
+.text-large { font-size: 20px; }
+.text-secondary { color: var(--text-secondary); }
+
+.weight-light { font-weight: var(--weight-light); }
+.weight-regular { font-weight: var(--weight-regular); }

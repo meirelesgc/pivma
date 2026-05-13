@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap');
+@import './styles/global.css';
+
+:root {
+  /* Common Variables */
+  --primary-color: rgb(0, 156, 59);
+  --primary-color-rgb: 0, 156, 59;
+  --accent-color: var(--primary-color);
+  
+  --font-main: 'Inter', sans-serif;
+  --weight-light: 300;
+  --weight-regular: 400;
+  
+  --radius-default: 12px;
+  --radius-pill: 100vh;
+  --input-height: 32px;
+  
+  --transition-curve: cubic-bezier(0.1, 0, 0.1, 1.25);
+  --transition-speed: 320ms;
+
+  /* Theme Variables (Default Dark) */
+  --background-primary: #0a0a0a;
+  --background-secondary: #161616;
+  --background-tertiary: #202020;
+  --background-translucent: rgba(22, 22, 22, 0.5);
+  --border-color: rgba(255, 255, 255, 0.1);
+  
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-tertiary: rgba(255, 255, 255, 0.5);
+  
+  --shadow-s: rgba(0, 0, 0, 0.08) 0px 12px 24px -4px;
+  --shadow-l: 0 14px 62px rgba(0, 0, 0, 0.25);
+
+  --btn-secondary-bg: var(--background-tertiary);
+  --btn-secondary-text: var(--text-primary);
+}
+
+.theme-light {
+  /* Backgrounds */
+  --background-primary: #f9f9f9;
+  --background-secondary: #ffffff;
+  --background-tertiary: #f0f0f0;
+  --background-translucent: rgba(255, 255, 255, 0.5);
+  --border-color: #e0e0e0;
+  
+  /* Text Colors */
+  --text-primary: #1a1a1a;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  
+  /* Shadows */
+  --shadow-s: rgba(0, 0, 0, 0.04) 0px 4px 12px;
+  --shadow-l: 0 10px 40px rgba(0, 0, 0, 0.08);
+
+  /* Specific Component Overrides */
+  --btn-secondary-bg: #f0f0f0;
+  --btn-secondary-text: var(--primary-color);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  font-weight: var(--weight-light);
+  font-size: 15px;
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--weight-regular);
+  color: var(--text-primary);
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: opacity var(--transition-speed) var(--transition-curve);
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}

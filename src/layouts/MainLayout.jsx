@@ -3,9 +3,9 @@ import Header from '../components/Header/Header';
 
 const MainLayout = ({ isLight, onThemeToggle }) => {
   return (
-    <div className="main-layout">
+    <div className="app-shell">
       <Header isLight={isLight} onThemeToggle={onThemeToggle} />
-      <div className="main-content">
+      <div className="app-viewport">
         <Outlet />
       </div>
     </div>

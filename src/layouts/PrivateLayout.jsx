@@ -10,9 +10,9 @@ const PrivateLayout = () => {
   }
 
   return (
-    <div className="private-layout" style={{ display: 'flex' }}>
+    <div className="app-main">
       <Sidebar />
-      <div className="workspace-container" style={{ flex: 1, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div className="app-content-area">
         <Outlet />
       </div>
     </div>

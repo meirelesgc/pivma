@@ -37,7 +37,7 @@ const Login = () => {
   }
 
   return (
-    <div className="login-container">
+    <div className="login-container scrollable-view">
       {/* Mock Selector Tool */}
       <div className="mock-selector floating-card surface-translucent">
         <h3>Seletor de Perfis (Mock)</h3>

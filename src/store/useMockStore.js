@@ -5,6 +5,7 @@ const useMockStore = create(
   persist(
     (set) => ({
       user: null, // { name: 'Dr. Eduardo', role: 'Proponente', email: 'eduardo@lab.com' }
+      selectedProcessId: null,
       processes: [
         {
           id: 'BRA-2026-001',
@@ -21,7 +22,8 @@ const useMockStore = create(
       ],
 
       setUser: (user) => set({ user }),
-      logout: () => set({ user: null }),
+      logout: () => set({ user: null, selectedProcessId: null }),
+      setSelectedProcessId: (id) => set({ selectedProcessId: id }),
       
       addProcess: (process) => set((state) => ({ 
         processes: [{ ...process, ownerEmail: state.user?.email }, ...state.processes] 

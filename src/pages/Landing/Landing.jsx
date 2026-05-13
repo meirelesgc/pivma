@@ -3,7 +3,7 @@ import './Landing.css';
 
 const Landing = ({ isLight, onThemeToggle }) => {
   return (
-    <div className="landing-container">
+    <div className="landing-container scrollable-view">
       {/* Seção Principal (Hero) */}
       <main className="landing-hero">
         <div className="hero-label">

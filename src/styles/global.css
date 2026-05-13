@@ -111,3 +111,38 @@
 
 .weight-light { font-weight: var(--weight-light); }
 .weight-regular { font-weight: var(--weight-regular); }
+
+/* Layout Shell */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.app-viewport {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* For public pages like Landing and Login */
+.scrollable-view {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* For private workspace area */
+.app-main {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  height: 100%;
+}
+
+.app-content-area {
+  flex: 1;
+  overflow-y: auto;
+}

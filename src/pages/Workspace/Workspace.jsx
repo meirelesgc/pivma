@@ -4,7 +4,7 @@ import './Workspace.css'
 
 const Workspace = () => {
   const navigate = useNavigate()
-  const { user, processes, updateProcessStatus, addContestation, addProcess } = useMockStore()
+  const { user, processes, updateProcessStatus, addContestation, addProcess, selectedProcessId, setSelectedProcessId } = useMockStore()
 
   if (!user) {
     navigate('/login')
@@ -67,7 +67,12 @@ const Workspace = () => {
             <h3 className="section-title">Fluxo de Validação</h3>
             <div className="process-grid">
               {userProcesses.map(p => (
-                <div key={p.id} className="modern-card process-card">
+                <div 
+                  key={p.id} 
+                  className={`modern-card process-card ${selectedProcessId === p.id ? 'selected' : ''}`}
+                  onClick={() => setSelectedProcessId(p.id)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div className="process-role">{p.role}</div>
                     <div className={`status-badge ${getStatusClass(p.status)}`}>

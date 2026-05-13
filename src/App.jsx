@@ -36,6 +36,7 @@ export default function App() {
           {/* Private Routes with Sidebar */}
           <Route element={<PrivateLayout />}>
             <Route path="/workspace" element={<Workspace isLight={isLight} onThemeToggle={onThemeToggle} />} />
+            <Route path="/workspace/:processId" element={<Workspace isLight={isLight} onThemeToggle={onThemeToggle} />} />
           </Route>
         </Route>
       </Routes>

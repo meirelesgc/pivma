@@ -1,4 +1,40 @@
-Você vai utilizar o conteudo a seguir para responder as minhas proximas orientações.
+Com base nos perfis e etapas definidos no documento de requisitos e na implementação atual do código, aqui está a checklist do estado do sistema:
+
+### **O que já existe (Implementado/Simulado)**
+
+* **Estrutura Base:** Projeto em React com Vite, Tailwind/CSS global e roteamento (público/privado).
+* **Gestão de Estado:** Uso de Zustand para persistência de dados de usuários e processos.
+* **Login de Acesso Geral:** Perfil de **Proponente** funcional no seletor de perfis.
+* **Etapa A (Submissão):** Botão "+ Nova Submissão" que gera o ID do processo e cadastra dados iniciais.
+* **Etapa B (Triagem IA):** Lógica que simula a IA gerando um "score de prontidão" e alterando o status para pendente.
+* **Interação do Proponente:** Visualização de métodos próprios, recebimento de alertas de pendência e funcionalidade de contestar a análise da IA.
+
+### **O que falta (Checklist de Desenvolvimento)**
+
+**1. Perfis e Acessos:**
+
+* [ ] Ativar perfil **Equipe BraCVAM** (atualmente desativado no mock).
+* [ ] Implementar perfis internos: **Laboratórios (Líder/Participantes)**, **Grupo Gestor**, **Estatístico** e **Avaliadores Ad hoc**.
+* [ ] Criar o **Módulo Exclusivo** para o Grupo de Seleção de Amostras (acesso restrito/cego).
+* [ ] Criar o **Módulo à parte** para o Estatístico.
+
+**2. Fluxo de Trabalho (Workflows):**
+
+* [ ] **Etapa B (Humana):** Interface para a Equipe BraCVAM validar a triagem da IA e emitir o relatório "apto".
+* [ ] **Etapa C (Planejamento):** Ferramenta para o Grupo Gestor elaborar o Plano de Projeto e cadastrar participantes.
+* [ ] **Etapa D (Experimental):** Sistema de upload padronizado de planilhas de resultados para os laboratórios.
+* [ ] **Etapa E (Estatística):** Funcionalidade para o Estatístico inserir o relatório final de variações.
+* [ ] **Etapa F (Dossiê):** Lógica de sistema para consolidar todos os dados no formato de dossiê final.
+* [ ] **Etapa G (Revisão):** Interface de avaliação cega para Especialistas Independentes emitirem pareceres.
+* [ ] **Etapa I (Decisão):** Módulo de publicação oficial e inclusão na base regulatória pelo BraCVAM.
+
+**3. Funcionalidades de Sistema:**
+
+* [ ] Sistema de permissões por processo (o usuário vê apenas o que lhe compete).
+* [ ] Histórico de alterações e rastreabilidade total (logs de auditoria).
+* [ ] Módulo de Documentos e Equipes (atualmente apenas placeholders na barra lateral).
+
+---
 
 Os perfis que deverão conseguir acessar a plataforma podem ser divididos entre os usuários de acesso geral ou inicial e os papéis que são definidos internamente, à medida que o processo de validação avança no sistema.
 

@@ -1,10 +1,16 @@
-import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import useMockStore from '../../store/useMockStore'
 import './Workspace.css'
 
 const Workspace = () => {
   const navigate = useNavigate()
-  const { user, processes, updateProcessStatus, addContestation, addProcess, selectedProcessId, setSelectedProcessId } = useMockStore()
+  const { processId } = useParams()
+  const { user, processes, updateProcessStatus, addContestation, addProcess, setSelectedProcessId } = useMockStore()
+
+  useEffect(() => {
+    setSelectedProcessId(processId || null)
+  }, [processId, setSelectedProcessId])
 
   if (!user) {
     navigate('/login')
@@ -13,10 +19,10 @@ const Workspace = () => {
 
   const userProcesses = processes.filter(p => p.ownerEmail === user.email)
   const userDemands = userProcesses.filter(p => p.status.includes('Pendente'))
+  const selectedProcess = processes.find(p => p.id === processId)
 
   const handleNewSubmission = () => {
     const id = `BRA-2026-${Math.floor(Math.random() * 900) + 100}`
-    alert(`Nova Submissão Iniciada: ${id}\n\nSimulando Etapa A (Submissão) e B (Triagem IA)...`)
     
     const newProcess = {
       id,
@@ -29,10 +35,10 @@ const Workspace = () => {
     }
 
     addProcess(newProcess)
+    navigate(`/workspace/${id}`)
 
     setTimeout(() => {
       updateProcessStatus(id, 'Pendente / Necessita Ajustes')
-      alert(`IA concluiu a triagem para ${id}:\nStatus: Pendente / Necessita Ajustes\nScore de Prontidão: 65%`)
     }, 2000)
   }
 
@@ -52,6 +58,57 @@ const Workspace = () => {
     return 'status-rascunho'
   }
 
+  if (processId && selectedProcess) {
+    return (
+      <main className="workspace-content">
+        <div className="content-top-bar">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <button 
+              className="btn btn-secondary" 
+              onClick={() => navigate('/workspace')}
+              style={{ padding: '8px 12px', borderRadius: '8px' }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            </button>
+            <div>
+              <div className="text-tertiary text-small">ID: {selectedProcess.id}</div>
+              <h2 style={{ margin: 0 }}>{selectedProcess.name}</h2>
+            </div>
+          </div>
+          <div className={`status-badge ${getStatusClass(selectedProcess.status)}`}>
+            {selectedProcess.status}
+          </div>
+        </div>
+
+        <div className="modern-card" style={{ marginTop: '24px', padding: '40px' }}>
+          <h3>Detalhes do Método</h3>
+          <p className="text-secondary" style={{ marginTop: '16px' }}>{selectedProcess.description}</p>
+          
+          <div style={{ marginTop: '32px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+            <div className="info-box">
+              <span className="label">Papel Atual</span>
+              <div className="value">{selectedProcess.role}</div>
+            </div>
+            <div className="info-box">
+              <span className="label">Última Atualização</span>
+              <div className="value">{selectedProcess.updatedAt}</div>
+            </div>
+          </div>
+
+          {selectedProcess.status.includes('Pendente') && (
+            <div className="alert-box" style={{ marginTop: '32px', backgroundColor: 'var(--bg-secondary)', padding: '24px', borderRadius: '12px', borderLeft: '4px solid var(--accent-primary)' }}>
+              <h4>Ação Necessária: Triagem de IA</h4>
+              <p className="text-small" style={{ marginTop: '8px' }}>A IA identificou pontos que necessitam de sua atenção antes de prosseguir para a validação humana.</p>
+              <button className="btn btn-primary" onClick={() => handleContest(selectedProcess.id)} style={{ marginTop: '16px' }}>
+                Contestar Análise
+              </button>
+            </div>
+          )}
+        </div>
+      </main>
+    )
+  }
+
   return (
     <main className="workspace-content">
       <div className="content-top-bar">
@@ -69,8 +126,8 @@ const Workspace = () => {
               {userProcesses.map(p => (
                 <div 
                   key={p.id} 
-                  className={`modern-card process-card ${selectedProcessId === p.id ? 'selected' : ''}`}
-                  onClick={() => setSelectedProcessId(p.id)}
+                  className="modern-card process-card"
+                  onClick={() => navigate(`/workspace/${p.id}`)}
                   style={{ cursor: 'pointer' }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -121,12 +178,8 @@ const Workspace = () => {
                       <p>Score de prontidão insuficiente (65%).</p>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <a href="#" className="action-link" onClick={(e) => { e.preventDefault(); handleContest(p.id); }}>
-                        Contestar análise da IA
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                      </a>
-                      <a href="#" className="action-link" onClick={(e) => e.preventDefault()}>
-                        Revisar documentação
+                      <a href="#" className="action-link" onClick={(e) => { e.preventDefault(); navigate(`/workspace/${p.id}`); }}>
+                        Ver detalhes e contestar
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                       </a>
                     </div>

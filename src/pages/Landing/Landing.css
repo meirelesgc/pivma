@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   padding: 0 5%;
+  background-color: var(--background-primary);
 }
 
 /* Header */
@@ -23,13 +24,14 @@
   width: 32px;
   height: 32px;
   background-color: var(--primary-color);
-  border-radius: 4px;
+  border-radius: var(--radius-default);
 }
 
 .landing-header .logo-text {
   font-size: 20px;
   font-weight: var(--weight-regular);
   letter-spacing: -0.02em;
+  color: var(--text-primary);
 }
 
 .landing-header .nav-actions {
@@ -42,6 +44,11 @@
   color: var(--text-primary);
   font-size: 14px;
   font-weight: var(--weight-regular);
+  transition: opacity var(--transition-speed) var(--transition-curve);
+}
+
+.landing-header .login-link:hover {
+  opacity: 0.8;
 }
 
 /* Hero Section */
@@ -52,25 +59,28 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 100px 0;
+  padding: 80px 0;
 }
 
 .hero-label {
-  font-size: 12px;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--primary-color);
   background-color: rgba(var(--primary-color-rgb), 0.1);
-  padding: 6px 12px;
+  padding: 6px 16px;
   border-radius: var(--radius-pill);
   margin-bottom: 32px;
+  font-weight: var(--weight-regular);
 }
 
 .hero-title {
-  font-size: 56px;
+  font-size: 52px;
+  font-weight: var(--weight-regular);
   line-height: 1.1;
   margin-bottom: 24px;
   max-width: 900px;
+  letter-spacing: -0.03em;
 }
 
 .hero-description {
@@ -96,18 +106,24 @@
 
 .feature-card {
   padding: 32px;
+  transition: transform var(--transition-speed) var(--transition-curve);
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
 }
 
 .feature-card h3 {
   font-size: 18px;
   margin-bottom: 12px;
   color: var(--primary-color);
+  font-weight: var(--weight-regular);
 }
 
 .feature-card p {
   font-size: 14px;
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 /* Footer */
@@ -136,19 +152,27 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-default);
+  transition: all var(--transition-speed) var(--transition-curve);
 }
 
 .footer-theme-toggle:hover {
+  background-color: var(--background-tertiary);
   color: var(--text-primary);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .hero-title {
-    font-size: 40px;
+    font-size: 36px;
   }
   
   .landing-features {
     grid-template-columns: 1fr;
+  }
+  
+  .landing-header .nav-actions {
+    gap: 16px;
   }
 }

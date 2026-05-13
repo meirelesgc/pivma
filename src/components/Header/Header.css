@@ -1,9 +1,9 @@
 .global-header {
-  height: 72px;
+  height: 64px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 48px;
+  padding: 0 32px;
   border-bottom: 1px solid var(--border-color);
   background: var(--background-secondary);
   z-index: 100;
@@ -27,9 +27,8 @@
 .header-logo .logo-icon {
   width: 24px;
   height: 24px;
-  background: linear-gradient(135deg, var(--primary-color), #00c84b);
+  background-color: var(--primary-color);
   border-radius: 6px;
-  box-shadow: 0 4px 8px rgba(0, 156, 59, 0.2);
 }
 
 .header-logo .logo-text {
@@ -40,7 +39,7 @@
 }
 
 .header-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: var(--weight-regular);
   color: var(--text-secondary);
 }
@@ -48,12 +47,12 @@
 .header-controls {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
 }
 
 .control-btn {
   color: var(--text-secondary);
-  transition: color 0.2s;
+  transition: all var(--transition-speed) var(--transition-curve);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -73,8 +72,8 @@
   align-items: center;
   justify-content: center;
   padding: 8px;
-  border-radius: 8px;
-  transition: all 0.2s;
+  border-radius: var(--radius-default);
+  transition: all var(--transition-speed) var(--transition-curve);
 }
 
 .theme-toggle-btn:hover {

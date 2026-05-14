@@ -7,6 +7,7 @@
   height: 100%;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  transition: width var(--duration-moderate) var(--transition-curve);
 }
 
 .sidebar-top {
@@ -27,11 +28,12 @@
   width: 28px;
   height: 28px;
   background-color: var(--primary-color);
-  border-radius: var(--radius-default);
+  border-radius: var(--radius-m);
 }
 
 .sidebar-logo span {
-  font-size: 20px;
+  font-family: var(--font-accent);
+  font-size: var(--font-size-large);
   letter-spacing: -0.03em;
   font-weight: var(--weight-regular);
   color: var(--text-primary);
@@ -43,7 +45,7 @@
 }
 
 .nav-section-label {
-  font-size: 11px;
+  font-size: var(--font-size-smaller);
   text-transform: uppercase;
   color: var(--text-tertiary);
   letter-spacing: 0.1em;
@@ -57,17 +59,18 @@
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
-  border-radius: var(--radius-default);
+  border-radius: var(--radius-m);
   color: var(--text-secondary);
-  transition: all var(--transition-speed) var(--transition-curve);
+  transition: all var(--duration-fast) var(--transition-curve);
   cursor: pointer;
   margin-bottom: 4px;
-  font-size: 14px;
+  font-size: var(--font-size-small);
 }
 
 .nav-item.active {
   background: rgba(var(--primary-color-rgb), 0.08);
   color: var(--primary-color);
+  font-weight: var(--weight-bold);
 }
 
 .nav-item.locked {
@@ -119,7 +122,7 @@
   width: 40px;
   height: 40px;
   background-color: var(--primary-color);
-  border-radius: var(--radius-default);
+  border-radius: var(--radius-m);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -129,14 +132,14 @@
 }
 
 .user-details .user-name {
-  font-size: 14px;
-  font-weight: var(--weight-regular);
+  font-size: var(--font-size-small);
+  font-weight: var(--weight-bold);
   color: var(--text-primary);
   display: block;
 }
 
 .user-details .user-email {
-  font-size: 11px;
+  font-size: var(--font-size-smaller);
   color: var(--text-tertiary);
   display: block;
 }
@@ -149,10 +152,10 @@
   width: 100%;
   height: var(--input-height);
   border-radius: var(--radius-pill);
-  font-size: 13px;
+  font-size: var(--font-size-small);
   color: var(--text-secondary);
   background: var(--background-tertiary);
-  transition: all var(--transition-speed) var(--transition-curve);
+  transition: all var(--duration-fast) var(--transition-curve);
   cursor: pointer;
 }
 

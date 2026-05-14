@@ -28,18 +28,19 @@
   width: 24px;
   height: 24px;
   background-color: var(--primary-color);
-  border-radius: 6px;
+  border-radius: var(--clickable-icon-radius);
 }
 
 .header-logo .logo-text {
-  font-size: 18px;
+  font-family: var(--font-accent);
+  font-size: var(--font-size-large);
   font-weight: var(--weight-regular);
   letter-spacing: -0.03em;
   color: var(--text-primary);
 }
 
 .header-title {
-  font-size: 16px;
+  font-size: var(--font-size-medium);
   font-weight: var(--weight-regular);
   color: var(--text-secondary);
 }
@@ -52,11 +53,11 @@
 
 .control-btn {
   color: var(--text-secondary);
-  transition: all var(--transition-speed) var(--transition-curve);
+  transition: all var(--duration-fast) var(--transition-curve);
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: var(--font-size-small);
 }
 
 .control-btn:hover {
@@ -72,8 +73,8 @@
   align-items: center;
   justify-content: center;
   padding: 8px;
-  border-radius: var(--radius-default);
-  transition: all var(--transition-speed) var(--transition-curve);
+  border-radius: var(--clickable-icon-radius);
+  transition: all var(--duration-fast) var(--transition-curve);
 }
 
 .theme-toggle-btn:hover {

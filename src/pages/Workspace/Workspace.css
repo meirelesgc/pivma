@@ -6,6 +6,7 @@
   margin: 0 auto;
   min-height: 100%;
   background-color: var(--background-primary);
+  transition: all var(--duration-moderate) var(--transition-curve);
 }
 
 .content-top-bar {
@@ -16,7 +17,8 @@
 }
 
 .content-top-bar h2 {
-  font-size: 24px;
+  font-family: var(--font-accent);
+  font-size: var(--font-size-large);
   letter-spacing: -0.02em;
   font-weight: var(--weight-regular);
 }
@@ -26,10 +28,11 @@
   display: grid;
   grid-template-columns: 1fr 320px;
   gap: 40px;
+  transition: all var(--duration-moderate) var(--transition-curve);
 }
 
 .section-title {
-  font-size: 11px;
+  font-size: var(--font-size-smaller);
   text-transform: uppercase;
   color: var(--text-tertiary);
   margin-bottom: 20px;
@@ -39,12 +42,14 @@
 
 /* Cards & Containers */
 .modern-card {
-  transition: all var(--transition-speed) var(--transition-curve);
+  border-radius: var(--radius-l);
+  transition: all var(--duration-moderate) var(--transition-curve);
 }
 
 .modern-card:hover {
   transform: translateY(-2px);
   border-color: var(--primary-color);
+  box-shadow: var(--shadow-s);
 }
 
 .modern-card.selected {
@@ -64,18 +69,19 @@
   padding: 16px;
   background: rgba(var(--primary-color-rgb), 0.03);
   border-left: 3px solid var(--primary-color);
-  border-radius: var(--radius-default);
+  border-radius: var(--radius-m);
+  transition: all var(--duration-fast) var(--transition-curve);
 }
 
 .demand-info h4 {
-  font-size: 14px;
+  font-size: var(--font-size-small);
   margin-bottom: 4px;
   line-height: 1.4;
   font-weight: var(--weight-regular);
 }
 
 .demand-info p {
-  font-size: 12px;
+  font-size: var(--font-size-smaller);
   color: var(--text-secondary);
   margin-bottom: 12px;
 }
@@ -84,9 +90,10 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 12px;
+  font-size: var(--font-size-smaller);
   color: var(--primary-color);
   font-weight: var(--weight-regular);
+  transition: opacity var(--duration-super-fast) var(--transition-curve);
 }
 
 .action-link:hover {
@@ -107,12 +114,12 @@
 }
 
 .process-card .process-role {
-  font-size: 10px;
+  font-size: var(--font-size-smaller);
   text-transform: uppercase;
   color: var(--primary-color);
   background: rgba(var(--primary-color-rgb), 0.1);
   padding: 3px 8px;
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   display: inline-block;
   width: fit-content;
   letter-spacing: 0.05em;
@@ -120,7 +127,7 @@
 }
 
 .process-card .status-badge {
-  font-size: 11px;
+  font-size: var(--font-size-smaller);
   padding: 4px 12px;
   border-radius: var(--radius-pill);
   font-weight: var(--weight-regular);
@@ -133,7 +140,8 @@
 .status-rascunho { background: var(--background-tertiary); color: var(--text-secondary); }
 
 .process-card h3 {
-  font-size: 16px;
+  font-family: var(--font-accent);
+  font-size: var(--font-size-medium);
   line-height: 1.4;
   font-weight: var(--weight-regular);
 }
@@ -144,7 +152,7 @@
   align-items: center;
   padding-top: 16px;
   border-top: 1px solid var(--border-color);
-  font-size: 11px;
+  font-size: var(--font-size-smaller);
   color: var(--text-tertiary);
 }
 
@@ -162,7 +170,8 @@
 }
 
 .simulation-context h5 {
-  font-size: 13px;
+  font-family: var(--font-accent);
+  font-size: var(--font-size-medium);
   color: var(--primary-color);
   margin-bottom: 8px;
   font-weight: var(--weight-regular);
@@ -171,20 +180,20 @@
 .simulation-context p {
   line-height: 1.6;
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: var(--font-size-small);
 }
 
 /* Detailed View Components */
 .info-box {
   background: var(--bg-secondary);
   padding: 20px;
-  border-radius: 12px;
+  border-radius: var(--radius-m);
   border: 1px solid var(--border-color);
 }
 
 .info-box .label {
   display: block;
-  font-size: 11px;
+  font-size: var(--font-size-smaller);
   text-transform: uppercase;
   color: var(--text-tertiary);
   margin-bottom: 8px;
@@ -192,13 +201,14 @@
 }
 
 .info-box .value {
-  font-size: 16px;
+  font-size: var(--font-size-medium);
   color: var(--text-primary);
   font-weight: var(--weight-regular);
 }
 
 .alert-box h4 {
-  font-size: 15px;
+  font-family: var(--font-accent);
+  font-size: var(--font-size-medium);
   color: var(--text-primary);
   font-weight: var(--weight-regular);
 }
@@ -214,6 +224,7 @@
   grid-template-columns: 7fr 3fr;
   gap: 32px;
   margin-top: 32px;
+  transition: all var(--duration-moderate) var(--transition-curve);
 }
 
 .history-row {

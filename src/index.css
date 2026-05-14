@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Instrument+Serif:ital,wght@0,400;1,400&display=swap');
 @import './styles/global.css';
 
 :root {
@@ -7,16 +7,59 @@
   --primary-color-rgb: 0, 156, 59;
   --accent-color: var(--primary-color);
   
+  /* Typography */
   --font-main: 'Inter', sans-serif;
+  --font-accent: 'Instrument Serif', serif;
+  
+  /* UI Scale */
+  --font-size-smaller: 12px;
+  --font-size-small: 13px;
+  --font-size-medium: 15px;
+  --font-size-large: 20px;
+  
+  /* Weights - Standard bold is 300 for this theme aesthetic */
   --weight-light: 300;
   --weight-regular: 400;
+  --weight-bold: 300; 
   
-  --radius-default: 12px;
+  /* Shapes */
+  --corner-shape: superellipse(1.1);
+  --radius-s: 4px;
+  --radius-m: 8px;
+  --radius-l: 12px;
   --radius-pill: 100vh;
-  --input-height: 32px;
+  --clickable-icon-radius: 6px;
   
+  --input-height: 32px;
+  --density: 1;
+  --card-gap: 2px;
+  
+  /* Shadows */
+  --shadow-s: 0 4px 12px -4px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --shadow-l: 0 14px 62px rgba(0, 0, 0, 0.40);
+  --shadow-tactile: 0 1px 2px rgba(0, 0, 0, 0.04);
+
+  /* Icons */
+  --icon-size-xs: 14px;
+  --icon-size-s: 18px;
+  --icon-size-m: 24px;
+  --icon-size-l: 28px;
+  --icon-size-xl: 32px;
+  
+  --icon-stroke-xs: 2.25px;
+  --icon-stroke-s: 2px;
+  --icon-stroke-m: 2px;
+  --icon-stroke-l: 2px;
+  --icon-stroke-xl: 1.25px;
+  
+  /* Movement & Animations */
   --transition-curve: cubic-bezier(0.1, 0, 0.1, 1.25);
-  --transition-speed: 320ms;
+  --duration-super-fast: 80ms;
+  --duration-fast: 160ms;
+  --duration-moderate: 320ms;
+  --duration-slow: 480ms;
+  
+  --transition-speed: var(--duration-moderate);
 
   /* Theme Variables (Default Dark) */
   --background-primary: #0a0a0a;
@@ -29,9 +72,6 @@
   --text-secondary: rgba(255, 255, 255, 0.7);
   --text-tertiary: rgba(255, 255, 255, 0.5);
   
-  --shadow-s: rgba(0, 0, 0, 0.08) 0px 12px 24px -4px;
-  --shadow-l: 0 14px 62px rgba(0, 0, 0, 0.25);
-
   --btn-secondary-bg: var(--background-tertiary);
   --btn-secondary-text: var(--text-primary);
 }
@@ -49,13 +89,26 @@
   --text-secondary: #666666;
   --text-tertiary: #999999;
   
-  /* Shadows */
-  --shadow-s: rgba(0, 0, 0, 0.04) 0px 4px 12px;
-  --shadow-l: 0 10px 40px rgba(0, 0, 0, 0.08);
-
   /* Specific Component Overrides */
   --btn-secondary-bg: #f0f0f0;
   --btn-secondary-text: var(--primary-color);
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-super-fast: 0ms;
+    --duration-fast: 0ms;
+    --duration-moderate: 0ms;
+    --duration-slow: 0ms;
+  }
+}
+
+.reduce-motion {
+  --duration-super-fast: 0ms;
+  --duration-fast: 0ms;
+  --duration-moderate: 0ms;
+  --duration-slow: 0ms;
 }
 
 * {
@@ -67,16 +120,17 @@
 body {
   font-family: var(--font-main);
   font-weight: var(--weight-light);
-  font-size: 15px;
+  font-size: var(--font-size-medium);
   background-color: var(--background-primary);
   color: var(--text-primary);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color var(--transition-speed), color var(--transition-speed);
+  transition: background-color var(--duration-moderate), color var(--duration-moderate);
 }
 
 h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-accent);
   font-weight: var(--weight-regular);
   color: var(--text-primary);
 }
@@ -84,7 +138,7 @@ h1, h2, h3, h4, h5, h6 {
 a {
   color: var(--primary-color);
   text-decoration: none;
-  transition: opacity var(--transition-speed) var(--transition-curve);
+  transition: opacity var(--duration-fast) var(--transition-curve);
 }
 
 a:hover {
@@ -96,6 +150,7 @@ button {
   border: none;
   background: none;
   font-family: inherit;
+  transition: all var(--duration-fast) var(--transition-curve);
 }
 
 .modern-form .form-group {
@@ -104,7 +159,7 @@ button {
 
 .modern-form label {
   display: block;
-  font-size: 11px;
+  font-size: var(--font-size-smaller);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-tertiary);
@@ -116,11 +171,12 @@ button {
 .modern-form textarea {
   width: 100%;
   padding: 10px 14px;
-  border-radius: 8px;
+  border-radius: var(--radius-m);
   border: 1px solid var(--border-color);
   background-color: var(--background-secondary);
   color: var(--text-primary);
   font-size: 14px;
+  transition: border-color var(--duration-fast) var(--transition-curve);
 }
 
 .modern-form input:focus, 
@@ -132,9 +188,10 @@ button {
 
 .modern-card {
   background-color: var(--background-secondary);
-  border-radius: var(--radius-default);
+  border-radius: var(--radius-l);
   border: 1px solid var(--border-color);
   padding: 24px;
+  transition: transform var(--duration-moderate) var(--transition-curve), box-shadow var(--duration-moderate) var(--transition-curve);
 }
 
 .whitespace-pre {

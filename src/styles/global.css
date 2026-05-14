@@ -8,9 +8,9 @@
   height: var(--input-height);
   padding: 0 16px;
   border-radius: var(--radius-pill);
-  font-size: 14px;
+  font-size: var(--font-size-small);
   font-weight: var(--weight-regular);
-  transition: all var(--transition-speed) var(--transition-curve);
+  transition: all var(--duration-fast) var(--transition-curve);
   gap: 8px;
 }
 
@@ -27,6 +27,7 @@
 .btn-secondary {
   background-color: var(--btn-secondary-bg);
   color: var(--btn-secondary-text);
+  border-radius: var(--radius-m);
 }
 
 .btn-secondary:hover {
@@ -36,7 +37,22 @@
 .btn-tiny {
   height: 28px;
   padding: 0 12px;
-  font-size: 11px;
+  font-size: var(--font-size-smaller);
+  border-radius: var(--radius-s);
+}
+
+.clickable-icon {
+  width: var(--icon-size-m);
+  height: var(--icon-size-m);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--clickable-icon-radius);
+  transition: background-color var(--duration-super-fast) var(--transition-curve);
+}
+
+.clickable-icon:hover {
+  background-color: var(--background-tertiary);
 }
 
 /* Inputs & Forms */
@@ -44,13 +60,13 @@
   height: var(--input-height);
   background-color: var(--background-secondary);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-default);
+  border-radius: var(--radius-m);
   padding: 0 12px;
   color: var(--text-primary);
   font-family: inherit;
   font-weight: var(--weight-light);
   font-size: 14px;
-  transition: border-color var(--transition-speed) var(--transition-curve), box-shadow var(--transition-speed);
+  transition: border-color var(--duration-fast) var(--transition-curve), box-shadow var(--duration-fast) var(--transition-curve);
 }
 
 .input-field:focus {
@@ -66,10 +82,11 @@
 /* Floating Elements & Cards */
 .floating-card {
   background-color: var(--background-secondary);
-  border-radius: var(--radius-default);
+  border-radius: var(--radius-l);
   box-shadow: var(--shadow-l);
   padding: 24px;
   border: 1px solid var(--border-color);
+  transition: transform var(--duration-moderate) var(--transition-curve);
 }
 
 .surface-translucent {
@@ -87,7 +104,7 @@
 
 .data-table tr {
   border-bottom: 1px solid var(--border-color);
-  transition: background-color var(--transition-speed) var(--transition-curve);
+  transition: background-color var(--duration-fast) var(--transition-curve);
 }
 
 .data-table tr:hover {
@@ -99,9 +116,10 @@
   padding: 12px;
   font-weight: var(--weight-regular);
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: var(--font-size-smaller);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  border-width: 0; /* Headers in "Bases" type tables have zero border width */
 }
 
 .data-table td {
@@ -110,13 +128,15 @@
 }
 
 /* Utility Classes */
-.text-small { font-size: 12px; }
-.text-medium { font-size: 15px; }
-.text-large { font-size: 20px; }
+.text-smaller { font-size: var(--font-size-smaller); }
+.text-small { font-size: var(--font-size-small); }
+.text-medium { font-size: var(--font-size-medium); }
+.text-large { font-size: var(--font-size-large); }
 .text-secondary { color: var(--text-secondary); }
 
 .weight-light { font-weight: var(--weight-light); }
 .weight-regular { font-weight: var(--weight-regular); }
+.weight-bold { font-weight: var(--weight-bold); }
 
 /* Layout Shell */
 .app-shell {
@@ -125,6 +145,7 @@
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+  transition: all var(--duration-moderate) var(--transition-curve);
 }
 
 .app-viewport {
@@ -151,4 +172,19 @@
 .app-content-area {
   flex: 1;
   overflow-y: auto;
+  transition: transform var(--duration-moderate) var(--transition-curve);
+}
+
+/* Cards View Specifics */
+.cards-grid {
+  display: grid;
+  gap: var(--card-gap);
+}
+
+@media (max-width: 768px) {
+  .mobile-full-width {
+    width: 100cqw;
+    margin-left: -20px; /* Assuming 20px parent padding */
+    margin-right: -20px;
+  }
 }

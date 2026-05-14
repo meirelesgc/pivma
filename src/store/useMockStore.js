@@ -30,6 +30,27 @@ const useMockStore = create(
           iaScore: 88,
           bracvamStatus: 'Aguardando Revisão',
           comments: {}, // { fieldId: [{ id, author, text, timestamp, status: 'pending'|'resolved', type }] }
+          participants: [
+            { email: 'admin@bracvam.gov.br', name: 'Equipe BraCVAM', role: 'Equipe BraCVAM', institution: 'BraCVAM' }
+          ],
+          sponsor: {
+            name: '',
+            category: '',
+            contact: '',
+            entityType: '',
+            notes: ''
+          },
+          protocol: {
+            description: '',
+            steps: '',
+            criticalParameters: '',
+            acceptanceCriteria: '',
+            materials: '',
+            version: '1.0',
+            status: 'draft', // draft, review, approved
+            updatedAt: null,
+            updatedBy: ''
+          },
           history: [
             { 
               timestamp: '2026-05-08T10:00:00Z', 
@@ -77,6 +98,14 @@ const useMockStore = create(
           iaScore: 0,
           bracvamStatus: 'Rascunho',
           comments: {},
+          participants: [
+            { email: user?.email, name: user?.name, role: 'Proponente', institution: '' }
+          ],
+          sponsor: { name: '', category: '', contact: '', entityType: '', notes: '' },
+          protocol: { 
+            description: '', steps: '', criticalParameters: '', acceptanceCriteria: '', 
+            materials: '', version: '1.0', status: 'draft', updatedAt: null, updatedBy: '' 
+          },
           history: [
             { 
               timestamp: new Date().toISOString(), 
@@ -95,6 +124,67 @@ const useMockStore = create(
           ...p, 
           ...data, 
           updatedAt: new Date().toISOString().split('T')[0] 
+        } : p)
+      })),
+
+      assignParticipant: (processId, participant) => set((state) => ({
+        processes: state.processes.map(p => p.id === processId ? {
+          ...p,
+          participants: [...(p.participants || []), participant],
+          history: [...p.history, {
+            timestamp: new Date().toISOString(),
+            actor: get().user?.name || 'Sistema',
+            type: 'assignment',
+            description: `Participante adicionado: ${participant.name} como ${participant.role}`,
+            origin: 'human'
+          }]
+        } : p)
+      })),
+
+      removeParticipant: (processId, email) => set((state) => ({
+        processes: state.processes.map(p => p.id === processId ? {
+          ...p,
+          participants: (p.participants || []).filter(part => part.email !== email),
+          history: [...p.history, {
+            timestamp: new Date().toISOString(),
+            actor: get().user?.name || 'Sistema',
+            type: 'assignment',
+            description: `Participante removido: ${email}`,
+            origin: 'human'
+          }]
+        } : p)
+      })),
+
+      updateSponsor: (processId, sponsorData) => set((state) => ({
+        processes: state.processes.map(p => p.id === processId ? {
+          ...p,
+          sponsor: { ...p.sponsor, ...sponsorData },
+          history: [...p.history, {
+            timestamp: new Date().toISOString(),
+            actor: get().user?.name || 'Sistema',
+            type: 'update',
+            description: 'Dados do patrocinador atualizados.',
+            origin: 'human'
+          }]
+        } : p)
+      })),
+
+      updateProtocol: (processId, protocolData) => set((state) => ({
+        processes: state.processes.map(p => p.id === processId ? {
+          ...p,
+          protocol: { 
+            ...p.protocol, 
+            ...protocolData, 
+            updatedAt: new Date().toISOString(),
+            updatedBy: get().user?.name || 'Sistema'
+          },
+          history: [...p.history, {
+            timestamp: new Date().toISOString(),
+            actor: get().user?.name || 'Sistema',
+            type: 'update',
+            description: 'Protocolo técnico atualizado.',
+            origin: 'human'
+          }]
         } : p)
       })),
 
@@ -165,7 +255,6 @@ const useMockStore = create(
       },
 
       submitToTriage: (id) => {
-        const user = get().user;
         get().transitionTo(id, 'SUBMETIDO', 'Submissão realizada para triagem.');
 
         // Simulate IA Triage delay

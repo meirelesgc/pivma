@@ -33,6 +33,12 @@
   background-color: rgba(0, 156, 59, 0.05);
 }
 
+.btn-tiny {
+  height: 28px;
+  padding: 0 12px;
+  font-size: 11px;
+}
+
 /* Inputs & Forms */
 .input-field {
   height: var(--input-height);

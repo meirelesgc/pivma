@@ -97,3 +97,51 @@ button {
   background: none;
   font-family: inherit;
 }
+
+.modern-form .form-group {
+  margin-bottom: 20px;
+}
+
+.modern-form label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+
+.modern-form input, 
+.modern-form select, 
+.modern-form textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background-color: var(--background-secondary);
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.modern-form input:focus, 
+.modern-form select:focus, 
+.modern-form textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.modern-card {
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-default);
+  border: 1px solid var(--border-color);
+  padding: 24px;
+}
+
+.whitespace-pre {
+  white-space: pre-wrap;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

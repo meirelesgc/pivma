@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import useMockStore from '../../../store/useMockStore';
 import { PROCESS_STATES } from '../../../config/processStates';
 import FieldReview from './FieldReview';
@@ -6,11 +6,12 @@ import FieldReview from './FieldReview';
 const MethodForm = ({ process }) => {
   const { updateProcessData, submitToTriage, user } = useMockStore();
   const [formData, setFormData] = useState({ ...process });
+  const [prevProcessId, setPrevProcessId] = useState(process.id);
 
-  // Sync with store if process changes externally
-  useEffect(() => {
+  if (process.id !== prevProcessId) {
+    setPrevProcessId(process.id);
     setFormData({ ...process });
-  }, [process]);
+  }
 
   const currentState = process.currentState || 'RASCUNHO';
   const isReadOnly = !['RASCUNHO', 'PENDENTE_AJUSTE'].includes(currentState);

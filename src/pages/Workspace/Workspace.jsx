@@ -4,6 +4,7 @@ import useMockStore from '../../store/useMockStore'
 import MethodForm from './components/MethodForm'
 import TriagePanel from './components/TriagePanel'
 import ProcessHistory from './components/ProcessHistory'
+import PlanningStage from './components/Planning/PlanningStage'
 import './Workspace.css'
 import './components/components.css'
 
@@ -24,7 +25,7 @@ const Workspace = () => {
   // Admin (Equipe BraCVAM) sees everything, others see their own
   const userProcesses = user.role === 'Admin' 
     ? processes 
-    : processes.filter(p => p.ownerEmail === user.email)
+    : processes.filter(p => p.ownerEmail === user.email || p.participants?.some(part => part.email === user.email))
 
   // Demands based on role and state
   const userDemands = processes.filter(p => {
@@ -63,6 +64,8 @@ const Workspace = () => {
   }
 
   if (processId && selectedProcess) {
+    const isPlanningStage = selectedProcess.currentState === 'PLANEJAMENTO' || selectedProcess.currentState === 'PREPARACAO';
+
     return (
       <main className="workspace-content">
         <div className="content-top-bar">
@@ -84,14 +87,18 @@ const Workspace = () => {
           </div>
         </div>
 
-        <div className="process-context-grid">
-          <div className="form-column">
-            <MethodForm process={selectedProcess} />
+        {isPlanningStage ? (
+          <PlanningStage process={selectedProcess} />
+        ) : (
+          <div className="process-context-grid">
+            <div className="form-column">
+              <MethodForm process={selectedProcess} />
+            </div>
+            <div className="triage-column">
+              <TriagePanel process={selectedProcess} />
+            </div>
           </div>
-          <div className="triage-column">
-            <TriagePanel process={selectedProcess} />
-          </div>
-        </div>
+        )}
 
         <div className="history-row">
           <ProcessHistory history={selectedProcess.history} />

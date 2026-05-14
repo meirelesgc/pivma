@@ -9,8 +9,15 @@ const ProcessHistory = ({ history }) => {
     });
   };
 
-  const getOriginIcon = (origin) => {
-    if (origin === 'system') {
+  const getOriginIcon = (event) => {
+    if (event.type === 'transition') {
+      return (
+        <div className="history-icon transition" style={{ borderColor: '#6366f1', color: '#6366f1' }}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+        </div>
+      );
+    }
+    if (event.origin === 'system') {
       return (
         <div className="history-icon system">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path><path d="M12 6v6l4 2"></path></svg>
@@ -32,7 +39,7 @@ const ProcessHistory = ({ history }) => {
         {history.slice().reverse().map((event, index) => (
           <div key={index} className={`timeline-event ${event.origin}`}>
             <div className="timeline-marker">
-              {getOriginIcon(event.origin)}
+              {getOriginIcon(event)}
               {index !== history.length - 1 && <div className="timeline-line"></div>}
             </div>
             

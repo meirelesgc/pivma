@@ -70,9 +70,34 @@
   color: var(--primary-color);
 }
 
-.nav-item:hover:not(.active) {
+.nav-item.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: var(--text-tertiary);
+}
+
+.nav-item.locked:hover {
+  background: transparent;
+}
+
+.nav-item.locked svg {
+  opacity: 0.5;
+}
+
+.nav-item:hover:not(.active):not(.locked) {
   background: var(--background-tertiary);
   color: var(--text-primary);
+}
+
+.macro-stage-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.lock-icon {
+  opacity: 0.6;
 }
 
 /* User Section */

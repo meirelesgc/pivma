@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { PROCESS_STATES } from '../config/processStates'
 
 const useMockStore = create(
   persist(
@@ -11,7 +12,8 @@ const useMockStore = create(
           id: 'BRA-2026-001',
           name: 'Método de Irritação Ocular HCE',
           updatedAt: '2026-05-10',
-          status: 'Em Triagem (IA)',
+          currentState: 'TRIAGEM_IA',
+          status: 'Em Triagem (IA)', // Keep for compatibility temporarily
           role: 'Proponente',
           ownerEmail: 'admin@bracvam.gov.br',
           institution: 'Instituto de BioPesquisa',
@@ -27,6 +29,7 @@ const useMockStore = create(
           iaStatus: 'Apto',
           iaScore: 88,
           bracvamStatus: 'Aguardando Revisão',
+          comments: {}, // { fieldId: [{ id, author, text, timestamp, status: 'pending'|'resolved', type }] }
           history: [
             { 
               timestamp: '2026-05-08T10:00:00Z', 
@@ -61,6 +64,8 @@ const useMockStore = create(
         const user = get().user
         const newProcess = {
           ...process,
+          currentState: 'RASCUNHO',
+          status: 'Rascunho',
           ownerEmail: user?.email,
           institution: '',
           technicalLead: user?.name || '',
@@ -71,6 +76,7 @@ const useMockStore = create(
           iaStatus: 'Pendente',
           iaScore: 0,
           bracvamStatus: 'Rascunho',
+          comments: {},
           history: [
             { 
               timestamp: new Date().toISOString(), 
@@ -99,43 +105,96 @@ const useMockStore = create(
         } : p)
       })),
 
-      submitToTriage: (id) => {
-        const user = get().user
+      addComment: (processId, fieldId, comment) => {
+        const user = get().user;
+        const newComment = {
+          id: Math.random().toString(36).substr(2, 9),
+          author: user?.name || 'Revisor BraCVAM',
+          timestamp: new Date().toISOString(),
+          status: 'pending',
+          ...comment
+        };
+
         set((state) => ({
-          processes: state.processes.map(p => p.id === id ? { 
-            ...p, 
-            status: 'Em Triagem (IA)',
-            bracvamStatus: 'Em Triagem',
+          processes: state.processes.map(p => p.id === processId ? {
+            ...p,
+            comments: {
+              ...p.comments,
+              [fieldId]: [...(p.comments[fieldId] || []), newComment]
+            }
+          } : p)
+        }));
+      },
+
+      resolveComment: (processId, fieldId, commentId) => {
+        set((state) => ({
+          processes: state.processes.map(p => p.id === processId ? {
+            ...p,
+            comments: {
+              ...p.comments,
+              [fieldId]: (p.comments[fieldId] || []).map(c => 
+                c.id === commentId ? { ...c, status: 'resolved' } : c
+              )
+            }
+          } : p)
+        }));
+      },
+
+      transitionTo: (id, nextStateId, description, actor = null) => {
+        const stateConfig = PROCESS_STATES[nextStateId];
+        if (!stateConfig) return;
+
+        const user = get().user;
+        const actorName = actor || user?.name || 'Sistema';
+
+        set((state) => ({
+          processes: state.processes.map(p => p.id === id ? {
+            ...p,
+            currentState: nextStateId,
+            status: stateConfig.label,
             updatedAt: new Date().toISOString().split('T')[0],
-            history: [...p.history, { 
-              timestamp: new Date().toISOString(), 
-              actor: user?.name || 'Usuário', 
-              type: 'submission', 
-              description: 'Submissão realizada para triagem.',
-              origin: 'human'
+            history: [...p.history, {
+              timestamp: new Date().toISOString(),
+              actor: actorName,
+              type: 'transition',
+              description: description || `Transição para o estado: ${stateConfig.label}`,
+              origin: actor ? 'human' : (user ? 'human' : 'system')
             }]
           } : p)
-        }))
+        }));
+      },
+
+      submitToTriage: (id) => {
+        const user = get().user;
+        get().transitionTo(id, 'SUBMETIDO', 'Submissão realizada para triagem.');
 
         // Simulate IA Triage delay
         setTimeout(() => {
-          set((state) => ({
-            processes: state.processes.map(p => p.id === id ? { 
-              ...p, 
-              status: 'Pendente / Necessita Ajustes',
-              iaStatus: 'Pendência Documental',
-              iaScore: 65,
-              bracvamStatus: 'Aguardando Proponente',
-              history: [...p.history, { 
-                timestamp: new Date().toISOString(), 
-                actor: 'IA PiVMA', 
-                type: 'triage', 
-                description: 'IA detectou pendência documental (Score: 65%). Falta Protocolo Detalhado.',
-                origin: 'system'
-              }]
-            } : p)
-          }))
-        }, 3000)
+          get().transitionTo(
+            id, 
+            'TRIAGEM_IA', 
+            'IA PiVMA iniciou a análise documental.',
+            'IA PiVMA'
+          );
+
+          setTimeout(() => {
+            get().transitionTo(
+              id, 
+              'PENDENTE_AJUSTE', 
+              'IA detectou pendência documental (Score: 65%). Falta Protocolo Detalhado.',
+              'IA PiVMA'
+            );
+            
+            set((state) => ({
+              processes: state.processes.map(p => p.id === id ? { 
+                ...p, 
+                iaStatus: 'Pendência Documental',
+                iaScore: 65,
+                bracvamStatus: 'Aguardando Proponente'
+              } : p)
+            }));
+          }, 2000);
+        }, 1500);
       },
 
       updateProcessStatus: (id, status) => set((state) => ({
@@ -143,21 +202,17 @@ const useMockStore = create(
       })),
 
       addContestation: (id, justification) => {
-        const user = get().user
+        get().transitionTo(
+          id, 
+          'CONTESTADO', 
+          `Contestação registrada: ${justification.substring(0, 50)}...`
+        );
+        
         set((state) => ({
           processes: state.processes.map(p => p.id === id ? { 
             ...p, 
-            status: 'Contestado (Aguardando Validação BraCVAM)', 
             bracvamStatus: 'Revisão Humana Solicitada',
-            justification,
-            updatedAt: new Date().toISOString().split('T')[0],
-            history: [...p.history, { 
-              timestamp: new Date().toISOString(), 
-              actor: user?.name || 'Usuário', 
-              type: 'contestation', 
-              description: `Contestação registrada: ${justification.substring(0, 50)}...`,
-              origin: 'human'
-            }]
+            justification
           } : p)
         }))
       }

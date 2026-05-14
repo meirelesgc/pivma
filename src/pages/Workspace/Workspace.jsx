@@ -10,7 +10,7 @@ import './components/components.css'
 const Workspace = () => {
   const navigate = useNavigate()
   const { processId } = useParams()
-  const { user, processes, updateProcessStatus, addProcess, setSelectedProcessId } = useMockStore()
+  const { user, processes, addProcess, setSelectedProcessId } = useMockStore()
 
   useEffect(() => {
     setSelectedProcessId(processId || null)
@@ -21,8 +21,20 @@ const Workspace = () => {
     return null
   }
 
-  const userProcesses = processes.filter(p => p.ownerEmail === user.email)
-  const userDemands = userProcesses.filter(p => p.status.includes('Pendente') || p.bracvamStatus === 'Aguardando Proponente')
+  // Admin (Equipe BraCVAM) sees everything, others see their own
+  const userProcesses = user.role === 'Admin' 
+    ? processes 
+    : processes.filter(p => p.ownerEmail === user.email)
+
+  // Demands based on role and state
+  const userDemands = processes.filter(p => {
+    if (user.role === 'Admin') {
+      return p.currentState === 'SUBMETIDO' || (p.currentState === 'TRIAGEM_IA' && p.iaStatus === 'Apto');
+    } else {
+      return (p.ownerEmail === user.email) && (p.currentState === 'PENDENTE_AJUSTE');
+    }
+  })
+
   const selectedProcess = processes.find(p => p.id === processId)
 
   const handleNewSubmission = () => {
@@ -42,11 +54,11 @@ const Workspace = () => {
     navigate(`/workspace/${id}`)
   }
 
-  const getStatusClass = (status) => {
-    const s = status.toLowerCase()
-    if (s.includes('triagem')) return 'status-triagem'
-    if (s.includes('pendente')) return 'status-pendente'
-    if (s.includes('contestado')) return 'status-contestado'
+  const getStatusClass = (status, stateId) => {
+    if (stateId === 'PENDENTE_AJUSTE') return 'status-pendente'
+    if (stateId === 'TRIAGEM_IA') return 'status-triagem'
+    if (stateId === 'SUBMETIDO') return 'status-triagem'
+    if (stateId === 'APTO' || stateId === 'PLANEJAMENTO') return 'status-contestado' // reusing color for "active/approved"
     return 'status-rascunho'
   }
 
@@ -67,7 +79,7 @@ const Workspace = () => {
               <h2 style={{ margin: 0 }}>{selectedProcess.name}</h2>
             </div>
           </div>
-          <div className={`status-badge ${getStatusClass(selectedProcess.status)}`}>
+          <div className={`status-badge ${getStatusClass(selectedProcess.status, selectedProcess.currentState)}`}>
             {selectedProcess.status}
           </div>
         </div>
@@ -92,9 +104,11 @@ const Workspace = () => {
     <main className="workspace-content">
       <div className="content-top-bar">
         <h2>Seus Métodos</h2>
-        <button className="btn btn-primary" onClick={handleNewSubmission} style={{ height: '44px', padding: '0 24px', borderRadius: '12px' }}>
-          + Nova Submissão
-        </button>
+        {user.role === 'Proponente' && (
+          <button className="btn btn-primary" onClick={handleNewSubmission} style={{ height: '44px', padding: '0 24px', borderRadius: '12px' }}>
+            + Nova Submissão
+          </button>
+        )}
       </div>
 
       <div className="dashboard-grid">
@@ -111,7 +125,7 @@ const Workspace = () => {
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div className="process-role">{p.role}</div>
-                    <div className={`status-badge ${getStatusClass(p.status)}`}>
+                    <div className={`status-badge ${getStatusClass(p.status, p.currentState)}`}>
                       {p.status}
                     </div>
                   </div>
@@ -119,7 +133,7 @@ const Workspace = () => {
                   <p className="text-secondary text-small" style={{ flex: 1, lineBreak: 'anywhere' }}>{p.description}</p>
                   <div className="process-footer">
                     <span>ID: {p.id}</span>
-                    <span>Ativo há 3 dias</span>
+                    <span>Ativado há 3 dias</span>
                   </div>
                 </div>
               ))}
@@ -153,12 +167,22 @@ const Workspace = () => {
                   <div key={p.id} className="demand-card">
                     <div className="demand-info">
                       <div className="process-role" style={{ marginBottom: '8px' }}>{p.role}</div>
-                      <h4>Ajuste solicitado por IA em: {p.id}</h4>
-                      <p>Score de prontidão insuficiente (65%).</p>
+                      <h4>
+                        {user.role === 'Admin' 
+                          ? `Validar triagem em: ${p.id}` 
+                          : `Ajuste solicitado por IA em: ${p.id}`
+                        }
+                      </h4>
+                      <p>
+                        {user.role === 'Admin'
+                          ? 'IA concluiu triagem com sucesso (Score > 80%).'
+                          : 'Score de prontidão insuficiente (65%).'
+                        }
+                      </p>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                       <a href="#" className="action-link" onClick={(e) => { e.preventDefault(); navigate(`/workspace/${p.id}`); }}>
-                        Ver detalhes e contestar
+                        {user.role === 'Admin' ? 'Analisar e Aprovar' : 'Ver detalhes e contestar'}
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                       </a>
                     </div>
@@ -166,7 +190,7 @@ const Workspace = () => {
                 ))}
                 {userDemands.length === 0 && (
                   <div className="text-tertiary text-small" style={{ textAlign: 'center', padding: '20px' }}>
-                    Nenhuma ação pendente.
+                    Nenhuma ação pendente para seu perfil.
                   </div>
                 )}
               </div>

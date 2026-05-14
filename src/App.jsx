@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Landing from './pages/Landing/Landing'
 import Login from './pages/Login/Login'
 import Workspace from './pages/Workspace/Workspace'
+import FormBuilderPage from './pages/FormBuilder/FormBuilderPage'
+import SubmissionTypePage from './pages/SubmissionType/SubmissionTypePage'
 import MainLayout from './layouts/MainLayout'
 import PrivateLayout from './layouts/PrivateLayout'
 import './App.css'
@@ -37,6 +39,8 @@ export default function App() {
           <Route element={<PrivateLayout />}>
             <Route path="/workspace" element={<Workspace isLight={isLight} onThemeToggle={onThemeToggle} />} />
             <Route path="/workspace/:processId" element={<Workspace isLight={isLight} onThemeToggle={onThemeToggle} />} />
+            <Route path="/form-builder" element={<FormBuilderPage />} />
+            <Route path="/new-submission" element={<SubmissionTypePage />} />
           </Route>
         </Route>
       </Routes>

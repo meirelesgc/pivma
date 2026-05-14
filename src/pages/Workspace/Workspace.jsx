@@ -39,20 +39,7 @@ const Workspace = () => {
   const selectedProcess = processes.find(p => p.id === processId)
 
   const handleNewSubmission = () => {
-    const id = `BRA-2026-${Math.floor(Math.random() * 900) + 100}`
-    
-    const newProcess = {
-      id,
-      name: 'Novo Método em Avaliação',
-      updatedAt: new Date().toISOString().split('T')[0],
-      status: 'Rascunho',
-      role: 'Proponente',
-      description: '',
-      tasks: []
-    }
-
-    addProcess(newProcess)
-    navigate(`/workspace/${id}`)
+    navigate('/new-submission')
   }
 
   const getStatusClass = (status, stateId) => {

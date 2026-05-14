@@ -1,70 +1,104 @@
-Com base nos perfis e etapas definidos no documento de requisitos e na implementação atual do código, aqui está a checklist do estado do sistema:
+# Guia de Documentação de Projeto para Crescimento Sustentável — PiVMA
 
-### **O que já existe (Implementado/Simulado)**
-
-* **Estrutura Base:** Projeto em React com Vite, Tailwind/CSS global e roteamento (público/privado).
-* **Gestão de Estado:** Uso de Zustand para persistência de dados de usuários e processos.
-* **Login de Acesso Geral:** Perfil de **Proponente** funcional no seletor de perfis.
-* **Etapa A (Submissão):** Botão "+ Nova Submissão" que gera o ID do processo e cadastra dados iniciais.
-* **Etapa B (Triagem IA):** Lógica que simula a IA gerando um "score de prontidão" e alterando o status para pendente.
-* **Interação do Proponente:** Visualização de métodos próprios, recebimento de alertas de pendência e funcionalidade de contestar a análise da IA.
-
-### **O que falta (Checklist de Desenvolvimento)**
-
-**1. Perfis e Acessos:**
-
-* [ ] Ativar perfil **Equipe BraCVAM** (atualmente desativado no mock).
-* [ ] Implementar perfis internos: **Laboratórios (Líder/Participantes)**, **Grupo Gestor**, **Estatístico** e **Avaliadores Ad hoc**.
-* [ ] Criar o **Módulo Exclusivo** para o Grupo de Seleção de Amostras (acesso restrito/cego).
-* [ ] Criar o **Módulo à parte** para o Estatístico.
-
-**2. Fluxo de Trabalho (Workflows):**
-
-* [ ] **Etapa B (Humana):** Interface para a Equipe BraCVAM validar a triagem da IA e emitir o relatório "apto".
-* [ ] **Etapa C (Planejamento):** Ferramenta para o Grupo Gestor elaborar o Plano de Projeto e cadastrar participantes.
-* [ ] **Etapa D (Experimental):** Sistema de upload padronizado de planilhas de resultados para os laboratórios.
-* [ ] **Etapa E (Estatística):** Funcionalidade para o Estatístico inserir o relatório final de variações.
-* [ ] **Etapa F (Dossiê):** Lógica de sistema para consolidar todos os dados no formato de dossiê final.
-* [ ] **Etapa G (Revisão):** Interface de avaliação cega para Especialistas Independentes emitirem pareceres.
-* [ ] **Etapa I (Decisão):** Módulo de publicação oficial e inclusão na base regulatória pelo BraCVAM.
-
-**3. Funcionalidades de Sistema:**
-
-* [ ] Sistema de permissões por processo (o usuário vê apenas o que lhe compete).
-* [ ] Histórico de alterações e rastreabilidade total (logs de auditoria).
-* [ ] Módulo de Documentos e Equipes (atualmente apenas placeholders na barra lateral).
+Este documento funciona como o contexto persistente do projeto, o manual operacional da arquitetura, e o guia de decisões técnicas para humanos e ferramentas de inteligência artificial (como Gemini CLI).
 
 ---
 
-Os perfis que deverão conseguir acessar a plataforma podem ser divididos entre os usuários de acesso geral ou inicial e os papéis que são definidos internamente, à medida que o processo de validação avança no sistema.
+## 1. Visão Geral do Projeto
 
-**Perfis Gerais/Iniciais de Acesso:**
+O PiVMA é uma plataforma regulatória digital para gerenciamento do fluxo de validação de métodos alternativos ao uso de animais, conduzidos pelo BraCVAM. A plataforma é estruturada em macroetapas auditáveis, suportando a colaboração de múltiplos atores (proponentes, laboratórios, especialistas) com controle granular de permissões e isolamento científico (cegamento).
 
-- **Proponente:** Pode ser um laboratório, uma indústria ou qualquer instituição responsável por preencher o formulário inicial e submeter formalmente a proposta do método para avaliação,,.
-- **Equipe do BraCVAM:** Responsável por interagir com o sistema para recepcionar o formulário, validar a triagem inicial feita pela Inteligência Artificial e gerenciar as próximas etapas de validação,,.
+## 2. Arquitetura Geral
 
-**Perfis e Cargos Definidos Internamente no Sistema:**
+O PiVMA evoluiu de um fluxo linear para um ecossistema multiatores. A arquitetura baseia-se nos seguintes pilares:
+*   **Machine-State Driven:** O ciclo de vida do método é estritamente controlado por uma máquina de estados (ex: RASCUNHO, SUBMETIDO, TRIAGEM_IA, PLANEJAMENTO).
+*   **Modular por Macroetapa:** A interface e as funcionalidades são divididas por fases lógicas (Submissão, Planejamento, Execução, Revisão).
+*   **Permissões Contextuais (Role-Based Access Control):** A autorização é baseada no papel que o usuário desempenha *naquele método específico*, e não apenas em seu perfil global.
+*   **UI Reativa ao Estado:** A interface, barras laterais e módulos ativos reagem dinamicamente ao estado atual do processo e ao papel do usuário logado.
+*   **Configuração Centralizada:** Regras de transição, estados e permissões são extraídas da UI e centralizadas em arquivos de configuração (ex: `src/config/processStates.js`).
 
-Após a aprovação inicial, durante a elaboração do Plano de Projeto de Validação, diversos usuários assumem **papéis específicos e definidos internamente**. São eles:
+## 3. Fluxo Institucional
 
-- **Laboratório Líder:** É o laboratório detentor da expertise e do conhecimento técnico do método, sendo responsável por treinar os demais laboratórios participantes,. O próprio Proponente pode mudar de papel no sistema e assumir o cargo de Laboratório Líder durante o processo,.
-- **Laboratórios Participantes:** São os laboratórios convidados e designados internamente para executar os ensaios experimentais nas fases de pré-validação e validação,,.
-- **Grupo Gerente (ou Grupo Gestor):** É um comitê designado para organizar, acompanhar e tomar decisões sobre o estudo do início ao fim,. Este grupo pode ser composto por membros do BraCVAM, especialistas convidados do exterior, representantes do patrocinador e membros de agências regulatórias, como a Anvisa,.
-- **Coordenador do Grupo Gerente:** Uma figura central dentro do Grupo Gerente que terá permissões específicas no sistema para preencher informações e cadastrar os laboratórios participantes, atuando em consenso com o restante do grupo,,.
-- **Grupo de Seleção de Amostras:** Instituição ou equipe encarregada de selecionar, codificar e distribuir as amostras,. Eles terão **acesso a um módulo exclusivo** e restrito no sistema, garantindo que os laboratórios testem as substâncias de forma cega, sem saber qual código corresponde a qual substância,,.
-- **Estatístico(s):** Profissional (ou equipe) que atuará em um **módulo à parte no sistema**,. O estatístico recebe os resultados e dados brutos inseridos por todos os laboratórios para calcular as variações intra e interlaboratoriais e emitir o relatório estatístico final,,.
-- **Avaliadores _Ad hoc_ / Especialistas (Peer Review):** Especialistas independentes convidados pelo BraCVAM na reta final do processo,. Eles interagirão com o sistema de forma cega para revisar o dossiê completo e emitir os pareceres que definirão se o método está validado ou não,,,.
-- **Patrocinador:** Entidade que banca o estudo financeiramente (podendo ser um ministério, indústria ou fundação). A atuação do patrocinador pode ser registrada apenas como uma informação de cadastro preenchida no sistema, mas ele também pode interagir ativamente participando do Grupo Gerente e de reuniões,.
-- **Observadores / Colaboradores:** Agências interessadas no método ou especialistas temáticos que podem ter acesso para acompanhar etapas específicas, como a reunião inicial e o treinamento,,.
+O processo de validação é dividido em macroetapas sequenciais:
 
----
+*   **Macroetapa 1: Submissão e Triagem (Etapas A e B)**
+    *   *Estados:* RASCUNHO -> SUBMETIDO -> TRIAGEM_IA -> PENDENTE_AJUSTE / APTO / NAO_ELEGIVEL
+    *   *Objetivo:* Recepção do método, análise documental automatizada por IA e revisão humana (Equipe BraCVAM).
+*   **Macroetapa 2: Planejamento e Preparação (Etapa C)**
+    *   *Estados:* PLANEJAMENTO -> PREPARACAO -> TREINAMENTO
+    *   *Objetivo:* Designação do Grupo Gestor, estruturação da rede de laboratórios (Líder e Participantes) e definição/aprovação do protocolo padronizado.
+*   **Macroetapa 3: Execução da Validação (Etapas D e E)**
+    *   *Estados:* EXECUCAO_METODO -> ANALISE_ESTATISTICA
+    *   *Objetivo:* Execução experimental pelos laboratórios participantes e posterior análise estatística (intra e interlaboratorial).
+*   **Macroetapa 4: Revisão e Decisão (Etapas F, G, H e I)**
+    *   *Estados:* CONSOLIDACAO_DOSSIE -> PEER_REVIEW -> REUNIAO_PARECERES -> APROVADO / REJEITADO
+    *   *Objetivo:* Revisão cega por especialistas independentes e decisão institucional final do BraCVAM.
 
-- **ETAPA A - Submissão Inicial do Método:** O **Proponente** (R/A) é o responsável por cadastrar os dados, preencher o formulário inicial e fazer o upload de protocolos, artigos e dados preliminares. O Sistema atua de forma sistêmica (R) para receber e gerar o número do processo automaticamente.
-- **ETAPA B - Triagem Inicial:** A **Inteligência Artificial (IA)** (R) atua primeiro, fazendo a conferência documental, checando regras e aplicando o "score automático de prontidão". No entanto, a **Equipe BraCVAM** (R/A) deve conferir o trabalho da IA e dar o "ok" final de aprovação para liberar o relatório de resultado (apto ou com pendências) ao Proponente (I).
-- **ETAPA C - Designação Técnica e Planejamento:** O **Grupo Gestor** (R/A) é responsável por elaborar todo o Plano de Projeto de validação, definindo patrocinadores, estatísticos, desenho do estudo e laboratórios envolvidos. O **Laboratório Líder** atua como responsável (R) em uma tarefa específica desta fase: a definição do protocolo padronizado de teste que será seguido.
-- **ETAPA D - Etapa Experimental (Pré-validação/Validação):** Os **Laboratórios Participantes** (R) são os responsáveis por executar os experimentos baseados no plano e fazer o upload padronizado dos resultados nas planilhas do sistema. O **Sistema/IA** atua centralizando os dados de forma segura e registrando alterações. O Grupo Gestor atua como autoridade (A) que monitora o processo.
-- **ETAPA E - Análise Estatística:** O **Estatístico** (R/A) é a autoridade responsável por demonstrar o desempenho do método gerando o relatório estatístico final. O Grupo Gestor pode atuar como responsável pela consolidação primária dos dados (R/C), caso o sistema não automatize a junção de todos os resultados brutos enviados pelos laboratórios.
-- **ETAPA F - Consolidação do Dossiê:** O **Grupo Gestor** (R/A) é o responsável por consolidar todas as informações reunidas até aqui (participantes, dados brutos, estatística e protocolo) e transformá-las no formato de um dossiê final completo dentro do sistema.
-- **ETAPA G - Revisão Independente:** Os **Especialistas Independentes / Avaliadores** (R/A) recebem o dossiê distribuído pelo sistema, realizam a avaliação crítica de forma cega e tomam as decisões (aprovado, rejeitado, aprovado com restrições ou solicitar novos dados), gerando os pareceres finais.
-- **ETAPA H - Discussão dos Pareceres:** O **Grupo Gestor** (R/A) se reúne para avaliar e consolidar os pareceres recebidos dos especialistas, debater limitações e solicitar ajustes caso o resultado não tenha sido definitivo. Os Especialistas e Estatísticos podem ser consultados (C) para eventuais ajustes técnicos.
-- **ETAPA I - Decisão Final:** O **BraCVAM / Instituição** (R/A) é a autoridade que converte o parecer consolidado dos especialistas na validação oficial. É responsabilidade do BraCVAM redigir o parecer final, realizar a publicação oficial e a inclusão na base regulatória, informando (I) o proponente e todas as partes interessadas sobre o desfecho.
+## 4. Sistema de Permissões
+
+O acesso não depende apenas do login, mas da combinação de:
+1.  **Perfil Global:** Quem o usuário é institucionalmente (ex: Pesquisador, Admin).
+2.  **Papel Contextual no Processo:** A função delegada àquele usuário em um método específico (ex: Coordenador do Grupo Gestor, Laboratório Líder, Laboratório Participante, Estatístico).
+3.  **Estado do Método:** Módulos e ações só são liberados em etapas específicas.
+
+*Regra de Ouro:* Nunca hardcodar permissões genéricas. A autorização deve sempre checar se o `user.email` existe na lista de `participants` do processo atual com a `role` adequada para a ação.
+
+## 5. Organização do Código
+
+*   `/src/components`: Componentes reutilizáveis e globais (ex: Header, Sidebar, botões genéricos).
+*   `/src/pages`: Vistas principais e roteamento de alto nível (ex: Workspace, Login).
+    *   `/src/pages/Workspace/components`: Componentes específicos do ecossistema de validação (ex: MethodForm, TriagePanel).
+    *   `/src/pages/Workspace/components/Planning`: Módulos modulares da macroetapa de Planejamento (Governance, Laboratories, Protocol).
+*   `/src/store`: Gestão de estado global (atualmente `useMockStore.js` com Zustand).
+*   `/src/config`: Configurações centrais, máquinas de estado e matrizes de permissão.
+*   `/src/styles`: Estilos globais, baseline visual e temas (`global.css`, `index.css`).
+
+## 6. Regras de UI/UX
+
+*   **Baseline Visual:** O sistema segue um padrão "enterprise" moderno, limpo e técnico.
+*   **Consistência:** Utilize as variáveis CSS globais (ex: `--primary-color`, `--text-secondary`) e as classes utilitárias (ex: `.modern-card`, `.btn-primary`, `.btn-tiny`).
+*   **Indicadores de Estado:** Use badges para indicar claramente o status do processo e os papéis contextuais.
+*   **Layout Modular:** Módulos complexos (como Planejamento) devem ser isolados em cards distintos para evitar poluição visual.
+
+## 7. Convenções Técnicas
+
+*   **Store (Zustand):** Funciona como a fonte única da verdade para dados institucionais e estado dos processos. Evite duplicar estado do processo em componentes locais.
+*   **Transições de Estado:** Devem ser feitas exclusivamente através de funções controladas na store (ex: `transitionTo()`), que validam a lógica e inserem automaticamente um log no histórico de auditoria.
+*   **Mutações de Domínio:** Ações como `assignParticipant` ou `updateProtocol` também vivem na store para garantir que qualquer mudança estrutural gere um evento de auditoria rastreável.
+
+## 8. Fluxos Operacionais Comuns
+
+*   **Submissão:** Proponente cria rascunho -> anexa documentos -> submete -> IA realiza triagem preliminar -> Equipe BraCVAM valida e aprova (APTO).
+*   **Planejamento Institucional:** Após APTO, o processo entra em PLANEJAMENTO -> Admin (BraCVAM) designa o Coordenador do Grupo Gestor -> Coordenador adiciona Laboratórios (Líder e Participantes) -> Lab. Líder rascunha protocolo -> Coordenador aprova protocolo.
+*   **Revisão Iterativa:** Durante a submissão, a Equipe BraCVAM pode usar o sistema de comentários por campo para solicitar ajustes -> Proponente altera -> BraCVAM reavalia.
+
+## 9. Padrões Arquiteturais
+
+*   **State Machine Driven UI:** O que o usuário vê e o que ele pode editar é rigidamente amarrado à etapa atual do workflow (`currentState`).
+*   **Audit Trail:** Toda alteração de estado, designação de equipe ou mudança de documento anexa obrigatoriamente um evento rastreável no array `history` do processo.
+*   **Feature Modularization:** Funcionalidades de domínio rico (ex: elaboração de protocolo) devem ser encapsuladas em seus próprios módulos React.
+
+## 10. Regras do Projeto
+
+1.  *Nunca* hardcodar permissões; use a estrutura `participants` (papéis contextuais).
+2.  *Nunca* misturar lógica institucional (mudança de estado complexa) nos componentes de UI; delegue para actions da store ou services isolados.
+3.  *Sempre* registre transições importantes no histórico (`addEvent` ou via actions da store).
+4.  A barra lateral (`Sidebar`) deve reagir dinamicamente ao estado, mostrando e bloqueando as macroetapas de forma visual e funcional.
+5.  Novos módulos devem validar de forma estrita as permissões antes de permitir a exibição de controles de edição (ex: `isEditable = isLeader || isManager`).
+
+## 11. Roadmap Técnico (Status Atual)
+
+### O que já existe:
+*   [x] Estrutura base de roteamento e UI.
+*   [x] Store Zustand persistente com histórico integrado.
+*   [x] Fluxo de Submissão, Sistema de Comentários, Triagem IA e Revisão BraCVAM.
+*   [x] Transição para arquitetura multiatores (Papéis Contextuais).
+*   [x] **Etapa C (Planejamento):** Módulos funcionais para Grupo Gestor, Laboratórios (Líder/Participantes) e Protocolo Padronizado.
+*   [x] Ativação implícita do perfil Equipe BraCVAM via designação no processo.
+
+### O que falta (Próximos Passos):
+*   [ ] **Módulo de Gestão de Amostras:** Ambiente restrito e cego para codificação de substâncias.
+*   [ ] **Etapa D (Experimental):** Interface para laboratórios participantes realizarem upload padronizado de resultados (protegendo o cegamento).
+*   [ ] **Etapa E (Análise Estatística):** Módulo dedicado ao profissional Estatístico.
+*   [ ] **Etapa G (Peer Review):** Interface para os Avaliadores Ad Hoc interagirem de forma cega com o dossiê consolidado.
+*   [ ] Refatorar a pasta `src/pages/Workspace` separando os componentes em diretórios por domínio dentro de `src/modules/...` conforme o projeto escala.

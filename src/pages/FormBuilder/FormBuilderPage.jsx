@@ -23,21 +23,23 @@ const FormBuilderPage = () => {
       </header>
 
       <div className="builder-layout">
-        <aside className="builder-sidebar">
-          <TemplateList 
-            templates={templates} 
-            selectedId={selectedTemplateId} 
-            onSelect={setSelectedTemplate} 
-          />
-        </aside>
+        <div className="builder-config">
+          <aside className="builder-sidebar">
+            <TemplateList 
+              templates={templates} 
+              selectedId={selectedTemplateId} 
+              onSelect={setSelectedTemplate} 
+            />
+          </aside>
 
-        <main className="builder-content">
-          {selectedTemplate ? (
-            <SectionEditor template={selectedTemplate} />
-          ) : (
-            <div className="empty-state">Selecione um template para editar</div>
-          )}
-        </main>
+          <main className="builder-content">
+            {selectedTemplate ? (
+              <SectionEditor template={selectedTemplate} />
+            ) : (
+              <div className="empty-state">Selecione um template para editar</div>
+            )}
+          </main>
+        </div>
 
         <aside className="builder-preview">
           <FormPreview template={selectedTemplate} />

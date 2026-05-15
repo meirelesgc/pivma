@@ -9,106 +9,177 @@ const FormPreview = ({ template }) => {
     <div className="form-preview" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <div className="preview-tabs" style={{ 
         display: 'flex', 
+        padding: '0 12px',
+        backgroundColor: 'var(--bg-secondary)',
         borderBottom: '1px solid var(--border-color)',
-        backgroundColor: 'var(--bg-secondary)'
+        gap: '4px'
       }}>
         <button 
           className={`tab-btn ${activeTab === 'proponent' ? 'active' : ''}`}
           onClick={() => setActiveTab('proponent')}
           style={{
-            flex: 1,
-            padding: '12px',
+            padding: '16px 20px',
             border: 'none',
             backgroundColor: 'transparent',
             cursor: 'pointer',
             fontSize: '0.8125rem',
-            fontWeight: 600,
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            letterSpacing: '0.025em',
             color: activeTab === 'proponent' ? 'var(--primary-color)' : 'var(--text-secondary)',
-            borderBottom: activeTab === 'proponent' ? '2px solid var(--primary-color)' : '2px solid transparent'
+            borderBottom: activeTab === 'proponent' ? '3px solid var(--primary-color)' : '3px solid transparent',
+            transition: 'all 0.2s'
           }}
         >
-          Visão do Proponente
+          Visão Proponente
         </button>
         <button 
           className={`tab-btn ${activeTab === 'ai' ? 'active' : ''}`}
           onClick={() => setActiveTab('ai')}
           style={{
-            flex: 1,
-            padding: '12px',
+            padding: '16px 20px',
             border: 'none',
             backgroundColor: 'transparent',
             cursor: 'pointer',
             fontSize: '0.8125rem',
-            fontWeight: 600,
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            letterSpacing: '0.025em',
             color: activeTab === 'ai' ? 'var(--primary-color)' : 'var(--text-secondary)',
-            borderBottom: activeTab === 'ai' ? '2px solid var(--primary-color)' : '2px solid transparent'
+            borderBottom: activeTab === 'ai' ? '3px solid var(--primary-color)' : '3px solid transparent',
+            transition: 'all 0.2s'
           }}
         >
-          Resposta da IA
+          Simulação IA
         </button>
       </div>
 
-      <div className="preview-content" style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
+      <div className="preview-content" style={{ flex: 1, padding: '24px', backgroundColor: 'var(--bg-secondary)' }}>
         {activeTab === 'proponent' ? (
-          <div className="proponent-view">
-            <h3 style={{ fontSize: '1rem', marginBottom: '16px' }}>{template.name}</h3>
+          <div className="proponent-view" style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <div style={{ marginBottom: '32px' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary-color)', textTransform: 'uppercase', marginBottom: '4px' }}>
+                Preview de Submissão
+              </div>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>{template.name}</h3>
+            </div>
+            
             {template.sections.map(section => (
-              <div key={section.id} style={{ marginBottom: '24px', padding: '16px', border: '1px solid var(--border-color)', borderRadius: '8px', backgroundColor: 'var(--bg-primary)' }}>
-                <h4 style={{ fontSize: '0.875rem', marginBottom: '12px', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px' }}>
+              <div key={section.id} style={{ 
+                marginBottom: '24px', 
+                padding: '24px', 
+                border: '1px solid var(--border-color)', 
+                borderRadius: '12px', 
+                backgroundColor: 'var(--bg-primary)',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+              }}>
+                <h4 style={{ 
+                  fontSize: '0.875rem', 
+                  fontWeight: 700, 
+                  marginBottom: '20px', 
+                  color: 'var(--text-primary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  <span style={{ width: '6px', height: '6px', backgroundColor: 'var(--primary-color)', borderRadius: '50%' }}></span>
                   {section.name}
                 </h4>
-                {section.fields.map(field => (
-                  <div key={field.id} className="form-group" style={{ marginBottom: '12px' }}>
-                    <label style={{ fontSize: '0.75rem', marginBottom: '4px', display: 'block' }}>
-                      {field.label} {field.isRequired && <span style={{ color: '#ef4444' }}>*</span>}
-                    </label>
-                    {field.type === 'textarea' ? (
-                      <textarea className="modern-input" rows="2" disabled></textarea>
-                    ) : field.type === 'select' ? (
-                      <select className="modern-input" disabled>
-                        <option>Selecione...</option>
-                        {field.options?.map(opt => <option key={opt}>{opt}</option>)}
-                      </select>
-                    ) : (
-                      <input type="text" className="modern-input" disabled />
-                    )}
-                  </div>
-                ))}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {section.fields.map(field => (
+                    <div key={field.id} className="form-group">
+                      <label style={{ fontSize: '0.75rem', fontWeight: 600, marginBottom: '6px', display: 'block', color: 'var(--text-secondary)' }}>
+                        {field.label} {field.isRequired && <span style={{ color: '#ef4444' }}>*</span>}
+                      </label>
+                      {field.type === 'textarea' ? (
+                        <textarea className="modern-input" rows="3" disabled placeholder="..." style={{ backgroundColor: 'var(--bg-secondary)', cursor: 'not-allowed' }}></textarea>
+                      ) : field.type === 'select' ? (
+                        <select className="modern-input" disabled style={{ backgroundColor: 'var(--bg-secondary)', cursor: 'not-allowed' }}>
+                          <option>Selecione uma opção...</option>
+                        </select>
+                      ) : (
+                        <input type="text" className="modern-input" disabled placeholder="..." style={{ backgroundColor: 'var(--bg-secondary)', cursor: 'not-allowed' }} />
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="ai-view">
-            <div style={{ padding: '16px', backgroundColor: 'rgba(59, 130, 246, 0.05)', borderRadius: '8px', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
-              <h3 style={{ fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--primary-color)' }}>
-                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                </svg>
-                Simulação de Resposta Estruturada
-              </h3>
-              
-              {template.sections.filter(s => s.aiPromptConfig?.enabled).map(section => (
-                <div key={section.id} style={{ marginBottom: '20px' }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '8px' }}>
-                    SEÇÃO: {section.name.toUpperCase()}
-                  </div>
-                  <div style={{ 
+          <div className="ai-view" style={{ maxWidth: '600px', margin: '0 auto' }}>
+             <div style={{ marginBottom: '32px' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary-color)', textTransform: 'uppercase', marginBottom: '4px' }}>
+                Análise de Inteligência Artificial
+              </div>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Parecer Estruturado (Simulação)</h3>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              {template.sections.filter(s => s.aiPromptConfig?.enabled).map(section => {
+                // Try to parse the mock response if it looks like JSON, or just show it as a nice card
+                let content = section.aiPromptConfig.mockPreviewResponse;
+                let parsed = null;
+                try {
+                  if (content.trim().startsWith('{')) {
+                    parsed = JSON.parse(content);
+                  }
+                } catch (e) {}
+
+                return (
+                  <div key={section.id} style={{ 
+                    padding: '20px', 
                     backgroundColor: 'var(--bg-primary)', 
-                    padding: '12px', 
-                    borderRadius: '6px', 
-                    fontFamily: 'monospace', 
-                    fontSize: '0.75rem',
-                    whiteSpace: 'pre-wrap',
-                    border: '1px solid var(--border-color)'
+                    borderRadius: '12px', 
+                    border: '1px solid var(--border-color)',
+                    borderLeft: '4px solid var(--primary-color)'
                   }}>
-                    {section.aiPromptConfig.mockPreviewResponse}
+                    <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '12px', display: 'flex', justifyContent: 'space-between' }}>
+                      <span>Seção: {section.name}</span>
+                      <span style={{ color: 'var(--primary-color)' }}>Validado por IA</span>
+                    </div>
+
+                    {parsed ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        {Object.entries(parsed).map(([key, value]) => (
+                          <div key={key}>
+                            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '4px' }}>
+                              {key.replace(/_/g, ' ').toUpperCase()}
+                            </div>
+                            <div style={{ fontSize: '0.9375rem', color: 'var(--text-primary)', lineHeight: '1.5' }}>
+                              {typeof value === 'boolean' ? (value ? '✅ Sim' : '❌ Não') : value}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div style={{ 
+                        fontSize: '0.9375rem', 
+                        color: 'var(--text-primary)', 
+                        lineHeight: '1.6',
+                        whiteSpace: 'pre-wrap',
+                        fontFamily: 'inherit'
+                      }}>
+                        {content}
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                );
+              })}
               
               {template.sections.filter(s => s.aiPromptConfig?.enabled).length === 0 && (
-                <div style={{ textAlign: 'center', padding: '20px', color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-                  Nenhuma seção com validação IA habilitada.
+                <div style={{ 
+                  textAlign: 'center', 
+                  padding: '48px 24px', 
+                  color: 'var(--text-secondary)', 
+                  fontSize: '0.875rem',
+                  border: '2px dashed var(--border-color)',
+                  borderRadius: '12px'
+                }}>
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '16px', opacity: 0.5 }}>
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                  </svg>
+                  <p>Nenhuma seção configurada para validação automática nesta simulação.</p>
                 </div>
               )}
             </div>

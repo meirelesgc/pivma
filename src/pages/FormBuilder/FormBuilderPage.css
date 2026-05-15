@@ -3,104 +3,195 @@
   flex-direction: column;
   min-height: 100vh;
   background-color: var(--bg-primary);
+  overflow-x: hidden;
 }
 
 .builder-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 32px;
+  padding: 20px 40px;
   background-color: var(--bg-secondary);
   border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
 }
 
 .builder-header h1 {
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 700;
   color: var(--text-primary);
-  margin: 0 0 4px 0;
+  margin: 0 0 2px 0;
 }
 
 .builder-header p {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--text-secondary);
   margin: 0;
-}
-
-.header-actions {
-  display: flex;
-  gap: 12px;
 }
 
 .builder-layout {
   display: flex;
   flex: 1;
+  position: relative;
+  width: 100%;
 }
 
-/* 70% for Config, 30% for Preview */
-.builder-config {
-  display: flex;
-  flex: 0 0 70%;
-  border-right: 1px solid var(--border-color);
-}
-
-.builder-sidebar {
-  width: 280px;
-  border-right: 1px solid var(--border-color);
-  background-color: var(--bg-secondary);
-  /* Make templates list sticky so it's always accessible */
-  position: sticky;
-  top: 93px; /* Header height */
-  height: calc(100vh - 93px);
-  overflow-y: auto;
-}
-
-.builder-content {
+/* DOMINANT CONFIGURATION AREA */
+.builder-config-container {
   flex: 1;
   padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  transition: margin-right 0.3s ease;
+}
+
+.form-builder-page.preview-open .builder-config-container {
+  margin-right: 400px; /* Space for the drawer */
+  max-width: calc(100% - 400px);
+}
+
+/* COMPACT TEMPLATE SELECTOR */
+.template-selector-compact {
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+.editor-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* PROGRESSIVE TABS */
+.config-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 4px;
+  background-color: var(--bg-secondary);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  width: fit-content;
+}
+
+.config-tab-btn {
+  padding: 8px 20px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.config-tab-btn:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.config-tab-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: 0 4px 10px rgba(var(--primary-color-rgb), 0.2);
+}
+
+/* DOMINANT EDITOR AREA */
+.builder-content-dominant {
+  width: 100%;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* COLLAPSIBLE PREVIEW DRAWER */
+.builder-preview-drawer {
+  position: fixed;
+  top: 75px; /* Below header */
+  right: -400px;
+  width: 400px;
+  height: calc(100vh - 75px);
+  background-color: var(--bg-secondary);
+  border-left: 1px solid var(--border-color);
+  box-shadow: -4px 0 20px rgba(0,0,0,0.05);
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  z-index: 900;
+}
+
+.builder-preview-drawer.open {
+  right: 0;
+}
+
+.drawer-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background-color: var(--bg-primary);
 }
 
-.builder-preview {
-  flex: 0 0 30%;
-  background-color: var(--bg-secondary);
-  position: sticky;
-  top: 93px; /* Header height */
-  height: calc(100vh - 93px);
+.drawer-header h3 {
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.btn-close-drawer {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.drawer-content {
+  flex: 1;
   overflow-y: auto;
 }
 
 .empty-state {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 300px;
+  height: 400px;
   color: var(--text-secondary);
-  font-style: italic;
   border: 2px dashed var(--border-color);
-  border-radius: 12px;
-  margin-top: 20px;
+  border-radius: 16px;
+  text-align: center;
 }
 
-/* Common UI adjustments for the builder */
+/* REFINED CARDS */
 .builder-card {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: 12px;
-  margin-bottom: 32px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-  transition: transform 0.2s, box-shadow 0.2s;
+  margin-bottom: 20px;
+  transition: border-color 0.2s;
 }
 
 .builder-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border-color: rgba(var(--primary-color-rgb), 0.3);
 }
 
 .builder-card-header {
-  padding: 20px 24px;
+  padding: 16px 20px;
   border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
@@ -109,18 +200,4 @@
 
 .builder-card-content {
   padding: 24px;
-}
-
-/* Template List Customization */
-.template-item {
-  transition: all 0.2s;
-}
-
-.template-item:hover:not(.active) {
-  background-color: rgba(0,0,0,0.02);
-}
-
-.template-item.active {
-  background-color: var(--bg-primary);
-  box-shadow: inset 4px 0 0 var(--primary-color);
 }

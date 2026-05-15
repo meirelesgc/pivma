@@ -365,7 +365,7 @@ input:focus, select:focus, textarea:focus {
 
 .planning-module {
   padding: 0;
-  overflow: hidden;
+  /* Removido overflow: hidden para evitar clipping de modais internos quando o card tem transform */
 }
 
 .module-header {
@@ -375,6 +375,9 @@ input:focus, select:focus, textarea:focus {
   align-items: center;
   border-bottom: 1px solid var(--border-color);
   background-color: #f8fafc;
+  /* Garante que o header respeite o border-radius do card pai */
+  border-top-left-radius: var(--radius-l);
+  border-top-right-radius: var(--radius-l);
 }
 
 .module-icon {

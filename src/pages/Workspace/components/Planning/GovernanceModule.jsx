@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import useMockStore from '../../../../store/useMockStore';
 
 const GovernanceModule = ({ process }) => {
@@ -21,6 +22,38 @@ const GovernanceModule = ({ process }) => {
     'Representante Patrocinador',
     'Observador'
   ];
+
+  const Modal = () => (
+    <div className="modal-overlay" onClick={() => setShowAddMember(false)}>
+      <div className="modern-card modal-content" style={{ maxWidth: '400px' }} onClick={e => e.stopPropagation()}>
+        <h4>Novo Participante</h4>
+        <form onSubmit={handleAddMember} className="modern-form">
+          <div className="form-group">
+            <label>Nome Completo</label>
+            <input type="text" required value={newMember.name} onChange={e => setNewMember({...newMember, name: e.target.value})} />
+          </div>
+          <div className="form-group">
+            <label>E-mail</label>
+            <input type="email" required value={newMember.email} onChange={e => setNewMember({...newMember, email: e.target.value})} />
+          </div>
+          <div className="form-group">
+            <label>Instituição</label>
+            <input type="text" required value={newMember.institution} onChange={e => setNewMember({...newMember, institution: e.target.value})} />
+          </div>
+          <div className="form-group">
+            <label>Função no Grupo</label>
+            <select value={newMember.role} onChange={e => setNewMember({...newMember, role: e.target.value})}>
+              {roles.map(r => <option key={r} value={r}>{r}</option>)}
+            </select>
+          </div>
+          <div className="modal-actions">
+            <button type="button" className="btn btn-secondary" onClick={() => setShowAddMember(false)}>Cancelar</button>
+            <button type="submit" className="btn btn-primary">Adicionar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 
   return (
     <div className="planning-module modern-card">
@@ -103,37 +136,7 @@ const GovernanceModule = ({ process }) => {
             ))}
           </div>
 
-          {showAddMember && (
-            <div className="modal-overlay">
-              <div className="modern-card modal-content" style={{ maxWidth: '400px' }}>
-                <h4>Novo Participante</h4>
-                <form onSubmit={handleAddMember} className="modern-form">
-                  <div className="form-group">
-                    <label>Nome Completo</label>
-                    <input type="text" required value={newMember.name} onChange={e => setNewMember({...newMember, name: e.target.value})} />
-                  </div>
-                  <div className="form-group">
-                    <label>E-mail</label>
-                    <input type="email" required value={newMember.email} onChange={e => setNewMember({...newMember, email: e.target.value})} />
-                  </div>
-                  <div className="form-group">
-                    <label>Instituição</label>
-                    <input type="text" required value={newMember.institution} onChange={e => setNewMember({...newMember, institution: e.target.value})} />
-                  </div>
-                  <div className="form-group">
-                    <label>Função no Grupo</label>
-                    <select value={newMember.role} onChange={e => setNewMember({...newMember, role: e.target.value})}>
-                      {roles.map(r => <option key={r} value={r}>{r}</option>)}
-                    </select>
-                  </div>
-                  <div className="modal-actions">
-                    <button type="button" className="btn btn-secondary" onClick={() => setShowAddMember(false)}>Cancelar</button>
-                    <button type="submit" className="btn btn-primary">Adicionar</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
+          {showAddMember && createPortal(<Modal />, document.body)}
         </section>
       </div>
     </div>

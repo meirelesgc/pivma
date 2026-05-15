@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import useMockStore from '../../../../store/useMockStore';
 
 const LaboratoriesModule = ({ process }) => {
@@ -21,6 +22,38 @@ const LaboratoriesModule = ({ process }) => {
   ];
 
   const labs = process.participants.filter(p => roles.includes(p.role));
+
+  const Modal = () => (
+    <div className="modal-overlay" onClick={() => setShowAddLab(false)}>
+      <div className="modern-card modal-content" style={{ maxWidth: '400px' }} onClick={e => e.stopPropagation()}>
+        <h4>Designar Laboratório</h4>
+        <form onSubmit={handleAddLab} className="modern-form">
+          <div className="form-group">
+            <label>Instituição / Laboratório</label>
+            <input type="text" required value={newLab.institution} onChange={e => setNewLab({...newLab, institution: e.target.value})} placeholder="Ex: Laboratório Nacional de Biociências" />
+          </div>
+          <div className="form-group">
+            <label>Responsável Técnico</label>
+            <input type="text" required value={newLab.name} onChange={e => setNewLab({...newLab, name: e.target.value})} />
+          </div>
+          <div className="form-group">
+            <label>E-mail de Contato</label>
+            <input type="email" required value={newLab.email} onChange={e => setNewLab({...newLab, email: e.target.value})} />
+          </div>
+          <div className="form-group">
+            <label>Função no Estudo</label>
+            <select value={newLab.role} onChange={e => setNewLab({...newLab, role: e.target.value})}>
+              {roles.map(r => <option key={r} value={r}>{r}</option>)}
+            </select>
+          </div>
+          <div className="modal-actions">
+            <button type="button" className="btn btn-secondary" onClick={() => setShowAddLab(false)}>Cancelar</button>
+            <button type="submit" className="btn btn-primary">Designar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 
   return (
     <div className="planning-module modern-card">
@@ -74,37 +107,7 @@ const LaboratoriesModule = ({ process }) => {
           )}
         </div>
 
-        {showAddLab && (
-          <div className="modal-overlay">
-            <div className="modern-card modal-content" style={{ maxWidth: '400px' }}>
-              <h4>Designar Laboratório</h4>
-              <form onSubmit={handleAddLab} className="modern-form">
-                <div className="form-group">
-                  <label>Instituição / Laboratório</label>
-                  <input type="text" required value={newLab.institution} onChange={e => setNewLab({...newLab, institution: e.target.value})} placeholder="Ex: Laboratório Nacional de Biociências" />
-                </div>
-                <div className="form-group">
-                  <label>Responsável Técnico</label>
-                  <input type="text" required value={newLab.name} onChange={e => setNewLab({...newLab, name: e.target.value})} />
-                </div>
-                <div className="form-group">
-                  <label>E-mail de Contato</label>
-                  <input type="email" required value={newLab.email} onChange={e => setNewLab({...newLab, email: e.target.value})} />
-                </div>
-                <div className="form-group">
-                  <label>Função no Estudo</label>
-                  <select value={newLab.role} onChange={e => setNewLab({...newLab, role: e.target.value})}>
-                    {roles.map(r => <option key={r} value={r}>{r}</option>)}
-                  </select>
-                </div>
-                <div className="modal-actions">
-                  <button type="button" className="btn btn-secondary" onClick={() => setShowAddLab(false)}>Cancelar</button>
-                  <button type="submit" className="btn btn-primary">Designar</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
+        {showAddLab && createPortal(<Modal />, document.body)}
       </div>
     </div>
   );

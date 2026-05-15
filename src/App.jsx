@@ -27,7 +27,7 @@ export default function App() {
   const onThemeToggle = () => setIsLight(!isLight)
 
   return (
-    <Router>
+    <Router basename={import.meta.env.BASE_URL}>
       <Routes>
         {/* Global Layout (Root) */}
         <Route element={<MainLayout isLight={isLight} onThemeToggle={onThemeToggle} />}>

@@ -1,10 +1,11 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import useMockStore from '../../store/useMockStore';
 import { MACRO_STAGES, isStageUnlocked, PROCESS_STATES } from '../../config/processStates';
 import './Sidebar.css';
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { processId } = useParams();
   const { user, logout, processes } = useMockStore();
 
@@ -58,7 +59,7 @@ const Sidebar = () => {
         <nav className="sidebar-nav">
           <div className="nav-section-label">Plataforma</div>
           <div 
-            className={`nav-item ${!processId && window.location.pathname.includes('/workspace') ? 'active' : ''}`}
+            className={`nav-item ${!processId && location.pathname.includes('/workspace') ? 'active' : ''}`}
             onClick={() => navigate('/workspace')}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
@@ -67,7 +68,7 @@ const Sidebar = () => {
 
           {['Admin', 'Equipe BraCVAM'].includes(user.role) && (
             <div 
-              className={`nav-item ${window.location.pathname === '/form-builder' ? 'active' : ''}`}
+              className={`nav-item ${location.pathname.includes('/form-builder') ? 'active' : ''}`}
               onClick={() => navigate('/form-builder')}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

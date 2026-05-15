@@ -4,10 +4,20 @@ import { METHOD_TYPES } from '../../../modules/formBuilder/store/mockData';
 const TemplateList = ({ templates, selectedId, onSelect }) => {
   return (
     <div className="template-list">
-      <div className="list-header" style={{ padding: '16px 24px', borderBottom: '1px solid var(--border-color)', backgroundColor: 'rgba(0,0,0,0.02)' }}>
+      <div className="list-header" style={{ 
+        padding: '16px 24px', 
+        borderBottom: '1px solid var(--border-color)', 
+        backgroundColor: 'rgba(0,0,0,0.02)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}>
         <h3 style={{ margin: 0, fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>
           Selecione o Template de Submissão
         </h3>
+        <button className="btn-primary btn-tiny" style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '0.7rem' }}>
+          + Novo Template
+        </button>
       </div>
       <div className="list-items-horizontal" style={{ 
         display: 'grid', 

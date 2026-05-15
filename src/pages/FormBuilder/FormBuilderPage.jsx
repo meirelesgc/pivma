@@ -24,7 +24,6 @@ const FormBuilderPage = () => {
           <button className="btn-secondary" onClick={togglePreview}>
             {isPreviewOpen ? 'Ocultar Preview' : 'Visualizar Preview'}
           </button>
-          <button className="btn-primary">Novo Template</button>
         </div>
       </header>
 

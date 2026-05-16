@@ -11,7 +11,7 @@ import './components/components.css'
 const Workspace = () => {
   const navigate = useNavigate()
   const { processId } = useParams()
-  const { user, processes, addProcess, setSelectedProcessId } = useMockStore()
+  const { user, processes, setSelectedProcessId } = useMockStore()
 
   useEffect(() => {
     setSelectedProcessId(processId || null)
@@ -123,7 +123,13 @@ const Workspace = () => {
                       {p.status}
                     </div>
                   </div>
-                  <h3>{p.name}</h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <h3 style={{ margin: 0 }}>{p.name}</h3>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span className="text-tertiary" style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Proponente:</span>
+                      <span className="text-secondary text-smaller">{p.technicalLead}</span>
+                    </div>
+                  </div>
                   <p className="text-secondary text-small" style={{ flex: 1, lineBreak: 'anywhere' }}>{p.description}</p>
                   <div className="process-footer">
                     <span>ID: {p.id}</span>

@@ -5,9 +5,63 @@ import { PROCESS_STATES } from '../config/processStates'
 const useMockStore = create(
   persist(
     (set, get) => ({
-      user: null, // { name: 'Dr. Eduardo', role: 'Proponente', email: 'eduardo@lab.com' }
-      selectedProcessId: null,
+      user: { name: 'Dr. Henrique', role: 'Gestor de Amostras', email: 'henrique@amostras.com' },
+      selectedProcessId: 'BRA-2026-004',
       processes: [
+        {
+          id: 'BRA-2026-004',
+          name: 'Validação de Novo Método de Fototoxicidade',
+          updatedAt: '2026-05-21',
+          currentState: 'PLANEJAMENTO',
+          status: 'Planejamento',
+          role: 'Gestor de Amostras',
+          ownerEmail: 'henrique@amostras.com',
+          institution: 'Centro de Biotecnologia Integrada',
+          technicalLead: 'Dr. Henrique Oliveira',
+          submissionType: 'Validação Completa',
+          scientificArea: 'Toxicologia In Vitro',
+          description: 'Estudo para validação de ensaio de fototoxicidade usando modelos 3D.',
+          objective: 'Identificar o potencial fototóxico de 15 compostos cosméticos.',
+          documents: [],
+          iaStatus: 'Apto',
+          iaScore: 94,
+          bracvamStatus: 'Em Planejamento',
+          comments: {},
+          participants: [
+            { email: 'henrique@amostras.com', name: 'Dr. Henrique Oliveira', role: 'Gestor de Amostras', institution: 'CBI' },
+            { email: 'carlos@gestor.com', name: 'Dr. Carlos Santos', role: 'Coordenador Grupo Gestor', institution: 'CTC' },
+            { email: 'contato@bracvam.gov.br', name: 'Equipe BraCVAM', role: 'Equipe BraCVAM', institution: 'BraCVAM' }
+          ],
+          sponsor: { name: 'Consórcio de Cosméticos BR', category: 'Privado', contact: 'sac@consorcio.com.br', entityType: 'Indústria', notes: '' },
+          protocol: { description: '', steps: '', criticalParameters: '', acceptanceCriteria: '', materials: '', version: '1.0', status: 'draft', updatedAt: null, updatedBy: '' },
+          planningDemands: [
+            {
+              id: 'd-henrique-001',
+              type: 'sample-coding',
+              title: 'Definição e Codificação de Amostras (Cegamento)',
+              description: 'Cadastrar substâncias, anexar SDS e gerar matriz de códigos cegos.',
+              status: 'IN_PROGRESS',
+              createdAt: '2026-05-21T09:00:00Z',
+              dueDate: '2026-05-28T18:00:00Z',
+              targetType: 'USER',
+              targetId: 'henrique@amostras.com',
+              targetName: 'Dr. Henrique Oliveira',
+              createdBy: 'carlos@gestor.com',
+              blocksProgression: true,
+              consolidationData: null
+            }
+          ],
+          planningConsolidated: [
+            { id: 'c-001', itemTitle: 'Grupo Gestor Designado', date: '2026-05-20', responsible: 'Equipe BraCVAM', origin: 'BraCVAM' }
+          ],
+          milestones: [],
+          samples: [],
+          blindAssignments: [],
+          history: [
+            { timestamp: '2026-05-20T10:00:00Z', actor: 'Equipe BraCVAM', type: 'transition', description: 'Processo aprovado para planejamento.', origin: 'human' },
+            { timestamp: '2026-05-21T09:00:00Z', actor: 'Dr. Carlos Santos', type: 'assignment', description: 'Designada demanda de codificação de amostras para Dr. Henrique.', origin: 'human' }
+          ]
+        },
         {
           id: 'BRA-2026-001',
           name: 'Método de Irritação Ocular HCE',

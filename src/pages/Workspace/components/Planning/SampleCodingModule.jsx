@@ -5,11 +5,11 @@ const SampleCodingModule = ({ process, demand, onComplete }) => {
   const { generateBlindCodes, saveDemandDraft } = useMockStore()
   
   const [samples, setSamples] = useState(process.samples?.length > 0 ? process.samples : [
-    { id: 's1', internalName: '', batch: '', notes: '' }
+    { id: 's1', internalName: '', batch: '', sds: '', notes: '' }
   ])
 
   const handleAddSample = () => {
-    setSamples([...samples, { id: `s${samples.length + 1}`, internalName: '', batch: '', notes: '' }])
+    setSamples([...samples, { id: `s${samples.length + 1}`, internalName: '', batch: '', sds: '', notes: '' }])
   }
 
   const handleUpdateSample = (index, field, value) => {
@@ -73,12 +73,35 @@ const SampleCodingModule = ({ process, demand, onComplete }) => {
                   />
                 </div>
               </div>
+              
+              <div className="form-group" style={{ marginTop: '12px' }}>
+                <label>Safety Data Sheet (SDS) / Ficha de Segurança</label>
+                <div className="file-upload-placeholder" style={{ 
+                  padding: '12px', 
+                  border: '1px dashed var(--border-color)', 
+                  borderRadius: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  background: 'white'
+                }}>
+                  <input 
+                    type="text" 
+                    value={sample.sds} 
+                    onChange={(e) => handleUpdateSample(index, 'sds', e.target.value)}
+                    placeholder="Link ou Identificador do Documento SDS"
+                    style={{ border: 'none', padding: '0', flex: 1 }}
+                  />
+                  <button type="button" className="btn-tiny">Upload PDF</button>
+                </div>
+              </div>
+
               <div className="form-group" style={{ marginTop: '12px' }}>
                 <label>Observações de Segurança / Manuseio</label>
                 <textarea 
                   value={sample.notes} 
                   onChange={(e) => handleUpdateSample(index, 'notes', e.target.value)}
-                  placeholder="Instruções específicas para o Grupo de Amostras..."
+                  placeholder="Instruções específicas para o manuseio destas substâncias..."
                   rows="2"
                 />
               </div>

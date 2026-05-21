@@ -79,14 +79,14 @@ export const PROCESS_STATES = {
     label: 'Planejamento',
     macroStage: MACRO_STAGES.PLANNING_PREPARATION,
     transitions: ['PREPARACAO'],
-    roles: ['Grupo Gestor', 'Equipe BraCVAM']
+    roles: ['Grupo Gestor', 'Equipe BraCVAM', 'Gestor de Amostras']
   },
   PREPARACAO: {
     id: 'PREPARACAO',
     label: 'Preparação',
     macroStage: MACRO_STAGES.PLANNING_PREPARATION,
     transitions: ['TREINAMENTO', 'PLANEJAMENTO'],
-    roles: ['Grupo Gestor', 'Laboratório Líder']
+    roles: ['Grupo Gestor', 'Laboratório Líder', 'Gestor de Amostras']
   },
   TREINAMENTO: {
     id: 'TREINAMENTO',

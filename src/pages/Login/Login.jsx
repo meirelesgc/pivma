@@ -15,6 +15,7 @@ const Login = () => {
   const profiles = [
     { name: 'Dr. Eduardo', role: 'Proponente', email: 'eduardo@lab.com', active: true },
     { name: 'Dr. Carlos', role: 'Coord. Grupo Gestor', email: 'carlos@gestor.com', active: true },
+    { name: 'Dr. Henrique', role: 'Gestor de Amostras', email: 'henrique@amostras.com', active: true },
     { name: 'Lab 01 - BioCell', role: 'Lab Participante', email: 'lab01@biocell.com.br', active: true },
     { name: 'Equipe BraCVAM', role: 'Admin', email: 'contato@bracvam.gov.br', active: true },
     { name: 'Laboratório Líder', role: 'Lead Lab', email: 'lider@usp.br', active: false },

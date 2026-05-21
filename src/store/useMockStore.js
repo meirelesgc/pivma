@@ -101,8 +101,36 @@ const useMockStore = create(
           sponsor: { name: 'BraCVAM Institutional', category: 'Público', contact: 'admin@bracvam.gov.br', entityType: 'Governamental', notes: '' },
           protocol: { description: '', steps: '', criticalParameters: '', acceptanceCriteria: '', materials: '', version: '1.0', status: 'draft', updatedAt: null, updatedBy: '' },
           planningDemands: [
-            { id: 'd1', type: 'role-assignment', title: 'Definir grupo de amostras', status: 'pending' },
-            { id: 'd2', type: 'macro-schedule', title: 'Configurar cronograma macro', status: 'pending' }
+            { 
+              id: 'd1', 
+              type: 'role-assignment', 
+              title: 'Definir grupo de amostras', 
+              description: 'Designar a equipe responsável pela codificação e logística das substâncias.',
+              status: 'PENDING',
+              createdAt: '2026-05-20T10:00:00Z',
+              dueDate: '2026-05-25T18:00:00Z',
+              targetType: 'GROUP',
+              targetId: 'GRUPO_GESTOR',
+              targetName: 'Grupo Gestor',
+              createdBy: 'contato@bracvam.gov.br',
+              blocksProgression: true,
+              consolidationData: null
+            },
+            { 
+              id: 'd2', 
+              type: 'macro-schedule', 
+              title: 'Configurar cronograma macro', 
+              description: 'Estabelecer marcos regulatórios e prazos fatais do estudo.',
+              status: 'PENDING',
+              createdAt: '2026-05-20T10:00:00Z',
+              dueDate: '2026-05-27T18:00:00Z',
+              targetType: 'GROUP',
+              targetId: 'GRUPO_GESTOR',
+              targetName: 'Grupo Gestor',
+              createdBy: 'contato@bracvam.gov.br',
+              blocksProgression: true,
+              consolidationData: null
+            }
           ],
           planningConsolidated: [],
           milestones: [],
@@ -167,25 +195,72 @@ const useMockStore = create(
         } : p)
       })),
 
-      completePlanningDemand: (processId, demandId, consolidatedItem) => set((state) => ({
+      // Demand Actions
+      updateDemandStatus: (processId, demandId, status) => set((state) => ({
         processes: state.processes.map(p => p.id === processId ? {
           ...p,
-          planningDemands: p.planningDemands.filter(d => d.id !== demandId),
-          planningConsolidated: [...(p.planningConsolidated || []), {
-            ...consolidatedItem,
-            id: Math.random().toString(36).substr(2, 9),
-            date: new Date().toLocaleDateString('pt-BR'),
-            responsible: get().user?.name || 'Sistema'
-          }],
-          history: [...p.history, {
-            timestamp: new Date().toISOString(),
-            actor: get().user?.name || 'Sistema',
-            type: 'consolidation',
-            description: `Demanda concluída: ${consolidatedItem.itemTitle}`,
-            origin: 'human'
-          }]
+          planningDemands: p.planningDemands.map(d => d.id === demandId ? { ...d, status } : d)
         } : p)
       })),
+
+      saveDemandDraft: (processId, demandId, draftData) => set((state) => ({
+        processes: state.processes.map(p => p.id === processId ? {
+          ...p,
+          planningDemands: p.planningDemands.map(d => d.id === demandId ? { 
+            ...d, 
+            status: 'IN_PROGRESS', 
+            consolidationData: draftData 
+          } : d)
+        } : p)
+      })),
+
+      submitDemandForValidation: (processId, demandId, finalData) => set((state) => ({
+        processes: state.processes.map(p => p.id === processId ? {
+          ...p,
+          planningDemands: p.planningDemands.map(d => d.id === demandId ? { 
+            ...d, 
+            status: 'IN_VALIDATION', 
+            consolidationData: finalData 
+          } : d)
+        } : p)
+      })),
+
+      consolidateDemand: (processId, demandId) => {
+        const user = get().user;
+        set((state) => ({
+          processes: state.processes.map(p => {
+            if (p.id !== processId) return p;
+            const demand = p.planningDemands.find(d => d.id === demandId);
+            if (!demand) return p;
+
+            const consolidatedItem = {
+              id: Math.random().toString(36).substr(2, 9),
+              itemTitle: demand.title,
+              date: new Date().toLocaleDateString('pt-BR'),
+              responsible: user?.name || 'Sistema',
+              origin: demand.targetName
+            };
+
+            return {
+              ...p,
+              planningDemands: p.planningDemands.filter(d => d.id !== demandId),
+              planningConsolidated: [...(p.planningConsolidated || []), consolidatedItem],
+              history: [...p.history, {
+                timestamp: new Date().toISOString(),
+                actor: user?.name || 'Sistema',
+                type: 'consolidation',
+                description: `Demanda consolidada: ${demand.title}`,
+                origin: 'human'
+              }]
+            };
+          })
+        }));
+      },
+
+      completePlanningDemand: (processId, demandId, consolidatedItem) => {
+        // Legacy compatibility action - delegates to consolidateDemand
+        get().consolidateDemand(processId, demandId);
+      },
 
       addMilestone: (processId, milestone) => set((state) => ({
         processes: state.processes.map(p => p.id === processId ? {
@@ -207,7 +282,11 @@ const useMockStore = create(
       assignParticipant: (processId, participant) => set((state) => ({
         processes: state.processes.map(p => p.id === processId ? {
           ...p,
-          participants: [...(p.participants || []), participant],
+          participants: [...(p.participants || []), { 
+            ...participant, 
+            status: participant.status || 'active',
+            isExternal: participant.isExternal || false
+          }],
           history: [...p.history, {
             timestamp: new Date().toISOString(),
             actor: get().user?.name || 'Sistema',
@@ -217,6 +296,35 @@ const useMockStore = create(
           }]
         } : p)
       })),
+
+      inviteExternalUser: (processId, email, name, role) => {
+        get().assignParticipant(processId, {
+          email,
+          name,
+          role,
+          institution: 'Convidado Externo',
+          status: 'pending_invite',
+          isExternal: true
+        });
+      },
+
+      assignGroupRole: (processId, groupRoleName, demandId) => {
+        // In the MVP, assigning to a group means the demand target is set to GROUP
+        // This is already handled by the Demand contract, but we can add a history log here
+        const user = get().user;
+        set((state) => ({
+          processes: state.processes.map(p => p.id === processId ? {
+            ...p,
+            history: [...p.history, {
+              timestamp: new Date().toISOString(),
+              actor: user?.name || 'Sistema',
+              type: 'assignment',
+              description: `Responsabilidade coletiva atribuída ao grupo: ${groupRoleName}`,
+              origin: 'human'
+            }]
+          } : p)
+        }));
+      },
 
       removeParticipant: (processId, email) => set((state) => ({
         processes: state.processes.map(p => p.id === processId ? {

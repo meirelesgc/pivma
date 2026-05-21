@@ -2,9 +2,9 @@ import { useState } from 'react'
 import useMockStore from '../../../../store/useMockStore'
 
 const MacroSchedule = ({ process, demand, onComplete }) => {
-  const { addMilestone, completePlanningDemand } = useMockStore()
+  const { addMilestone, consolidateDemand, saveDemandDraft } = useMockStore()
   
-  const [milestones, setMilestones] = useState([
+  const [milestones, setMilestones] = useState(demand.consolidationData || [
     { title: 'Distribuição de amostras', description: 'Envio das substâncias codificadas para os laboratórios.', targetDate: '', isGate: true, status: 'pending' },
     { title: 'Execução experimental', description: 'Realização dos ensaios nos laboratórios participantes.', targetDate: '', isGate: true, status: 'pending' },
     { title: 'Submissão de resultados', description: 'Upload dos dados brutos e resultados na plataforma.', targetDate: '', isGate: true, status: 'pending' }
@@ -27,13 +27,15 @@ const MacroSchedule = ({ process, demand, onComplete }) => {
       })
     })
 
-    // Complete the demand
-    completePlanningDemand(process.id, demand.id, {
-      itemTitle: 'Cronograma Macro Configurado',
-      origin: 'Grupo Gestor'
-    })
+    // Complete the demand via consolidation
+    consolidateDemand(process.id, demand.id)
 
     if (onComplete) onComplete()
+  }
+
+  const handleSaveDraft = () => {
+    saveDemandDraft(process.id, demand.id, milestones)
+    alert('Rascunho do cronograma salvo!')
   }
 
   return (
@@ -79,9 +81,12 @@ const MacroSchedule = ({ process, demand, onComplete }) => {
         ))}
       </div>
 
-      <div className="form-actions">
+      <div className="form-actions" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <button type="button" className="action-link" onClick={handleSaveDraft}>
+          Salvar Rascunho
+        </button>
         <button type="submit" className="btn btn-primary">
-          Confirmar Cronograma Macro
+          Confirmar e Consolidar Cronograma
         </button>
       </div>
     </form>

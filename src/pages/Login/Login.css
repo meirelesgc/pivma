@@ -63,12 +63,13 @@
   right: 24px;
   width: 280px;
   z-index: 10;
+  border-radius: 20px; /* More rounded as requested */
 }
 
 .mock-selector h3 {
   font-size: 12px;
   text-transform: uppercase;
-  margin-bottom: 16px;
+  margin-bottom: 0px; /* Reduced since the header has its own margin */
   color: var(--primary-color);
   font-weight: var(--weight-regular);
   letter-spacing: 0.05em;
@@ -84,7 +85,7 @@
   width: 100%;
   text-align: left;
   padding: 12px;
-  border-radius: var(--radius-default);
+  border-radius: 12px; /* Rounded corners for items */
   background: var(--background-primary);
   border: 1px solid var(--border-color);
   transition: all var(--transition-speed) var(--transition-curve);

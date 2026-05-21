@@ -74,6 +74,43 @@ const useMockStore = create(
               origin: 'system'
             }
           ]
+        },
+        {
+          id: 'BRA-2026-002',
+          name: 'Validação de Citotoxicidade por Difusão em Agar',
+          updatedAt: '2026-05-20',
+          currentState: 'PLANEJAMENTO',
+          status: 'Planejamento',
+          role: 'Coordenador',
+          ownerEmail: 'carlos@gestor.com',
+          institution: 'Centro de Tecnologia Celular',
+          technicalLead: 'Dr. Carlos Santos',
+          submissionType: 'Validação Completa',
+          scientificArea: 'Toxicologia In Vitro',
+          description: 'Estudo interlaboratorial para validar o método de difusão em agar para biomateriais.',
+          objective: 'Estabelecer a reprodutibilidade do método entre 3 laboratórios brasileiros.',
+          documents: [],
+          iaStatus: 'Apto',
+          iaScore: 92,
+          bracvamStatus: 'Apto para Planejamento',
+          comments: {},
+          participants: [
+            { email: 'carlos@gestor.com', name: 'Dr. Carlos Santos', role: 'Coordenador Grupo Gestor', institution: 'CTC' },
+            { email: 'contato@bracvam.gov.br', name: 'Equipe BraCVAM', role: 'Equipe BraCVAM', institution: 'BraCVAM' }
+          ],
+          sponsor: { name: 'BraCVAM Institutional', category: 'Público', contact: 'admin@bracvam.gov.br', entityType: 'Governamental', notes: '' },
+          protocol: { description: '', steps: '', criticalParameters: '', acceptanceCriteria: '', materials: '', version: '1.0', status: 'draft', updatedAt: null, updatedBy: '' },
+          planningDemands: [
+            { id: 'd1', type: 'role-assignment', title: 'Definir grupo de amostras', status: 'pending' },
+            { id: 'd2', type: 'macro-schedule', title: 'Configurar cronograma macro', status: 'pending' }
+          ],
+          planningConsolidated: [],
+          milestones: [],
+          history: [
+            { timestamp: '2026-05-18T09:00:00Z', actor: 'Dr. Carlos', type: 'creation', description: 'Método criado.', origin: 'human' },
+            { timestamp: '2026-05-19T11:00:00Z', actor: 'IA PiVMA', type: 'triage', description: 'Triagem automatizada: Apto (Score: 92%).', origin: 'system' },
+            { timestamp: '2026-05-20T10:00:00Z', actor: 'Equipe BraCVAM', type: 'transition', description: 'Aprovado para a etapa de Planejamento Institucional.', origin: 'human' }
+          ]
         }
       ],
 
@@ -106,6 +143,9 @@ const useMockStore = create(
             description: '', steps: '', criticalParameters: '', acceptanceCriteria: '', 
             materials: '', version: '1.0', status: 'draft', updatedAt: null, updatedBy: '' 
           },
+          planningDemands: [],
+          planningConsolidated: [],
+          milestones: [],
           history: [
             { 
               timestamp: new Date().toISOString(), 
@@ -124,6 +164,43 @@ const useMockStore = create(
           ...p, 
           ...data, 
           updatedAt: new Date().toISOString().split('T')[0] 
+        } : p)
+      })),
+
+      completePlanningDemand: (processId, demandId, consolidatedItem) => set((state) => ({
+        processes: state.processes.map(p => p.id === processId ? {
+          ...p,
+          planningDemands: p.planningDemands.filter(d => d.id !== demandId),
+          planningConsolidated: [...(p.planningConsolidated || []), {
+            ...consolidatedItem,
+            id: Math.random().toString(36).substr(2, 9),
+            date: new Date().toLocaleDateString('pt-BR'),
+            responsible: get().user?.name || 'Sistema'
+          }],
+          history: [...p.history, {
+            timestamp: new Date().toISOString(),
+            actor: get().user?.name || 'Sistema',
+            type: 'consolidation',
+            description: `Demanda concluída: ${consolidatedItem.itemTitle}`,
+            origin: 'human'
+          }]
+        } : p)
+      })),
+
+      addMilestone: (processId, milestone) => set((state) => ({
+        processes: state.processes.map(p => p.id === processId ? {
+          ...p,
+          milestones: [...(p.milestones || []), {
+            ...milestone,
+            id: Math.random().toString(36).substr(2, 9)
+          }],
+          history: [...p.history, {
+            timestamp: new Date().toISOString(),
+            actor: get().user?.name || 'Sistema',
+            type: 'milestone',
+            description: `Milestone adicionado: ${milestone.title}`,
+            origin: 'human'
+          }]
         } : p)
       })),
 

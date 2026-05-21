@@ -14,6 +14,7 @@ const Login = () => {
 
   const profiles = [
     { name: 'Dr. Eduardo', role: 'Proponente', email: 'eduardo@lab.com', active: true },
+    { name: 'Dr. Carlos', role: 'Coord. Grupo Gestor', email: 'carlos@gestor.com', active: true },
     { name: 'Equipe BraCVAM', role: 'Admin', email: 'contato@bracvam.gov.br', active: true },
     { name: 'Laboratório Líder', role: 'Lead Lab', email: 'lider@usp.br', active: false },
     { name: 'Estatístico', role: 'Statistician', email: 'data@stats.com', active: false }
@@ -40,7 +41,16 @@ const Login = () => {
     <div className="login-container scrollable-view">
       {/* Mock Selector Tool */}
       <div className="mock-selector floating-card surface-translucent">
-        <h3>Seletor de Perfis (Mock)</h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <h3 style={{ margin: 0 }}>Seletor de Perfis (Mock)</h3>
+          <button 
+            className="btn-tiny" 
+            onClick={() => { localStorage.clear(); window.location.reload(); }}
+            style={{ padding: '4px 8px', borderRadius: '6px', fontSize: '10px', background: 'rgba(255, 77, 79, 0.1)', color: '#ff4d4f', border: '1px solid rgba(255, 77, 79, 0.2)', cursor: 'pointer' }}
+          >
+            Resetar Dados
+          </button>
+        </div>
         <div className="profile-list">
           {profiles.map((p) => (
             <button 

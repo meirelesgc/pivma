@@ -4,6 +4,7 @@ import useMockStore from '../../store/useMockStore'
 import MethodForm from './components/MethodForm'
 import TriagePanel from './components/TriagePanel'
 import ProcessHistory from './components/ProcessHistory'
+import PlanningStage from './components/Planning/PlanningStage'
 import './Workspace.css'
 import './components/components.css'
 
@@ -74,9 +75,7 @@ const Workspace = () => {
         </div>
 
         {isPlanningStage ? (
-          <div className="planning-clean-slate">
-            {/* Stage C will be implemented here */}
-          </div>
+          <PlanningStage process={selectedProcess} />
         ) : (
           <div className="process-context-grid">
             <div className="form-column">

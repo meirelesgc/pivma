@@ -116,6 +116,21 @@ const useMockStore = create(
               blocksProgression: true,
               consolidationData: null
             },
+            {
+              id: 'd3',
+              type: 'sample-coding',
+              title: 'Plano de Codificação de Amostras',
+              description: 'Cadastrar substâncias e gerar matriz de códigos cegos para os laboratórios.',
+              status: 'PENDING',
+              createdAt: '2026-05-20T10:00:00Z',
+              dueDate: '2026-05-28T18:00:00Z',
+              targetType: 'GROUP',
+              targetId: 'GRUPO_AMOSTRAS',
+              targetName: 'Grupo de Amostras',
+              createdBy: 'contato@bracvam.gov.br',
+              blocksProgression: true,
+              consolidationData: null
+            },
             { 
               id: 'd2', 
               type: 'macro-schedule', 
@@ -134,10 +149,74 @@ const useMockStore = create(
           ],
           planningConsolidated: [],
           milestones: [],
+          samples: [
+            { id: 's1', internalName: 'Substância Teste A', batch: 'LOT-99', notes: 'Manusear sob capela' },
+            { id: 's2', internalName: 'Substância Teste B', batch: 'LOT-100', notes: 'Manter refrigerado' }
+          ],
+          blindAssignments: [
+            { sampleId: 's1', labEmail: 'lab01@biocell.com.br', blindCode: 'BLD-123' },
+            { sampleId: 's2', labEmail: 'lab01@biocell.com.br', blindCode: 'BLD-456' }
+          ],
           history: [
             { timestamp: '2026-05-18T09:00:00Z', actor: 'Dr. Carlos', type: 'creation', description: 'Método criado.', origin: 'human' },
             { timestamp: '2026-05-19T11:00:00Z', actor: 'IA PiVMA', type: 'triage', description: 'Triagem automatizada: Apto (Score: 92%).', origin: 'system' },
             { timestamp: '2026-05-20T10:00:00Z', actor: 'Equipe BraCVAM', type: 'transition', description: 'Aprovado para a etapa de Planejamento Institucional.', origin: 'human' }
+          ]
+        },
+        {
+          id: 'BRA-2026-003',
+          name: 'Avaliação de Irritação Cutânea em Epiderme Reconstituída',
+          updatedAt: '2026-05-21',
+          currentState: 'EXECUCAO_METODO',
+          status: 'Execução Experimental',
+          role: 'Laboratório Participante',
+          ownerEmail: 'lider@biotech.com',
+          institution: 'BioCell Solutions',
+          technicalLead: 'Dra. Ana Paula',
+          submissionType: 'Validação Completa',
+          scientificArea: 'Dermatotoxicologia',
+          description: 'Fase experimental de validação do método de epiderme humana reconstituída.',
+          objective: 'Coletar dados de viabilidade celular para 20 substâncias de teste.',
+          documents: [],
+          iaStatus: 'Apto',
+          iaScore: 95,
+          bracvamStatus: 'Em Execução',
+          comments: {},
+          participants: [
+            { email: 'carlos@gestor.com', name: 'Dr. Carlos Santos', role: 'Coordenador Grupo Gestor', institution: 'CTC' },
+            { email: 'lab01@biocell.com.br', name: 'Lab 01 - BioCell', role: 'LABORATORIO_PARTICIPANTE', institution: 'BioCell' },
+            { email: 'contato@bracvam.gov.br', name: 'Equipe BraCVAM', role: 'Equipe BraCVAM', institution: 'BraCVAM' }
+          ],
+          sponsor: { name: 'Sponsor Global Corp', category: 'Privado', contact: 'legal@globalcorp.com', entityType: 'Indústria', notes: '' },
+          protocol: { description: 'Protocolo validado v2.1', steps: '1. Preparação... 2. Exposição...', criticalParameters: 'Temperatura: 37C', acceptanceCriteria: 'Viabilidade > 50%', materials: 'Placas 24 poços', version: '2.1', status: 'approved', updatedAt: '2026-05-15T', updatedBy: 'Dr. Carlos' },
+          planningDemands: [],
+          planningConsolidated: [
+            { id: 'c1', itemTitle: 'Grupo de Amostras Definido', date: '2026-05-10', responsible: 'Dr. Carlos', origin: 'Grupo Gestor' },
+            { id: 'c2', itemTitle: 'Cronograma Macro Configurado', date: '2026-05-12', responsible: 'Dr. Carlos', origin: 'Grupo Gestor' }
+          ],
+          executionDemands: [
+            { 
+              id: 'ed1', 
+              type: 'experimental-submission', 
+              title: 'Submissão de registros experimentais', 
+              description: 'Realizar o upload dos dados brutos e resultados (OD, planilhas de viabilidade) conforme protocolo.',
+              status: 'PENDING',
+              createdAt: '2026-05-21T08:00:00Z',
+              dueDate: '2026-06-10T18:00:00Z',
+              targetType: 'GROUP',
+              targetId: 'LABORATORIO_PARTICIPANTE',
+              targetName: 'Laboratórios Participantes',
+              createdBy: 'Dr. Carlos',
+              blocksProgression: true,
+              consolidationData: null
+            }
+          ],
+          milestones: [
+            { id: 'm1', title: 'Distribuição de amostras', targetDate: '2026-05-25', status: 'pending', isGate: true },
+            { id: 'm2', title: 'Execução experimental', targetDate: '2026-06-15', status: 'pending', isGate: true }
+          ],
+          history: [
+            { timestamp: '2026-05-20T14:00:00Z', actor: 'Dr. Carlos', type: 'transition', description: 'Macroetapa de Execução Experimental iniciada.', origin: 'human' }
           ]
         }
       ],
@@ -197,32 +276,47 @@ const useMockStore = create(
 
       // Demand Actions
       updateDemandStatus: (processId, demandId, status) => set((state) => ({
-        processes: state.processes.map(p => p.id === processId ? {
-          ...p,
-          planningDemands: p.planningDemands.map(d => d.id === demandId ? { ...d, status } : d)
-        } : p)
+        processes: state.processes.map(p => {
+          if (p.id !== processId) return p;
+          const updateInArray = (arr) => (arr || []).map(d => d.id === demandId ? { ...d, status } : d);
+          return {
+            ...p,
+            planningDemands: updateInArray(p.planningDemands),
+            executionDemands: updateInArray(p.executionDemands)
+          };
+        })
       })),
 
       saveDemandDraft: (processId, demandId, draftData) => set((state) => ({
-        processes: state.processes.map(p => p.id === processId ? {
-          ...p,
-          planningDemands: p.planningDemands.map(d => d.id === demandId ? { 
+        processes: state.processes.map(p => {
+          if (p.id !== processId) return p;
+          const updateInArray = (arr) => (arr || []).map(d => d.id === demandId ? { 
             ...d, 
             status: 'IN_PROGRESS', 
             consolidationData: draftData 
-          } : d)
-        } : p)
+          } : d);
+          return {
+            ...p,
+            planningDemands: updateInArray(p.planningDemands),
+            executionDemands: updateInArray(p.executionDemands)
+          };
+        })
       })),
 
       submitDemandForValidation: (processId, demandId, finalData) => set((state) => ({
-        processes: state.processes.map(p => p.id === processId ? {
-          ...p,
-          planningDemands: p.planningDemands.map(d => d.id === demandId ? { 
+        processes: state.processes.map(p => {
+          if (p.id !== processId) return p;
+          const updateInArray = (arr) => (arr || []).map(d => d.id === demandId ? { 
             ...d, 
             status: 'IN_VALIDATION', 
             consolidationData: finalData 
-          } : d)
-        } : p)
+          } : d);
+          return {
+            ...p,
+            planningDemands: updateInArray(p.planningDemands),
+            executionDemands: updateInArray(p.executionDemands)
+          };
+        })
       })),
 
       consolidateDemand: (processId, demandId) => {
@@ -230,7 +324,8 @@ const useMockStore = create(
         set((state) => ({
           processes: state.processes.map(p => {
             if (p.id !== processId) return p;
-            const demand = p.planningDemands.find(d => d.id === demandId);
+            
+            const demand = [...(p.planningDemands || []), ...(p.executionDemands || [])].find(d => d.id === demandId);
             if (!demand) return p;
 
             const consolidatedItem = {
@@ -243,7 +338,8 @@ const useMockStore = create(
 
             return {
               ...p,
-              planningDemands: p.planningDemands.filter(d => d.id !== demandId),
+              planningDemands: (p.planningDemands || []).filter(d => d.id !== demandId),
+              executionDemands: (p.executionDemands || []).filter(d => d.id !== demandId),
               planningConsolidated: [...(p.planningConsolidated || []), consolidatedItem],
               history: [...p.history, {
                 timestamp: new Date().toISOString(),
@@ -278,6 +374,34 @@ const useMockStore = create(
           }]
         } : p)
       })),
+
+      generateBlindCodes: (processId, demandId, samples) => {
+        const user = get().user;
+        const process = get().processes.find(p => p.id === processId);
+        const labs = (process.participants || []).filter(part => part.role === 'LABORATORIO_PARTICIPANTE');
+        
+        const assignments = [];
+        samples.forEach(sample => {
+          labs.forEach(lab => {
+            const randomCode = Math.random().toString(36).substring(2, 5).toUpperCase() + '-' + Math.floor(100 + Math.random() * 900);
+            assignments.push({
+              sampleId: sample.id,
+              labEmail: lab.email,
+              blindCode: randomCode
+            });
+          });
+        });
+
+        set((state) => ({
+          processes: state.processes.map(p => p.id === processId ? {
+            ...p,
+            samples,
+            blindAssignments: assignments
+          } : p)
+        }));
+
+        get().consolidateDemand(processId, demandId);
+      },
 
       assignParticipant: (processId, participant) => set((state) => ({
         processes: state.processes.map(p => p.id === processId ? {
@@ -415,12 +539,30 @@ const useMockStore = create(
         }));
       },
 
-      transitionTo: (id, nextStateId, description, actor = null) => {
+      transitionTo: (id, nextStateId, description, actor = null, options = {}) => {
         const stateConfig = PROCESS_STATES[nextStateId];
         if (!stateConfig) return;
 
+        const process = get().processes.find(p => p.id === id);
+        if (!process) return;
+
         const user = get().user;
         const actorName = actor || user?.name || 'Sistema';
+
+        // Regulatory Gates Check
+        if (!options.override) {
+          const currentStageDemands = [...(process.planningDemands || []), ...(process.executionDemands || [])];
+          const mandatoryPending = currentStageDemands.filter(d => d.blocksProgression && d.status !== 'CONSOLIDATED');
+          
+          if (mandatoryPending.length > 0) {
+            const errorMsg = `Bloqueio Regulatório: Existem ${mandatoryPending.length} gates pendentes nesta etapa.`;
+            alert(errorMsg);
+            return { error: errorMsg, pending: mandatoryPending };
+          }
+        } else if (user?.role !== 'Admin') {
+          alert('Apenas administradores podem realizar override regulatório.');
+          return { error: 'Permissão negada para override.' };
+        }
 
         set((state) => ({
           processes: state.processes.map(p => p.id === id ? {
@@ -431,12 +573,16 @@ const useMockStore = create(
             history: [...p.history, {
               timestamp: new Date().toISOString(),
               actor: actorName,
-              type: 'transition',
-              description: description || `Transição para o estado: ${stateConfig.label}`,
+              type: options.override ? 'override' : 'transition',
+              description: options.override 
+                ? `[OVERRIDE ADM] ${description}. Justificativa: ${options.justification}`
+                : description || `Transição para o estado: ${stateConfig.label}`,
               origin: actor ? 'human' : (user ? 'human' : 'system')
             }]
           } : p)
         }));
+        
+        return { success: true };
       },
 
       submitToTriage: (id) => {

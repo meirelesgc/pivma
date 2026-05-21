@@ -1,0 +1,102 @@
+.execution-stage-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.execution-header {
+  margin-bottom: 8px;
+}
+
+.execution-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.stage-badge.execution {
+  background: #009c3b;
+}
+
+.lab-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 40px;
+}
+
+.protocol-reference {
+  padding: 16px;
+  background: rgba(var(--primary-color-rgb), 0.03);
+}
+
+.protocol-reference h5 {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.protocol-meta {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+/* Experimental Submission Form Styles */
+.experimental-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.upload-zone-mock {
+  border: 2px dashed var(--border-color);
+  border-radius: 12px;
+  padding: 32px;
+  text-align: center;
+  background: rgba(0,0,0,0.01);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.upload-zone-mock:hover {
+  border-color: var(--primary-color);
+  background: rgba(var(--primary-color-rgb), 0.02);
+}
+
+.upload-icon {
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+}
+
+.file-list-mock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.file-item-mock {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.btn-remove-file {
+  color: #ff4d4f;
+  cursor: pointer;
+}
+
+@media (max-width: 1100px) {
+  .lab-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}

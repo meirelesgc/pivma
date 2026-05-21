@@ -1,5 +1,6 @@
 import DemandsList from './DemandsList'
 import ConsolidatedList from './ConsolidatedList'
+import RegulatoryChecklist from './RegulatoryChecklist'
 import './Planning.css'
 
 const PlanningStage = ({ process }) => {
@@ -25,6 +26,8 @@ const PlanningStage = ({ process }) => {
         </section>
 
         <section className="consolidated-section">
+          <RegulatoryChecklist process={process} />
+          
           <div className="section-header">
             <h4 className="section-title">Bloco 2 — Consolidado (Trilha)</h4>
           </div>

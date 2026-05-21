@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import RoleAssignment from './RoleAssignment'
 import MacroSchedule from './MacroSchedule'
+import ExperimentalSubmissionForm from '../Execution/ExperimentalSubmissionForm'
+import SampleCodingModule from './SampleCodingModule'
 
 const DemandsList = ({ process }) => {
   const [openDemandId, setOpenDemandId] = useState(null)
@@ -15,6 +17,10 @@ const DemandsList = ({ process }) => {
         return <RoleAssignment process={process} demand={demand} onComplete={() => setOpenDemandId(null)} />
       case 'macro-schedule':
         return <MacroSchedule process={process} demand={demand} onComplete={() => setOpenDemandId(null)} />
+      case 'experimental-submission':
+        return <ExperimentalSubmissionForm process={process} demand={demand} onComplete={() => setOpenDemandId(null)} />
+      case 'sample-coding':
+        return <SampleCodingModule process={process} demand={demand} onComplete={() => setOpenDemandId(null)} />
       default:
         return <p className="text-tertiary">Tipo de demanda não suportado.</p>
     }

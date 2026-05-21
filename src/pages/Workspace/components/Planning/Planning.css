@@ -223,3 +223,103 @@
   color: #ff4d4f;
   font-weight: 600;
 }
+
+/* Regulatory Checklist */
+.regulatory-checklist {
+  padding: 24px;
+  background: white;
+  margin-bottom: 24px;
+}
+
+.checklist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 16px;
+}
+
+.readiness-score {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.readiness-score .percentage {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--primary-color);
+  line-height: 1;
+}
+
+.readiness-score .label {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+.readiness-bar-container {
+  height: 6px;
+  background: var(--bg-secondary);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.readiness-bar-fill {
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.gates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gate-item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 13px;
+}
+
+.gate-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  border-radius: 4px;
+}
+
+.gate-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.gate-title { font-weight: 500; }
+.gate-meta { font-size: 10px; color: var(--text-tertiary); }
+
+.gate-consolidated { color: #009c3b; }
+.gate-consolidated .gate-icon { background: rgba(0, 156, 59, 0.1); }
+
+.gate-active { color: var(--primary-color); }
+.gate-active .gate-icon { background: rgba(var(--primary-color-rgb), 0.1); }
+
+.gate-pending { color: var(--text-tertiary); }
+.gate-pending .gate-icon { background: var(--bg-secondary); }
+
+.readiness-warning {
+  margin-top: 20px;
+  padding: 12px;
+  background: rgba(255, 77, 79, 0.05);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  color: #ff4d4f;
+  border: 1px solid rgba(255, 77, 79, 0.1);
+}

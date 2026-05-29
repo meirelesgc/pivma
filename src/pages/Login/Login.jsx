@@ -13,11 +13,11 @@ const Login = () => {
   })
 
   const profiles = [
-    { name: 'Dr. Eduardo', role: 'Proponente', email: 'eduardo@lab.com', active: true },
-    { name: 'Dr. Carlos', role: 'Coord. Grupo Gestor', email: 'carlos@gestor.com', active: true },
+    { name: 'Dr. Eduardo', role: 'Patrocinador / Proponente', email: 'eduardo@lab.com', active: true },
+    { name: 'Equipe BraCVAM', role: 'Org. de Validação (Admin)', email: 'contato@bracvam.gov.br', active: true },
     { name: 'Dr. Henrique', role: 'Gestor de Amostras', email: 'henrique@amostras.com', active: true },
-    { name: 'Lab 01 - BioCell', role: 'Lab Participante', email: 'lab01@biocell.com.br', active: true },
-    { name: 'Equipe BraCVAM', role: 'Admin', email: 'contato@bracvam.gov.br', active: true },
+    { name: 'Dr. Carlos', role: 'Gerente de Validação', email: 'carlos@gestor.com', active: true },
+    { name: 'Lab 01 - BioCell Lab', role: 'Lab. Participante', email: 'lab01@biocell.com.br', active: true },
     { name: 'Laboratório Líder', role: 'Lead Lab', email: 'lider@usp.br', active: false },
     { name: 'Estatístico', role: 'Statistician', email: 'data@stats.com', active: false }
   ]
@@ -71,7 +71,7 @@ const Login = () => {
       <div className="login-card floating-card">
         <div className="login-header">
           <div className="simulation-badge">Modo de Simulação</div>
-          <h2 className="text-large">Acesse o PiVMA</h2>
+          <h2 className="text-large">Acesse o Pi*VMA</h2>
           <p className="text-secondary text-small">Entre com suas credenciais ou selecione um perfil mock.</p>
         </div>
 

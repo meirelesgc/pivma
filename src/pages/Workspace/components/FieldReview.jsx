@@ -21,11 +21,11 @@ const FieldReview = ({ processId, fieldId }) => {
     });
   };
 
-  if (user.role !== 'Admin' && pendingComments.length === 0) return null;
+  if (!['Admin', 'Org. de Validação (Admin)'].includes(user.role) && pendingComments.length === 0) return null;
 
   return (
     <div className={`field-review-container ${pendingComments.length > 0 ? 'has-pending' : ''}`}>
-      {user.role === 'Admin' && (
+      {['Admin', 'Org. de Validação (Admin)'].includes(user.role) && (
         <button 
           type="button" 
           className="field-comment-trigger" 
@@ -53,7 +53,7 @@ const FieldReview = ({ processId, fieldId }) => {
           </div>
           <div className="comment-text">{comment.text}</div>
           
-          {user.role === 'Admin' && (
+          {['Admin', 'Org. de Validação (Admin)'].includes(user.role) && (
             <div className="comment-actions">
               <button 
                 type="button" 

@@ -5,9 +5,156 @@ import { PROCESS_STATES } from '../config/processStates'
 const useMockStore = create(
   persist(
     (set, get) => ({
-      user: { name: 'Dr. Henrique', role: 'Gestor de Amostras', email: 'henrique@amostras.com' },
-      selectedProcessId: 'BRA-2026-004',
+      user: { name: 'Dr. Eduardo', role: 'Patrocinador / Proponente', email: 'eduardo@lab.com' },
+      selectedProcessId: null,
       processes: [
+        {
+          id: 'BRA-2026-001',
+          name: 'Método de Irritação Ocular HCE',
+          updatedAt: '2026-05-21',
+          currentState: 'SUBMETIDO',
+          status: 'Submetido',
+          role: 'Admin',
+          ownerEmail: 'proponente.externo@lab.com',
+          institution: 'Instituto de BioPesquisa',
+          technicalLead: 'Dr. Roberto Silva',
+          submissionType: 'Validação Completa',
+          scientificArea: 'Toxicologia In Vitro',
+          description: 'Avaliação de irritação ocular em linhagem celular epitelial.',
+          objective: 'Substituir o teste de Draize em coelhos.',
+          documents: [
+            { id: 'doc-1', name: 'protocolo_hce_v2.pdf', type: 'protocol' }
+          ],
+          iaStatus: 'Apto',
+          iaScore: 88,
+          bracvamStatus: 'Aguardando Revisão BraCVAM',
+          comments: {},
+          participants: [
+            { email: 'contato@bracvam.gov.br', name: 'Equipe BraCVAM', role: 'Equipe BraCVAM', institution: 'BraCVAM' }
+          ],
+          sponsor: { name: 'BioPesquisa Corp', category: 'Privado', contact: 'roberto@lab.com', entityType: 'Indústria', notes: '' },
+          protocol: { description: '', steps: '', criticalParameters: '', acceptanceCriteria: '', materials: '', version: '1.0', status: 'draft', updatedAt: null, updatedBy: '' },
+          history: [
+            { timestamp: '2026-05-21T10:00:00Z', actor: 'Dr. Roberto Silva', type: 'submission', description: 'Submissão realizada para avaliação BraCVAM.', origin: 'human' }
+          ]
+        },
+        {
+          id: 'BRA-2026-002',
+          name: 'Validação de Citotoxicidade por Difusão em Agar',
+          updatedAt: '2026-05-21',
+          currentState: 'PLANEJAMENTO',
+          status: 'Planejamento',
+          role: 'Gerente de Validação',
+          ownerEmail: 'carlos@gestor.com',
+          institution: 'Centro de Tecnologia Celular',
+          technicalLead: 'Dr. Carlos Santos',
+          submissionType: 'Validação Completa',
+          scientificArea: 'Toxicologia In Vitro',
+          description: 'Estudo interlaboratorial para validar o método de difusão em agar.',
+          objective: 'Estabelecer a reprodutibilidade do método entre 3 laboratórios.',
+          documents: [],
+          iaStatus: 'Apto',
+          iaScore: 92,
+          bracvamStatus: 'Apto para Planejamento',
+          comments: {},
+          participants: [
+            { email: 'carlos@gestor.com', name: 'Dr. Carlos Santos', role: 'Gerente de Validação', institution: 'CTC' },
+            { email: 'contato@bracvam.gov.br', name: 'Equipe BraCVAM', role: 'Equipe BraCVAM', institution: 'BraCVAM' }
+          ],
+          sponsor: { name: 'BraCVAM Institutional', category: 'Público', contact: 'admin@bracvam.gov.br', entityType: 'Governamental', notes: '' },
+          protocol: { description: '', steps: '', criticalParameters: '', acceptanceCriteria: '', materials: '', version: '1.0', status: 'draft', updatedAt: null, updatedBy: '' },
+          planningDemands: [
+            { 
+              id: 'd-carlos-001', 
+              type: 'role-assignment', 
+              title: 'Definir papéis na validação', 
+              description: 'Estabelecer Lab Líder, Participantes, Gestor de Amostras e Revisores.',
+              status: 'PENDING',
+              createdAt: '2026-05-20T10:00:00Z',
+              dueDate: '2026-05-25T18:00:00Z',
+              targetType: 'USER',
+              targetId: 'carlos@gestor.com',
+              targetName: 'Dr. Carlos Santos',
+              createdBy: 'contato@bracvam.gov.br',
+              blocksProgression: true,
+              suggestedRole: 'LABORATORIO_LIDER',
+              consolidationData: null
+            },
+            { 
+              id: 'd-carlos-003', 
+              type: 'macro-schedule', 
+              title: 'Cronograma Macro', 
+              description: 'Definir desfecho principal, desenho experimental e marcos temporais.',
+              status: 'PENDING',
+              createdAt: '2026-05-20T10:00:00Z',
+              dueDate: '2026-05-27T18:00:00Z',
+              targetType: 'USER',
+              targetId: 'carlos@gestor.com',
+              targetName: 'Dr. Carlos Santos',
+              createdBy: 'contato@bracvam.gov.br',
+              blocksProgression: true,
+              consolidationData: null
+            }
+          ],
+          planningConsolidated: [],
+          milestones: [],
+          history: [
+            { timestamp: '2026-05-21T09:00:00Z', actor: 'Equipe BraCVAM', type: 'transition', description: 'Status alterado para Planejamento.', origin: 'human' }
+          ]
+        },
+        {
+          id: 'BRA-2026-003',
+          name: 'Avaliação de Irritação Cutânea em Epiderme Reconstituída',
+          updatedAt: '2026-05-21',
+          currentState: 'EXECUCAO_METODO',
+          status: 'Execução Experimental',
+          role: 'Laboratório Participante',
+          ownerEmail: 'outro@lab.com',
+          institution: 'BioCell Solutions',
+          technicalLead: 'Dra. Ana Paula',
+          submissionType: 'Validação Completa',
+          scientificArea: 'Dermatotoxicologia',
+          description: 'Fase experimental de validação do método de epiderme humana.',
+          objective: 'Coletar dados de viabilidade celular seguindo BPL.',
+          documents: [],
+          iaStatus: 'Apto',
+          iaScore: 95,
+          bracvamStatus: 'Em Execução',
+          comments: {},
+          participants: [
+            { email: 'lab01@biocell.com.br', name: 'Lab 01 - BioCell', role: 'LABORATORIO_PARTICIPANTE', institution: 'BioCell' },
+            { email: 'carlos@gestor.com', name: 'Dr. Carlos Santos', role: 'Gerente de Validação', institution: 'CTC' }
+          ],
+          sponsor: { name: 'Sponsor Global Corp', category: 'Privado', contact: 'legal@globalcorp.com', entityType: 'Indústria', notes: '' },
+          protocol: { description: 'Protocolo validado v2.1', steps: '1. Preparação...', criticalParameters: 'Temperatura: 37C', acceptanceCriteria: 'Viabilidade > 50%', materials: 'Placas 24 poços', version: '2.1', status: 'approved', updatedAt: '2026-05-15', updatedBy: 'Dr. Carlos' },
+          executionDemands: [
+            { 
+              id: 'ed1', 
+              type: 'experimental-submission', 
+              title: 'Upload de Dados Brutos (BPL)', 
+              description: 'Realizar o upload dos dados brutos e resultados conforme protocolo.',
+              status: 'PENDING',
+              createdAt: '2026-05-21T08:00:00Z',
+              dueDate: '2026-06-10T18:00:00Z',
+              targetType: 'USER',
+              targetId: 'lab01@biocell.com.br',
+              targetName: 'Lab 01 - BioCell',
+              createdBy: 'Dr. Carlos',
+              blocksProgression: true,
+              consolidationData: null
+            }
+          ],
+          milestones: [
+            { id: 'm1', title: 'Distribuição de amostras', targetDate: '2026-05-25', status: 'pending', isGate: true }
+          ],
+          blindAssignments: [
+            { id: 'ba-001', labEmail: 'lab01@biocell.com.br', blindCode: 'AM-7492', status: 'SHIPPED' },
+            { id: 'ba-002', labEmail: 'lab01@biocell.com.br', blindCode: 'AM-1048', status: 'SHIPPED' }
+          ],
+          history: [
+            { timestamp: '2026-05-20T14:00:00Z', actor: 'Dr. Carlos', type: 'transition', description: 'Início da execução experimental.', origin: 'human' }
+          ]
+        },
         {
           id: 'BRA-2026-004',
           name: 'Validação de Novo Método de Fototoxicidade',
@@ -15,13 +162,13 @@ const useMockStore = create(
           currentState: 'PLANEJAMENTO',
           status: 'Planejamento',
           role: 'Gestor de Amostras',
-          ownerEmail: 'henrique@amostras.com',
+          ownerEmail: 'outro.gestor@amostras.com',
           institution: 'Centro de Biotecnologia Integrada',
           technicalLead: 'Dr. Henrique Oliveira',
           submissionType: 'Validação Completa',
           scientificArea: 'Toxicologia In Vitro',
-          description: 'Estudo para validação de ensaio de fototoxicidade usando modelos 3D.',
-          objective: 'Identificar o potencial fototóxico de 15 compostos cosméticos.',
+          description: 'Estudo para validação de ensaio de fototoxicidade.',
+          objective: 'Identificar potencial fototóxico de compostos cosméticos.',
           documents: [],
           iaStatus: 'Apto',
           iaScore: 94,
@@ -29,8 +176,8 @@ const useMockStore = create(
           comments: {},
           participants: [
             { email: 'henrique@amostras.com', name: 'Dr. Henrique Oliveira', role: 'Gestor de Amostras', institution: 'CBI' },
-            { email: 'carlos@gestor.com', name: 'Dr. Carlos Santos', role: 'Coordenador Grupo Gestor', institution: 'CTC' },
-            { email: 'contato@bracvam.gov.br', name: 'Equipe BraCVAM', role: 'Equipe BraCVAM', institution: 'BraCVAM' }
+            { email: 'lab01@biocell.com.br', name: 'Lab 01 - BioCell', role: 'LABORATORIO_PARTICIPANTE', institution: 'BioCell' },
+            { email: 'carlos@gestor.com', name: 'Dr. Carlos Santos', role: 'Gerente de Validação', institution: 'CTC' }
           ],
           sponsor: { name: 'Consórcio de Cosméticos BR', category: 'Privado', contact: 'sac@consorcio.com.br', entityType: 'Indústria', notes: '' },
           protocol: { description: '', steps: '', criticalParameters: '', acceptanceCriteria: '', materials: '', version: '1.0', status: 'draft', updatedAt: null, updatedBy: '' },
@@ -38,8 +185,8 @@ const useMockStore = create(
             {
               id: 'd-henrique-001',
               type: 'sample-coding',
-              title: 'Definição e Codificação de Amostras (Cegamento)',
-              description: 'Cadastrar substâncias, anexar SDS e gerar matriz de códigos cegos.',
+              title: 'Codificação e Logística de Amostras',
+              description: 'Cadastrar substâncias, anexar SDS e gerar matriz de cegamento.',
               status: 'IN_PROGRESS',
               createdAt: '2026-05-21T09:00:00Z',
               dueDate: '2026-05-28T18:00:00Z',
@@ -52,381 +199,137 @@ const useMockStore = create(
             }
           ],
           planningConsolidated: [
-            { id: 'c-001', itemTitle: 'Grupo Gestor Designado', date: '2026-05-20', responsible: 'Equipe BraCVAM', origin: 'BraCVAM' }
+            { id: 'c-001', itemTitle: 'Gerente de Validação Designado', date: '2026-05-20', responsible: 'Equipe BraCVAM', origin: 'BraCVAM' }
           ],
           milestones: [],
           samples: [],
           blindAssignments: [],
+          shipments: [],
+          occurrences: [],
+          sampleInventory: [],
+          endpoint: { target: '', isLocked: false },
           history: [
-            { timestamp: '2026-05-20T10:00:00Z', actor: 'Equipe BraCVAM', type: 'transition', description: 'Processo aprovado para planejamento.', origin: 'human' },
-            { timestamp: '2026-05-21T09:00:00Z', actor: 'Dr. Carlos Santos', type: 'assignment', description: 'Designada demanda de codificação de amostras para Dr. Henrique.', origin: 'human' }
-          ]
-        },
-        {
-          id: 'BRA-2026-001',
-          name: 'Método de Irritação Ocular HCE',
-          updatedAt: '2026-05-10',
-          currentState: 'TRIAGEM_IA',
-          status: 'Em Triagem (IA)', // Keep for compatibility temporarily
-          role: 'Proponente',
-          ownerEmail: 'admin@bracvam.gov.br',
-          institution: 'Instituto de BioPesquisa',
-          technicalLead: 'Dr. Roberto Silva',
-          submissionType: 'Validação Completa',
-          scientificArea: 'Toxicologia In Vitro',
-          description: 'Avaliação de irritação ocular em linhagem celular epitelial.',
-          objective: 'Substituir o teste de Draize em coelhos para substâncias químicas específicas.',
-          documents: [
-            { id: 'doc-1', name: 'protocolo_hce_v2.pdf', type: 'protocol' },
-            { id: 'doc-2', name: 'artigo_nature_2024.pdf', type: 'article' }
-          ],
-          iaStatus: 'Apto',
-          iaScore: 88,
-          bracvamStatus: 'Aguardando Revisão',
-          comments: {}, // { fieldId: [{ id, author, text, timestamp, status: 'pending'|'resolved', type }] }
-          participants: [
-            { email: 'admin@bracvam.gov.br', name: 'Equipe BraCVAM', role: 'Equipe BraCVAM', institution: 'BraCVAM' }
-          ],
-          sponsor: {
-            name: '',
-            category: '',
-            contact: '',
-            entityType: '',
-            notes: ''
-          },
-          protocol: {
-            description: '',
-            steps: '',
-            criticalParameters: '',
-            acceptanceCriteria: '',
-            materials: '',
-            version: '1.0',
-            status: 'draft', // draft, review, approved
-            updatedAt: null,
-            updatedBy: ''
-          },
-          history: [
-            { 
-              timestamp: '2026-05-08T10:00:00Z', 
-              actor: 'Dr. Eduardo', 
-              type: 'creation', 
-              description: 'Método criado e rascunho inicial salvo.',
-              origin: 'human'
-            },
-            { 
-              timestamp: '2026-05-10T14:30:00Z', 
-              actor: 'Dr. Eduardo', 
-              type: 'submission', 
-              description: 'Submissão realizada para triagem.',
-              origin: 'human'
-            },
-            { 
-              timestamp: '2026-05-10T14:35:00Z', 
-              actor: 'IA PiVMA', 
-              type: 'triage', 
-              description: 'Triagem automatizada concluída. Status: Apto (Score: 88%).',
-              origin: 'system'
-            }
-          ]
-        },
-        {
-          id: 'BRA-2026-002',
-          name: 'Validação de Citotoxicidade por Difusão em Agar',
-          updatedAt: '2026-05-20',
-          currentState: 'PLANEJAMENTO',
-          status: 'Planejamento',
-          role: 'Coordenador',
-          ownerEmail: 'carlos@gestor.com',
-          institution: 'Centro de Tecnologia Celular',
-          technicalLead: 'Dr. Carlos Santos',
-          submissionType: 'Validação Completa',
-          scientificArea: 'Toxicologia In Vitro',
-          description: 'Estudo interlaboratorial para validar o método de difusão em agar para biomateriais.',
-          objective: 'Estabelecer a reprodutibilidade do método entre 3 laboratórios brasileiros.',
-          documents: [],
-          iaStatus: 'Apto',
-          iaScore: 92,
-          bracvamStatus: 'Apto para Planejamento',
-          comments: {},
-          participants: [
-            { email: 'carlos@gestor.com', name: 'Dr. Carlos Santos', role: 'Coordenador Grupo Gestor', institution: 'CTC' },
-            { email: 'contato@bracvam.gov.br', name: 'Equipe BraCVAM', role: 'Equipe BraCVAM', institution: 'BraCVAM' }
-          ],
-          sponsor: { name: 'BraCVAM Institutional', category: 'Público', contact: 'admin@bracvam.gov.br', entityType: 'Governamental', notes: '' },
-          protocol: { description: '', steps: '', criticalParameters: '', acceptanceCriteria: '', materials: '', version: '1.0', status: 'draft', updatedAt: null, updatedBy: '' },
-          planningDemands: [
-            { 
-              id: 'd1', 
-              type: 'role-assignment', 
-              title: 'Definir grupo de amostras', 
-              description: 'Designar a equipe responsável pela codificação e logística das substâncias.',
-              status: 'PENDING',
-              createdAt: '2026-05-20T10:00:00Z',
-              dueDate: '2026-05-25T18:00:00Z',
-              targetType: 'GROUP',
-              targetId: 'GRUPO_GESTOR',
-              targetName: 'Grupo Gestor',
-              createdBy: 'contato@bracvam.gov.br',
-              blocksProgression: true,
-              consolidationData: null
-            },
-            {
-              id: 'd3',
-              type: 'sample-coding',
-              title: 'Plano de Codificação de Amostras',
-              description: 'Cadastrar substâncias e gerar matriz de códigos cegos para os laboratórios.',
-              status: 'PENDING',
-              createdAt: '2026-05-20T10:00:00Z',
-              dueDate: '2026-05-28T18:00:00Z',
-              targetType: 'GROUP',
-              targetId: 'GRUPO_AMOSTRAS',
-              targetName: 'Grupo de Amostras',
-              createdBy: 'contato@bracvam.gov.br',
-              blocksProgression: true,
-              consolidationData: null
-            },
-            { 
-              id: 'd2', 
-              type: 'macro-schedule', 
-              title: 'Configurar cronograma macro', 
-              description: 'Estabelecer marcos regulatórios e prazos fatais do estudo.',
-              status: 'PENDING',
-              createdAt: '2026-05-20T10:00:00Z',
-              dueDate: '2026-05-27T18:00:00Z',
-              targetType: 'GROUP',
-              targetId: 'GRUPO_GESTOR',
-              targetName: 'Grupo Gestor',
-              createdBy: 'contato@bracvam.gov.br',
-              blocksProgression: true,
-              consolidationData: null
-            }
-          ],
-          planningConsolidated: [],
-          milestones: [],
-          samples: [
-            { id: 's1', internalName: 'Substância Teste A', batch: 'LOT-99', notes: 'Manusear sob capela' },
-            { id: 's2', internalName: 'Substância Teste B', batch: 'LOT-100', notes: 'Manter refrigerado' }
-          ],
-          blindAssignments: [
-            { sampleId: 's1', labEmail: 'lab01@biocell.com.br', blindCode: 'BLD-123' },
-            { sampleId: 's2', labEmail: 'lab01@biocell.com.br', blindCode: 'BLD-456' }
-          ],
-          history: [
-            { timestamp: '2026-05-18T09:00:00Z', actor: 'Dr. Carlos', type: 'creation', description: 'Método criado.', origin: 'human' },
-            { timestamp: '2026-05-19T11:00:00Z', actor: 'IA PiVMA', type: 'triage', description: 'Triagem automatizada: Apto (Score: 92%).', origin: 'system' },
-            { timestamp: '2026-05-20T10:00:00Z', actor: 'Equipe BraCVAM', type: 'transition', description: 'Aprovado para a etapa de Planejamento Institucional.', origin: 'human' }
-          ]
-        },
-        {
-          id: 'BRA-2026-003',
-          name: 'Avaliação de Irritação Cutânea em Epiderme Reconstituída',
-          updatedAt: '2026-05-21',
-          currentState: 'EXECUCAO_METODO',
-          status: 'Execução Experimental',
-          role: 'Laboratório Participante',
-          ownerEmail: 'lider@biotech.com',
-          institution: 'BioCell Solutions',
-          technicalLead: 'Dra. Ana Paula',
-          submissionType: 'Validação Completa',
-          scientificArea: 'Dermatotoxicologia',
-          description: 'Fase experimental de validação do método de epiderme humana reconstituída.',
-          objective: 'Coletar dados de viabilidade celular para 20 substâncias de teste.',
-          documents: [],
-          iaStatus: 'Apto',
-          iaScore: 95,
-          bracvamStatus: 'Em Execução',
-          comments: {},
-          participants: [
-            { email: 'carlos@gestor.com', name: 'Dr. Carlos Santos', role: 'Coordenador Grupo Gestor', institution: 'CTC' },
-            { email: 'lab01@biocell.com.br', name: 'Lab 01 - BioCell', role: 'LABORATORIO_PARTICIPANTE', institution: 'BioCell' },
-            { email: 'contato@bracvam.gov.br', name: 'Equipe BraCVAM', role: 'Equipe BraCVAM', institution: 'BraCVAM' }
-          ],
-          sponsor: { name: 'Sponsor Global Corp', category: 'Privado', contact: 'legal@globalcorp.com', entityType: 'Indústria', notes: '' },
-          protocol: { description: 'Protocolo validado v2.1', steps: '1. Preparação... 2. Exposição...', criticalParameters: 'Temperatura: 37C', acceptanceCriteria: 'Viabilidade > 50%', materials: 'Placas 24 poços', version: '2.1', status: 'approved', updatedAt: '2026-05-15T', updatedBy: 'Dr. Carlos' },
-          planningDemands: [],
-          planningConsolidated: [
-            { id: 'c1', itemTitle: 'Grupo de Amostras Definido', date: '2026-05-10', responsible: 'Dr. Carlos', origin: 'Grupo Gestor' },
-            { id: 'c2', itemTitle: 'Cronograma Macro Configurado', date: '2026-05-12', responsible: 'Dr. Carlos', origin: 'Grupo Gestor' }
-          ],
-          executionDemands: [
-            { 
-              id: 'ed1', 
-              type: 'experimental-submission', 
-              title: 'Submissão de registros experimentais', 
-              description: 'Realizar o upload dos dados brutos e resultados (OD, planilhas de viabilidade) conforme protocolo.',
-              status: 'PENDING',
-              createdAt: '2026-05-21T08:00:00Z',
-              dueDate: '2026-06-10T18:00:00Z',
-              targetType: 'GROUP',
-              targetId: 'LABORATORIO_PARTICIPANTE',
-              targetName: 'Laboratórios Participantes',
-              createdBy: 'Dr. Carlos',
-              blocksProgression: true,
-              consolidationData: null
-            }
-          ],
-          milestones: [
-            { id: 'm1', title: 'Distribuição de amostras', targetDate: '2026-05-25', status: 'pending', isGate: true },
-            { id: 'm2', title: 'Execução experimental', targetDate: '2026-06-15', status: 'pending', isGate: true }
-          ],
-          history: [
-            { timestamp: '2026-05-20T14:00:00Z', actor: 'Dr. Carlos', type: 'transition', description: 'Macroetapa de Execução Experimental iniciada.', origin: 'human' }
+            { timestamp: '2026-05-21T09:00:00Z', actor: 'Dr. Carlos Santos', type: 'assignment', description: 'Atribuída tarefa de codificação ao Dr. Henrique.', origin: 'human' }
           ]
         }
       ],
 
-      setUser: (user) => set({ user }),
-      logout: () => set({ user: null, selectedProcessId: null }),
-      setSelectedProcessId: (id) => set({ selectedProcessId: id }),
-      
-      addProcess: (process) => {
-        const user = get().user
-        const newProcess = {
-          ...process,
-          currentState: 'RASCUNHO',
-          status: 'Rascunho',
-          ownerEmail: user?.email,
-          institution: '',
-          technicalLead: user?.name || '',
-          submissionType: '',
-          scientificArea: '',
-          objective: '',
-          documents: [],
-          iaStatus: 'Pendente',
-          iaScore: 0,
-          bracvamStatus: 'Rascunho',
-          comments: {},
-          participants: [
-            { email: user?.email, name: user?.name, role: 'Proponente', institution: '' }
-          ],
-          sponsor: { name: '', category: '', contact: '', entityType: '', notes: '' },
-          protocol: { 
-            description: '', steps: '', criticalParameters: '', acceptanceCriteria: '', 
-            materials: '', version: '1.0', status: 'draft', updatedAt: null, updatedBy: '' 
-          },
-          planningDemands: [],
-          planningConsolidated: [],
-          milestones: [],
-          history: [
-            { 
-              timestamp: new Date().toISOString(), 
-              actor: user?.name || 'Usuário', 
-              type: 'creation', 
-              description: 'Método criado e rascunho inicial salvo.',
-              origin: 'human'
-            }
-          ]
-        }
-        set((state) => ({ processes: [newProcess, ...state.processes] }))
-      },
-
-      updateProcessData: (id, data) => set((state) => ({
-        processes: state.processes.map(p => p.id === id ? { 
-          ...p, 
-          ...data, 
-          updatedAt: new Date().toISOString().split('T')[0] 
-        } : p)
-      })),
-
-      // Demand Actions
-      updateDemandStatus: (processId, demandId, status) => set((state) => ({
-        processes: state.processes.map(p => {
-          if (p.id !== processId) return p;
-          const updateInArray = (arr) => (arr || []).map(d => d.id === demandId ? { ...d, status } : d);
-          return {
-            ...p,
-            planningDemands: updateInArray(p.planningDemands),
-            executionDemands: updateInArray(p.executionDemands)
-          };
-        })
-      })),
-
-      saveDemandDraft: (processId, demandId, draftData) => set((state) => ({
-        processes: state.processes.map(p => {
-          if (p.id !== processId) return p;
-          const updateInArray = (arr) => (arr || []).map(d => d.id === demandId ? { 
-            ...d, 
-            status: 'IN_PROGRESS', 
-            consolidationData: draftData 
-          } : d);
-          return {
-            ...p,
-            planningDemands: updateInArray(p.planningDemands),
-            executionDemands: updateInArray(p.executionDemands)
-          };
-        })
-      })),
-
-      submitDemandForValidation: (processId, demandId, finalData) => set((state) => ({
-        processes: state.processes.map(p => {
-          if (p.id !== processId) return p;
-          const updateInArray = (arr) => (arr || []).map(d => d.id === demandId ? { 
-            ...d, 
-            status: 'IN_VALIDATION', 
-            consolidationData: finalData 
-          } : d);
-          return {
-            ...p,
-            planningDemands: updateInArray(p.planningDemands),
-            executionDemands: updateInArray(p.executionDemands)
-          };
-        })
-      })),
-
-      consolidateDemand: (processId, demandId) => {
+      addTrialRecord: (processId, trial) => {
         const user = get().user;
         set((state) => ({
-          processes: state.processes.map(p => {
-            if (p.id !== processId) return p;
-            
-            const demand = [...(p.planningDemands || []), ...(p.executionDemands || [])].find(d => d.id === demandId);
-            if (!demand) return p;
-
-            const consolidatedItem = {
+          processes: state.processes.map(p => p.id === processId ? {
+            ...p,
+            trialRecords: [...(p.trialRecords || []), {
+              ...trial,
               id: Math.random().toString(36).substr(2, 9),
-              itemTitle: demand.title,
-              date: new Date().toLocaleDateString('pt-BR'),
-              responsible: user?.name || 'Sistema',
-              origin: demand.targetName
-            };
-
-            return {
-              ...p,
-              planningDemands: (p.planningDemands || []).filter(d => d.id !== demandId),
-              executionDemands: (p.executionDemands || []).filter(d => d.id !== demandId),
-              planningConsolidated: [...(p.planningConsolidated || []), consolidatedItem],
-              history: [...p.history, {
-                timestamp: new Date().toISOString(),
-                actor: user?.name || 'Sistema',
-                type: 'consolidation',
-                description: `Demanda consolidada: ${demand.title}`,
-                origin: 'human'
-              }]
-            };
-          })
+              createdAt: new Date().toISOString(),
+              operator: user?.name
+            }],
+            history: [...p.history, {
+              timestamp: new Date().toISOString(),
+              actor: user?.name || 'Sistema',
+              type: 'trial_record',
+              description: `Novo ensaio registrado para amostra ${trial.blindCode}`,
+              origin: 'human'
+            }]
+          } : p)
         }));
       },
 
-      completePlanningDemand: (processId, demandId, consolidatedItem) => {
-        // Legacy compatibility action - delegates to consolidateDemand
-        get().consolidateDemand(processId, demandId);
+      updateLabConsolidation: (processId, labEmail, data) => {
+        const user = get().user;
+        set((state) => ({
+          processes: state.processes.map(p => p.id === processId ? {
+            ...p,
+            labConsolidations: {
+              ...(p.labConsolidations || {}),
+              [labEmail]: {
+                ...data,
+                updatedAt: new Date().toISOString(),
+                updatedBy: user?.name
+              }
+            },
+            history: [...p.history, {
+              timestamp: new Date().toISOString(),
+              actor: user?.name || 'Sistema',
+              type: 'consolidation',
+              description: `Consolidação final salva pelo laboratório ${labEmail}`,
+              origin: 'human'
+            }]
+          } : p)
+        }));
       },
 
-      addMilestone: (processId, milestone) => set((state) => ({
+      registerMaterialReturn: (processId, labEmail, returnData) => {
+        const user = get().user;
+        set((state) => ({
+          processes: state.processes.map(p => p.id === processId ? {
+            ...p,
+            materialReturns: {
+              ...(p.materialReturns || {}),
+              [labEmail]: {
+                ...returnData,
+                returnedAt: new Date().toISOString()
+              }
+            },
+            history: [...p.history, {
+              timestamp: new Date().toISOString(),
+              actor: user?.name || 'Sistema',
+              type: 'material_return',
+              description: `Registro de devolução de materiais pelo laboratório ${labEmail}`,
+              origin: 'human'
+            }]
+          } : p)
+        }));
+      },
+
+      setUser: (user) => set({ user }),
+      logout: () => set({ user: null, selectedProcessId: null }),
+      setSelectedProcessId: (id) => set({ selectedProcessId: id }),
+
+      addProcess: (process) => set((state) => ({
+        processes: [
+          ...state.processes,
+          {
+            ...process,
+            currentState: process.currentState || 'RASCUNHO',
+            ownerEmail: state.user?.email || '',
+            participants: process.participants || [
+              { email: state.user?.email, name: state.user?.name, role: 'Proponente', institution: 'Indefinida' }
+            ],
+            history: process.history || [
+              { 
+                timestamp: new Date().toISOString(), 
+                actor: state.user?.name || 'Sistema', 
+                type: 'creation', 
+                description: 'Processo iniciado pelo proponente.', 
+                origin: 'human' 
+              }
+            ],
+            comments: process.comments || {},
+            protocol: process.protocol || { description: '', steps: '', criticalParameters: '', acceptanceCriteria: '', materials: '', version: '1.0', status: 'draft', updatedAt: null, updatedBy: '' },
+            documents: process.documents || []
+          }
+        ]
+      })),
+
+      // Advanced Sample Actions
+      setEndpoint: (processId, target) => set((state) => ({
         processes: state.processes.map(p => p.id === processId ? {
           ...p,
-          milestones: [...(p.milestones || []), {
-            ...milestone,
-            id: Math.random().toString(36).substr(2, 9)
-          }],
+          endpoint: { target, isLocked: true },
           history: [...p.history, {
             timestamp: new Date().toISOString(),
             actor: get().user?.name || 'Sistema',
-            type: 'milestone',
-            description: `Milestone adicionado: ${milestone.title}`,
+            type: 'update',
+            description: `Endpoint registrado: ${target}`,
             origin: 'human'
           }]
         } : p)
+      })),
+
+      updateSamples: (processId, samples) => set((state) => ({
+        processes: state.processes.map(p => p.id === processId ? { ...p, samples } : p)
       })),
 
       generateBlindCodes: (processId, demandId, samples) => {
@@ -437,11 +340,21 @@ const useMockStore = create(
         const assignments = [];
         samples.forEach(sample => {
           labs.forEach(lab => {
-            const randomCode = Math.random().toString(36).substring(2, 5).toUpperCase() + '-' + Math.floor(100 + Math.random() * 900);
+            // Generate a non-sequential alphanumeric code (e.g., XPTO59)
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let randomCode = '';
+            for (let i = 0; i < 6; i++) {
+              randomCode += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+
             assignments.push({
+              id: Math.random().toString(36).substr(2, 9),
               sampleId: sample.id,
               labEmail: lab.email,
-              blindCode: randomCode
+              labName: lab.name,
+              blindCode: randomCode,
+              status: 'PENDING', // PENDING, SHIPPED, RECEIVED
+              qrCodeData: `PIVMA-SAMPLE-${randomCode}`
             });
           });
         });
@@ -450,11 +363,110 @@ const useMockStore = create(
           processes: state.processes.map(p => p.id === processId ? {
             ...p,
             samples,
-            blindAssignments: assignments
+            blindAssignments: assignments,
+            history: [...p.history, {
+              timestamp: new Date().toISOString(),
+              actor: user?.name || 'Sistema',
+              type: 'coding',
+              description: `Matriz de cegamento gerada para ${samples.length} substâncias e ${labs.length} laboratórios.`,
+              origin: 'human'
+            }]
           } : p)
         }));
+      },
 
-        get().consolidateDemand(processId, demandId);
+      registerShipment: (processId, labEmail, trackingNumber, documents) => {
+        const user = get().user;
+        set((state) => ({
+          processes: state.processes.map(p => {
+            if (p.id !== processId) return p;
+            
+            const newShipment = {
+              id: Math.random().toString(36).substr(2, 9),
+              labEmail,
+              trackingNumber,
+              documents,
+              status: 'SHIPPED',
+              sentAt: new Date().toISOString(),
+              sentBy: user?.name
+            };
+
+            const updatedAssignments = (p.blindAssignments || []).map(ba => 
+              ba.labEmail === labEmail ? { ...ba, status: 'SHIPPED' } : ba
+            );
+
+            return {
+              ...p,
+              shipments: [...(p.shipments || []), newShipment],
+              blindAssignments: updatedAssignments,
+              history: [...p.history, {
+                timestamp: new Date().toISOString(),
+                actor: user?.name || 'Sistema',
+                type: 'shipment',
+                description: `Kit de amostras enviado para o laboratório ${labEmail}. Rastreio: ${trackingNumber}`,
+                origin: 'human'
+              }]
+            };
+          })
+        }));
+      },
+
+      confirmReceipt: (processId, labEmail, codesReceived) => {
+        const user = get().user;
+        set((state) => ({
+          processes: state.processes.map(p => {
+            if (p.id !== processId) return p;
+
+            const updatedAssignments = (p.blindAssignments || []).map(ba => 
+              (ba.labEmail === labEmail && codesReceived.includes(ba.blindCode)) 
+                ? { ...ba, status: 'RECEIVED', receivedAt: new Date().toISOString() } 
+                : ba
+            );
+
+            const allReceived = updatedAssignments
+              .filter(ba => ba.labEmail === labEmail)
+              .every(ba => ba.status === 'RECEIVED');
+
+            const updatedShipments = (p.shipments || []).map(s => 
+              (s.labEmail === labEmail && allReceived) ? { ...s, status: 'RECEIVED', receivedAt: new Date().toISOString() } : s
+            );
+
+            return {
+              ...p,
+              blindAssignments: updatedAssignments,
+              shipments: updatedShipments,
+              history: [...p.history, {
+                timestamp: new Date().toISOString(),
+                actor: user?.name || 'Sistema',
+                type: 'receipt',
+                description: `Recebimento de amostras confirmado pelo laboratório ${labEmail}.`,
+                origin: 'human'
+              }]
+            };
+          })
+        }));
+      },
+
+      registerOccurrence: (processId, occurrence) => {
+        const user = get().user;
+        set((state) => ({
+          processes: state.processes.map(p => p.id === processId ? {
+            ...p,
+            occurrences: [...(p.occurrences || []), {
+              ...occurrence,
+              id: Math.random().toString(36).substr(2, 9),
+              timestamp: new Date().toISOString(),
+              reportedBy: user?.name
+            }],
+            history: [...p.history, {
+              timestamp: new Date().toISOString(),
+              actor: user?.name || 'Sistema',
+              type: 'occurrence',
+              description: `Ocorrência registrada: ${occurrence.type} na amostra ${occurrence.blindCode}`,
+              origin: 'human'
+            }]
+          } : p)
+        }));
       },
 
       assignParticipant: (processId, participant) => set((state) => ({
@@ -558,6 +570,102 @@ const useMockStore = create(
         } : p)
       })),
 
+      addMilestone: (processId, milestone) => set((state) => ({
+        processes: state.processes.map(p => p.id === processId ? {
+          ...p,
+          milestones: [...(p.milestones || []), {
+            ...milestone,
+            id: Math.random().toString(36).substr(2, 9),
+            updatedAt: new Date().toISOString()
+          }]
+        } : p)
+      })),
+
+      saveDemandDraft: (processId, demandId, data) => set((state) => ({
+        processes: state.processes.map(p => {
+          if (p.id !== processId) return p;
+          const updateDemand = (d) => d.id === demandId ? { ...d, consolidationData: data, status: 'IN_PROGRESS' } : d;
+          return {
+            ...p,
+            planningDemands: (p.planningDemands || []).map(updateDemand),
+            executionDemands: (p.executionDemands || []).map(updateDemand)
+          };
+        })
+      })),
+
+      consolidateDemand: (processId, demandId, data = null) => {
+        const user = get().user;
+        set((state) => ({
+          processes: state.processes.map(p => {
+            if (p.id !== processId) return p;
+            
+            const demand = [...(p.planningDemands || []), ...(p.executionDemands || [])].find(d => d.id === demandId);
+            if (!demand) return p;
+
+            const consolidatedItem = {
+              id: demand.id,
+              itemTitle: demand.title,
+              date: new Date().toISOString().split('T')[0],
+              responsible: user?.name || 'Sistema',
+              origin: 'Plataforma',
+              status: 'CONSOLIDATED',
+              consolidationData: data || demand.consolidationData,
+              consolidatedAt: new Date().toISOString(),
+              consolidatedBy: user?.name
+            };
+
+            const isPlanning = (p.planningDemands || []).some(d => d.id === demandId);
+
+            return {
+              ...p,
+              planningDemands: (p.planningDemands || []).filter(d => d.id !== demandId),
+              executionDemands: (p.executionDemands || []).filter(d => d.id !== demandId),
+              planningConsolidated: isPlanning 
+                ? [...(p.planningConsolidated || []), consolidatedItem]
+                : (p.planningConsolidated || []),
+              history: [...p.history, {
+                timestamp: new Date().toISOString(),
+                actor: user?.name || 'Sistema',
+                type: 'consolidation',
+                description: `Demanda consolidada: ${demand?.title || demandId}`,
+                origin: 'human'
+              }]
+            };
+          })
+        }));
+      },
+
+      submitDemandForValidation: (processId, demandId, data) => {
+        const user = get().user;
+        set((state) => ({
+          processes: state.processes.map(p => {
+            if (p.id !== processId) return p;
+            const updateDemand = (d) => d.id === demandId ? { 
+              ...d, 
+              status: 'SUBMITTED_FOR_VALIDATION', 
+              consolidationData: data,
+              submittedAt: new Date().toISOString(),
+              submittedBy: user?.name
+            } : d;
+
+            const demand = [...(p.planningDemands || []), ...(p.executionDemands || [])].find(d => d.id === demandId);
+
+            return {
+              ...p,
+              planningDemands: (p.planningDemands || []).map(updateDemand),
+              executionDemands: (p.executionDemands || []).map(updateDemand),
+              history: [...p.history, {
+                timestamp: new Date().toISOString(),
+                actor: user?.name || 'Sistema',
+                type: 'submission',
+                description: `Demanda enviada para validação: ${demand?.title || demandId}`,
+                origin: 'human'
+              }]
+            };
+          })
+        }));
+      },
+
       addComment: (processId, fieldId, comment) => {
         const user = get().user;
         const newComment = {
@@ -640,23 +748,41 @@ const useMockStore = create(
       },
 
       submitToTriage: (id) => {
-        get().transitionTo(id, 'SUBMETIDO', 'Submissão realizada para triagem.');
+        const result = get().transitionTo(id, 'SUBMETIDO', 'Submissão realizada para triagem.');
+        
+        if (result?.error) return;
+
+        // Reset IA status for fresh analysis
+        set((state) => ({
+          processes: state.processes.map(p => p.id === id ? { 
+            ...p, 
+            iaStatus: 'Processando...',
+            iaScore: 0,
+            bracvamStatus: 'Aguardando Triagem IA'
+          } : p)
+        }));
 
         // Simulate IA Triage delay
         setTimeout(() => {
+          const process = get().processes.find(p => p.id === id);
+          if (!process || process.currentState !== 'SUBMETIDO') return;
+
           get().transitionTo(
             id, 
             'TRIAGEM_IA', 
-            'IA PiVMA iniciou a análise documental.',
-            'IA PiVMA'
+            'IA Pi*VMA iniciou a análise documental.',
+            'IA Pi*VMA'
           );
 
           setTimeout(() => {
+            const processLatest = get().processes.find(p => p.id === id);
+            if (!processLatest || processLatest.currentState !== 'TRIAGEM_IA') return;
+
             get().transitionTo(
               id, 
               'PENDENTE_AJUSTE', 
               'IA detectou pendência documental (Score: 65%). Falta Protocolo Detalhado.',
-              'IA PiVMA'
+              'IA Pi*VMA'
             );
             
             set((state) => ({
@@ -673,6 +799,10 @@ const useMockStore = create(
 
       updateProcessStatus: (id, status) => set((state) => ({
         processes: state.processes.map(p => p.id === id ? { ...p, status, updatedAt: new Date().toISOString().split('T')[0] } : p)
+      })),
+
+      updateProcessData: (id, data) => set((state) => ({
+        processes: state.processes.map(p => p.id === id ? { ...p, ...data, updatedAt: new Date().toISOString().split('T')[0] } : p)
       })),
 
       addContestation: (id, justification) => {

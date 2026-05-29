@@ -21,7 +21,7 @@ const Sidebar = () => {
       const isActive = currentMacroStage === stage.id;
 
       return (
-        <div 
+        <div
           key={stage.id}
           className={`nav-item ${isActive ? 'active' : ''} ${!unlocked ? 'locked' : ''}`}
           title={unlocked ? '' : 'Etapa bloqueada'}
@@ -58,7 +58,7 @@ const Sidebar = () => {
       <div className="sidebar-top">
         <nav className="sidebar-nav">
           <div className="nav-section-label">Plataforma</div>
-          <div 
+          <div
             className={`nav-item ${!processId && location.pathname.includes('/workspace') ? 'active' : ''}`}
             onClick={() => navigate('/workspace')}
           >
@@ -66,8 +66,8 @@ const Sidebar = () => {
             Dashboard
           </div>
 
-          {['Admin', 'Equipe BraCVAM'].includes(user.role) && (
-            <div 
+          {['Admin', 'Equipe BraCVAM', 'Org. de Validação (Admin)'].includes(user.role) && (
+            <div
               className={`nav-item ${location.pathname.includes('/form-builder') ? 'active' : ''}`}
               onClick={() => navigate('/form-builder')}
             >
@@ -81,20 +81,16 @@ const Sidebar = () => {
               Configuração de Submissão
             </div>
           )}
-          
+
           {processId && (
             <>
               <div className="nav-section-label" style={{ marginTop: '24px' }}>Fluxo do Método</div>
               {renderMacroStages()}
-              
+
               <div className="nav-section-label" style={{ marginTop: '24px' }}>Recursos</div>
               <div className="nav-item">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                 Equipes
-              </div>
-              <div className="nav-item">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                Chat do Processo
               </div>
             </>
           )}

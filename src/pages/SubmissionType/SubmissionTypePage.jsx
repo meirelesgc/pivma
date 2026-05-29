@@ -23,7 +23,29 @@ const SubmissionTypePage = () => {
 
   const selectedTemplate = templates.find(t => t.methodType === selectedType);
 
-  if (step === 'form' && selectedTemplate) {
+  if (step === 'form') {
+    if (!selectedTemplate) {
+      return (
+        <div className="submission-flow">
+          <div className="flow-header">
+            <button className="btn-tiny" onClick={() => setStep('selection')}>← Voltar para seleção</button>
+            <h2>Nova Submissão: {METHOD_TYPES[selectedType].label}</h2>
+          </div>
+          <div className="flow-content modern-card" style={{ padding: '40px', textAlign: 'center' }}>
+            <div style={{ fontSize: '48px', marginBottom: '20px' }}>🚧</div>
+            <h3>Template em Desenvolvimento</h3>
+            <p className="text-secondary">
+              O formulário inteligente para este tipo de submissão ainda está sendo configurado pelo administrador. 
+              Por favor, selecione outro tipo ou entre em contato com o suporte do BraCVAM.
+            </p>
+            <button className="btn btn-secondary" onClick={() => setStep('selection')} style={{ marginTop: '20px' }}>
+              Selecionar outro tipo
+            </button>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="submission-flow">
         <div className="flow-header">

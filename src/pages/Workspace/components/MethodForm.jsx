@@ -15,7 +15,7 @@ const MethodForm = ({ process }) => {
 
   const currentState = process.currentState || 'RASCUNHO';
   const isReadOnly = !['RASCUNHO', 'PENDENTE_AJUSTE'].includes(currentState);
-  const isReviewMode = user.role === 'Admin' && ['SUBMETIDO', 'TRIAGEM_IA', 'CONTESTADO'].includes(currentState);
+  const isReviewMode = ['Admin', 'Org. de Validação (Admin)'].includes(user.role) && ['SUBMETIDO', 'TRIAGEM_IA', 'CONTESTADO'].includes(currentState);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -78,7 +78,7 @@ const MethodForm = ({ process }) => {
 
       <div className="form-header">
         <h3>Etapa A — Dados do Método</h3>
-        {!isReadOnly && user.role === 'Proponente' && (
+        {!isReadOnly && ['Proponente', 'Patrocinador / Proponente'].includes(user.role) && (
           <button className="btn btn-primary btn-small" onClick={handleSubmit}>
             Enviar Submissão
           </button>

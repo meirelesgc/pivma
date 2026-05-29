@@ -6,7 +6,7 @@ const Header = ({ isLight, onThemeToggle, title }) => {
       <div className="header-left">
         <div className="header-logo">
           <div className="logo-icon" />
-          <span className="logo-text">PiVMA</span>
+          <span className="logo-text">Pi*VMA</span>
         </div>
         {title && <h1 className="header-title">{title}</h1>}
       </div>

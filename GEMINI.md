@@ -1,4 +1,4 @@
-# Guia de Documentação de Projeto para Crescimento Sustentável — PiVMA
+# Guia de Documentação de Projeto para Crescimento Sustentável — Pi*VMA
 
 Este documento funciona como o contexto persistente do projeto, o manual operacional da arquitetura, e o guia de decisões técnicas para humanos e ferramentas de inteligência artificial (como Gemini CLI).
 
@@ -6,11 +6,11 @@ Este documento funciona como o contexto persistente do projeto, o manual operaci
 
 ## 1. Visão Geral do Projeto
 
-O PiVMA é uma plataforma regulatória digital para gerenciamento do fluxo de validação de métodos alternativos ao uso de animais, conduzidos pelo BraCVAM. A plataforma é estruturada em macroetapas auditáveis, suportando a colaboração de múltiplos atores (proponentes, laboratórios, especialistas) com controle granular de permissões e isolamento científico (cegamento).
+O Pi*VMA é uma plataforma regulatória digital para gerenciamento do fluxo de validação de métodos alternativos ao uso de animais, conduzidos pelo BraCVAM. A plataforma é estruturada em macroetapas auditáveis, suportando a colaboração de múltiplos atores (proponentes, laboratórios, especialistas) com controle granular de permissões e isolamento científico (cegamento).
 
 ## 2. Arquitetura Geral
 
-O PiVMA evoluiu de um fluxo linear para um ecossistema multiatores. A arquitetura baseia-se nos seguintes pilares:
+O Pi*VMA evoluiu de um fluxo linear para um ecossistema multiatores. A arquitetura baseia-se nos seguintes pilares:
 *   **Machine-State Driven:** O ciclo de vida do método é estritamente controlado por uma máquina de estados (ex: RASCUNHO, SUBMETIDO, TRIAGEM_IA, PLANEJAMENTO).
 *   **Modular por Macroetapa:** A interface e as funcionalidades são divididas por fases lógicas (Submissão, Planejamento, Execução, Revisão).
 *   **Permissões Contextuais (Role-Based Access Control):** A autorização é baseada no papel que o usuário desempenha *naquele método específico*, e não apenas em seu perfil global.

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useMockStore from '../../../store/useMockStore';
+import { METHOD_TYPES } from '../../../modules/formBuilder/store/mockData';
 
 const FormRenderer = ({ template }) => {
   const navigate = useNavigate();
-  const { addProcess } = useMockStore();
+  const { addProcess, user, submitToTriage } = useMockStore();
   const [currentSectionIdx, setCurrentSectionIdx] = useState(0);
   const [showAiResult, setShowAiResult] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
@@ -40,14 +41,36 @@ const FormRenderer = ({ template }) => {
       id,
       name: `Submissão: ${template.name}`,
       updatedAt: new Date().toISOString().split('T')[0],
+      currentState: 'RASCUNHO',
       status: 'Rascunho',
       role: 'Proponente',
+      ownerEmail: user?.email,
+      institution: user?.institution || 'Instituição não informada',
+      technicalLead: user?.name || 'Proponente Externo',
       description: `Método submetido via template ${template.name}`,
-      submissionType: template.methodType,
-      tasks: []
+      submissionType: METHOD_TYPES[template.methodType]?.label || template.name,
+      scientificArea: 'Toxicologia In Vitro',
+      comments: {},
+      planningDemands: [],
+      executionDemands: [],
+      history: [
+        { 
+          timestamp: new Date().toISOString(), 
+          actor: user?.name || 'Proponente', 
+          type: 'creation', 
+          description: 'Rascunho iniciado via formulário inteligente.', 
+          origin: 'human' 
+        }
+      ]
     };
 
     addProcess(newProcess);
+    
+    // Auto-submit after creation to trigger IA flow
+    setTimeout(() => {
+      submitToTriage(id);
+    }, 500);
+
     navigate(`/workspace/${id}`);
   };
 
@@ -163,7 +186,7 @@ const FormRenderer = ({ template }) => {
                   animation: 'slideUp 0.4s ease-out'
                 }}>
                   <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--primary-color)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    Análise da IA PiVMA
+                    Análise da IA Pi*VMA
                   </div>
                   <div style={{ fontSize: '0.9375rem', color: 'var(--text-primary)', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
                     {currentSection.aiPromptConfig.mockPreviewResponse}

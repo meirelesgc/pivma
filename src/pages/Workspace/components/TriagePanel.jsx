@@ -69,7 +69,7 @@ const TriagePanel = ({ process }) => {
           {process.iaStatus === 'Apto' && 'Análise documental preliminar concluída sem bloqueios críticos.'}
         </p>
         
-        {isPendingAjuste && user.role === 'Proponente' && (
+        {isPendingAjuste && ['Proponente', 'Patrocinador / Proponente'].includes(user.role) && (
           <button className="btn btn-secondary btn-tiny" onClick={handleContest} style={{ marginTop: '12px' }}>
             Contestar Análise IA
           </button>
@@ -97,7 +97,7 @@ const TriagePanel = ({ process }) => {
           <span className="label">Autoridade:</span> Equipe BraCVAM (Humano)
         </div>
         
-        {user.role === 'Admin' && !isApto && !isRejected && (
+        {['Admin', 'Org. de Validação (Admin)'].includes(user.role) && !isApto && !isRejected && (
           <div className="decision-actions" style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <button className="btn btn-primary" onClick={() => handleDecision('approve')} style={{ width: '100%' }}>
               Aprovar Método

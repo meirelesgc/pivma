@@ -66,7 +66,7 @@ const Workspace = () => {
 
   // Admin (Equipe BraCVAM) sees everything, others see their own
   const userProcesses = useMemo(() => {
-    let filtered = user.role === 'Admin' 
+    let filtered = ['Admin', 'Org. de Validação (Admin)'].includes(user.role) 
       ? processes 
       : processes.filter(p => p.ownerEmail === user.email || p.participants?.some(part => part.email === user.email));
 
@@ -114,7 +114,7 @@ const Workspace = () => {
 
   // Demands based on role and state
   const userDemands = processes.filter(p => {
-    if (user.role === 'Admin') {
+    if (['Admin', 'Org. de Validação (Admin)'].includes(user.role)) {
       return p.currentState === 'SUBMETIDO' || (p.currentState === 'TRIAGEM_IA' && p.iaStatus === 'Apto');
     } else {
       return (p.ownerEmail === user.email) && (p.currentState === 'PENDENTE_AJUSTE');
@@ -249,7 +249,7 @@ const Workspace = () => {
           </div>
         </div>
 
-        {user.role === 'Proponente' && (
+        {['Proponente', 'Patrocinador / Proponente'].includes(user.role) && (
           <button className="btn btn-primary" onClick={handleNewSubmission} style={{ height: '44px', padding: '0 24px', borderRadius: '12px' }}>
             + Nova Submissão
           </button>
@@ -320,13 +320,13 @@ const Workspace = () => {
                       <div className="demand-info">
                         <div className="process-role" style={{ marginBottom: '8px' }}>{p.role}</div>
                         <h4>
-                          {user.role === 'Admin' 
+                          {['Admin', 'Org. de Validação (Admin)'].includes(user.role) 
                             ? `Validar triagem em: ${p.id}` 
                             : `Ajuste solicitado por IA em: ${p.id}`
                           }
                         </h4>
                         <p>
-                          {user.role === 'Admin'
+                          {['Admin', 'Org. de Validação (Admin)'].includes(user.role)
                             ? 'IA concluiu triagem com sucesso (Score > 80%).'
                             : 'Score de prontidão insuficiente (65%).'
                           }
@@ -334,7 +334,7 @@ const Workspace = () => {
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         <a href="#" className="action-link" onClick={(e) => { e.preventDefault(); navigate(`/workspace/${p.id}`); }}>
-                          {user.role === 'Admin' ? 'Analisar e Aprovar' : 'Ver detalhes e contestar'}
+                          {['Admin', 'Org. de Validação (Admin)'].includes(user.role) ? 'Analisar e Aprovar' : 'Ver detalhes e contestar'}
                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                         </a>
                       </div>

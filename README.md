@@ -1,6 +1,6 @@
-# PiVMA - Plataforma de Validação de Métodos Alternativos
+# Pi*VMA - Plataforma de Validação de Métodos Alternativos
 
-O PiVMA é uma plataforma digital desenvolvida para gerenciar e operacionalizar o fluxo regulatório e científico de validação de métodos alternativos ao uso de animais, em conformidade com as diretrizes do BraCVAM (Centro Brasileiro para Validação de Métodos Alternativos).
+O Pi*VMA é uma plataforma digital desenvolvida para gerenciar e operacionalizar o fluxo regulatório e científico de validação de métodos alternativos ao uso de animais, em conformidade com as diretrizes do BraCVAM (Centro Brasileiro para Validação de Métodos Alternativos).
 
 ## 🚀 Visão Geral
 
@@ -16,7 +16,7 @@ A plataforma evoluiu de um fluxo linear de submissão para um ecossistema multia
 
 ## 🏗️ Arquitetura do Sistema
 
-O PiVMA baseia-se em três pilares fundamentais:
+O Pi*VMA baseia-se em três pilares fundamentais:
 
 1.  **Máquina de Estados:** Controle rigoroso do ciclo de vida do método, desde o rascunho até a decisão final.
 2.  **Papéis Contextuais:** Gestão de responsabilidades específica por processo (ex: um usuário pode ser Estatístico no Método A e Coordenador no Método B).

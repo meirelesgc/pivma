@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { INITIAL_PROTOCOL_STATE } from './protocolDefinitionMock';
 
-const useProtocolDefinitionStore = create((set, get) => ({
+const useProtocolDefinitionStore = create((set) => ({
   ...INITIAL_PROTOCOL_STATE,
   activeStep: 0,
   selectedSheetId: null,

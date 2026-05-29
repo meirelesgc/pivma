@@ -59,13 +59,9 @@ const Workspace = () => {
     setSelectedProcessId(processId || null)
   }, [processId, setSelectedProcessId])
 
-  if (!user) {
-    navigate('/login')
-    return null
-  }
-
   // Admin (Equipe BraCVAM) sees everything, others see their own
   const userProcesses = useMemo(() => {
+    if (!user) return [];
     let filtered = ['Admin', 'Org. de Validação (Admin)'].includes(user.role) 
       ? processes 
       : processes.filter(p => p.ownerEmail === user.email || p.participants?.some(part => part.email === user.email));
@@ -86,10 +82,10 @@ const Workspace = () => {
       if (sortBy === 'id') return a.id.localeCompare(b.id);
       return new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0);
     });
-  }, [processes, user.role, user.email, searchTerm, sortBy]);
+  }, [processes, user, searchTerm, sortBy]);
 
   const groupedProcesses = useMemo(() => {
-    if (viewMode !== 'columns') return null;
+    if (viewMode !== 'columns' || !user) return null;
 
     if (groupBy === 'stage') {
       const stages = Object.values(MACRO_STAGES).sort((a, b) => a.order - b.order);
@@ -110,10 +106,11 @@ const Workspace = () => {
     }
 
     return null;
-  }, [viewMode, groupBy, userProcesses]);
+  }, [viewMode, groupBy, userProcesses, user]);
 
   // Demands based on role and state
   const userDemands = processes.filter(p => {
+    if (!user) return false;
     if (['Admin', 'Org. de Validação (Admin)'].includes(user.role)) {
       return p.currentState === 'SUBMETIDO' || (p.currentState === 'TRIAGEM_IA' && p.iaStatus === 'Apto');
     } else {
@@ -122,6 +119,11 @@ const Workspace = () => {
   })
 
   const selectedProcess = processes.find(p => p.id === processId)
+
+  if (!user) {
+    navigate('/login')
+    return null
+  }
 
   const handleNewSubmission = () => {
     navigate('/new-submission')

@@ -251,6 +251,78 @@ const useMockStore = create(
         }));
       },
 
+      uploadTemplateSubmission: (processId, sheetId, fileData) => {
+        const user = get().user;
+        const submissionId = Math.random().toString(36).substr(2, 9);
+        
+        set((state) => ({
+          processes: state.processes.map(p => p.id === processId ? {
+            ...p,
+            templateSubmissions: [
+              ...(p.templateSubmissions || []),
+              {
+                id: submissionId,
+                sheetId,
+                fileName: fileData.name,
+                fileSize: fileData.size,
+                status: 'VALIDATING',
+                uploadedAt: new Date().toISOString(),
+                uploadedBy: user?.name,
+                labEmail: user?.email,
+                validationLogs: []
+              }
+            ],
+            history: [...p.history, {
+              timestamp: new Date().toISOString(),
+              actor: user?.name || 'Sistema',
+              type: 'upload',
+              description: `Template uploaded: ${fileData.name} for sheet ${sheetId}`,
+              origin: 'human'
+            }]
+          } : p)
+        }));
+
+        // Simulate validation delay
+        setTimeout(() => {
+          get().validateTemplateSubmission(processId, submissionId);
+        }, 2000);
+      },
+
+      validateTemplateSubmission: (processId, submissionId) => {
+        set((state) => ({
+          processes: state.processes.map(p => {
+            if (p.id !== processId) return p;
+            
+            const submission = (p.templateSubmissions || []).find(s => s.id === submissionId);
+            if (!submission) return p;
+
+            // Mock validation logic
+            const hasErrors = Math.random() > 0.7; // 30% chance of error
+            const logs = [
+              { type: 'structural', message: 'Verificação de abas obrigatórias: OK', status: 'success' },
+              { type: 'syntactic', message: 'Validação de tipos de dados: OK', status: 'success' },
+            ];
+
+            if (hasErrors) {
+              logs.push({ type: 'semantic', message: 'Erro de replicata: Diferença entre R1 e R2 superior ao limite de 15%', status: 'error' });
+            } else {
+              logs.push({ type: 'semantic', message: 'Consistência experimental validada', status: 'success' });
+            }
+
+            return {
+              ...p,
+              templateSubmissions: p.templateSubmissions.map(s => 
+                s.id === submissionId ? { 
+                  ...s, 
+                  status: hasErrors ? 'VALIDATION_FAILED' : 'VALIDATED',
+                  validationLogs: logs 
+                } : s
+              )
+            };
+          })
+        }));
+      },
+
       updateLabConsolidation: (processId, labEmail, data) => {
         const user = get().user;
         set((state) => ({
@@ -513,7 +585,7 @@ const useMockStore = create(
         });
       },
 
-      assignGroupRole: (processId, groupRoleName, demandId) => {
+      assignGroupRole: (processId, groupRoleName) => {
         // In the MVP, assigning to a group means the demand target is set to GROUP
         // This is already handled by the Demand contract, but we can add a history log here
         const user = get().user;

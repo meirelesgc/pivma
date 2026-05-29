@@ -4,7 +4,7 @@ import { MOCK_TEMPLATES } from './mockData';
 
 const useFormBuilderStore = create(
   persist(
-    (set, get) => ({
+    (set) => ({
       templates: MOCK_TEMPLATES,
       selectedTemplateId: MOCK_TEMPLATES[0]?.id || null,
 

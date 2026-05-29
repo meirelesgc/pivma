@@ -32,9 +32,9 @@ const PlanningStage = ({ process }) => {
             </div>
           </div>
         </div>
-        <DemandsList 
-          process={process} 
-          activeDemandId={activeDemandId} 
+        <DemandsList
+          process={process}
+          activeDemandId={activeDemandId}
           onSelectDemand={setActiveDemandId}
           horizontal={true}
         />

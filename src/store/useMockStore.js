@@ -94,6 +94,21 @@ const useMockStore = create(
               createdBy: 'contato@bracvam.gov.br',
               blocksProgression: true,
               consolidationData: null
+            },
+            { 
+              id: 'd-carlos-004', 
+              type: 'protocol-definition', 
+              title: 'Definir Protocolo Padronizado de Teste', 
+              description: 'Elaborar o protocolo técnico detalhado que será seguido por todos os laboratórios.',
+              status: 'PENDING',
+              createdAt: '2026-05-29T10:00:00Z',
+              dueDate: '2026-06-10T18:00:00Z',
+              targetType: 'USER',
+              targetId: 'carlos@gestor.com',
+              targetName: 'Dr. Carlos Santos',
+              createdBy: 'contato@bracvam.gov.br',
+              blocksProgression: true,
+              consolidationData: null
             }
           ],
           planningConsolidated: [],

@@ -102,3 +102,86 @@ O acesso não depende apenas do login, mas da combinação de:
 *   [ ] **Etapa E (Análise Estatística):** Módulo dedicado ao profissional Estatístico.
 *   [ ] **Etapa G (Peer Review):** Interface para os Avaliadores Ad Hoc interagirem de forma cega com o dossiê consolidado.
 *   [ ] Refatorar a pasta `src/pages/Workspace` separando os componentes em diretórios por domínio dentro de `src/modules/...` conforme o projeto escala.
+
+---
+
+## 12. Estrutura de Objeto do Processo (Domínio)
+
+Abaixo a especificação técnica do objeto `process` que centraliza o estado de um método de validação, conforme implementado na `useMockStore.js`:
+
+```javascript
+{
+  "id": "BRA-2026-XXX",        // Identificador único regulatório
+  "name": "string",            // Nome do método em validação
+  "currentState": "string",    // ID do estado (ex: 'PLANEJAMENTO')
+  "status": "string",          // Label legível (ex: 'Em Planejamento')
+  "ownerEmail": "string",      // E-mail do proponente original
+  "institution": "string",     // Instituição proponente
+  "technicalLead": "string",   // Responsável técnico principal
+  
+  // Metadados de Triagem e Revisão
+  "iaStatus": "string",        // Status retornado pela IA (Apto, Pendente)
+  "iaScore": "number",         // Score de prontidão (0-100)
+  "bracvamStatus": "string",   // Status institucional BraCVAM
+  "comments": {                // Dicionário de comentários por campo
+    "fieldId": [ { "id": "...", "author": "...", "text": "...", "status": "pending|resolved" } ]
+  },
+
+  // Governança e Papéis (GD34)
+  "participants": [
+    { 
+      "email": "string", 
+      "name": "string", 
+      "role": "string",        // Papel contextual: LABORATORIO_LIDER, GESTOR_AMOSTRAS, etc.
+      "institution": "string",
+      "status": "string"       // active, pending_invite
+    }
+  ],
+
+  // Protocolo e Dados Técnicos
+  "protocol": {
+    "version": "string",
+    "status": "draft|approved",
+    "description": "string",
+    "steps": "string",
+    "criticalParameters": "string",
+    "materials": "string"
+  },
+
+  // Workflow e Demandas (Regulatory Gates)
+  "planningDemands": [],       // Demandas ativas da macroetapa de Planejamento
+  "executionDemands": [],      // Demandas ativas da macroetapa de Execução
+  "planningConsolidated": [],  // Histórico de demandas já validadas e fechadas
+  
+  // Rastreabilidade e Auditoria (Audit Trail)
+  "history": [
+    { 
+      "timestamp": "ISO8601", 
+      "actor": "string", 
+      "type": "string",        // transition, assignment, submission, consolidation
+      "description": "string",
+      "origin": "human|system"
+    }
+  ],
+
+  // Gestão de Amostras e Cegamento (Etapas C/D)
+  "blindAssignments": [
+    { "id": "...", "labEmail": "...", "blindCode": "...", "status": "SHIPPED|RECEIVED" }
+  ],
+  "samples": [],               // Lista de substâncias (visível apenas para Gestor de Amostras)
+  "shipments": [],             // Rastreio de kits enviados
+  "occurrences": [],           // Ocorrências e desvios relatados pelos labs
+  "endpoint": { "target": "string", "isLocked": "boolean" },
+
+  // Execução e Resultados (Etapas D/E)
+  "trialRecords": [],          // Registros de ensaios experimentais (ensaios realizados)
+  "labConsolidations": {},     // Consolidação final por laboratório { email: data }
+  "materialReturns": {},       // Registro de devolução de materiais { email: data }
+  "milestones": []             // Marcos temporais do cronograma
+}
+```
+
+### Regras de Integridade:
+1. **Unicidade de Papel:** Alguns papéis (como Coordenador ou Lab Líder) devem ser únicos por processo.
+2. **Regulatory Gates:** A transição de macroetapa (`transitionTo`) exige que todas as demandas com `blocksProgression: true` estejam no estado `CONSOLIDATED`.
+3. **Imutabilidade do Histórico:** O array `history` deve ser apenas de apensamento (append-only), nunca editado.

@@ -1,6 +1,15 @@
 import RoleAssignment from './RoleAssignment'
 import MacroSchedule from './MacroSchedule'
 import SampleCodingModule from './SampleCodingModule'
+import ProtocolDefinition from './ProtocolDefinition'
+
+// Registry of demand components for modularity
+const DEMAND_COMPONENTS = {
+  'role-assignment': RoleAssignment,
+  'macro-schedule': MacroSchedule,
+  'sample-coding': SampleCodingModule,
+  'protocol-definition': ProtocolDefinition
+}
 
 const DemandsList = ({ process, activeDemandId, onSelectDemand, horizontal = false }) => {
   if (!process.planningDemands || process.planningDemands.length === 0) {
@@ -43,31 +52,33 @@ const DemandsList = ({ process, activeDemandId, onSelectDemand, horizontal = fal
 
 // Sub-component to render the specific form based on demand type
 DemandsList.Renderer = ({ demand, process, onComplete }) => {
-  switch (demand.type) {
-    case 'role-assignment':
-      return <RoleAssignment process={process} demand={demand} onComplete={onComplete} />
-    case 'macro-schedule':
-      return <MacroSchedule process={process} demand={demand} onComplete={onComplete} />
-    case 'experimental-submission':
-      return (
-        <div className="empty-workspace-state">
-          <h3>Fluxo Experimental Estruturado</h3>
-          <p className="text-secondary">
-            Esta demanda agora é processada através do novo <strong>Módulo de Execução Experimental</strong>. 
-            Utilize o dashboard principal de execução para realizar os registros.
-          </p>
-        </div>
-      )
-    case 'sample-coding':
-      return <SampleCodingModule process={process} demand={demand} onComplete={onComplete} />
-    default:
-      return (
-        <div className="empty-workspace-state">
-          <h3>Tipo de demanda não suportado</h3>
-          <p className="text-secondary">O componente para {demand.type} ainda não foi implementado.</p>
-        </div>
-      )
+  const Component = DEMAND_COMPONENTS[demand.type]
+
+  if (Component) {
+    return <Component process={process} demand={demand} onComplete={onComplete} />
   }
+
+  // Handle specialized redirections or unimplemented types
+  if (demand.type === 'experimental-submission') {
+    return (
+      <div className="empty-workspace-state">
+        <div className="empty-icon" style={{ background: '#fff7e6', color: '#fa8c16' }}>🔬</div>
+        <h3>Módulo de Execução Direta</h3>
+        <p className="text-secondary">
+          Esta demanda é processada através do <strong>Dashboard de Execução Experimental</strong>. 
+          Por favor, utilize o fluxo de trabalho principal da Etapa D.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="empty-workspace-state">
+      <div className="empty-icon">⚠️</div>
+      <h3>Tipo de demanda não suportado</h3>
+      <p className="text-secondary">O componente para <strong>{demand.type}</strong> ainda não foi mapeado no sistema.</p>
+    </div>
+  )
 }
 
 export default DemandsList

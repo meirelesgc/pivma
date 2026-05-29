@@ -19,7 +19,7 @@ const getStatusClass = (status, stateId) => {
 }
 
 const ProcessCard = ({ process, onClick, className = '' }) => (
-  <div 
+  <div
     className={`modern-card process-card ${className}`}
     onClick={() => onClick(process.id)}
     style={{ cursor: 'pointer' }}
@@ -49,9 +49,9 @@ const Workspace = () => {
   const navigate = useNavigate()
   const { processId } = useParams()
   const { user, processes, setSelectedProcessId } = useMockStore()
-  
+
   const [viewMode, setViewMode] = useState('grid') // 'grid' | 'columns'
-  const [groupBy, setGroupBy] = useState('stage') // 'stage' | 'role'
+  const [groupBy, setGroupBy] = useState('stage') // 'stage' | 'role' | 'triage_kanban'
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState('updated') // 'updated' | 'name' | 'id'
 
@@ -62,15 +62,15 @@ const Workspace = () => {
   // Admin (Equipe BraCVAM) sees everything, others see their own
   const userProcesses = useMemo(() => {
     if (!user) return [];
-    let filtered = ['Admin', 'Org. de Validação (Admin)'].includes(user.role) 
-      ? processes 
+    let filtered = ['Admin', 'Org. de Validação (Admin)'].includes(user.role)
+      ? processes
       : processes.filter(p => p.ownerEmail === user.email || p.participants?.some(part => part.email === user.email));
 
     // Apply Search
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(p => 
-        p.name.toLowerCase().includes(term) || 
+      filtered = filtered.filter(p =>
+        p.name.toLowerCase().includes(term) ||
         p.id.toLowerCase().includes(term) ||
         p.technicalLead?.toLowerCase().includes(term)
       );
@@ -86,6 +86,36 @@ const Workspace = () => {
 
   const groupedProcesses = useMemo(() => {
     if (viewMode !== 'columns' || !user) return null;
+
+    if (groupBy === 'triage_kanban') {
+      // Specialized view for BraCVAM: Only methods in Macroetapa 1 (Submissão e Triagem)
+      const submissionMethods = userProcesses.filter(p =>
+        ['SUBMETIDO', 'TRIAGEM_IA', 'PENDENTE_AJUSTE', 'APTO', 'NAO_ELEGIVEL'].includes(p.currentState)
+      );
+
+      return [
+        {
+          id: 'ai_triage',
+          label: 'Processamento IA',
+          items: submissionMethods.filter(p => p.currentState === 'SUBMETIDO' || p.currentState === 'TRIAGEM_IA')
+        },
+        {
+          id: 'pending_bracvam',
+          label: 'Aguardando',
+          items: submissionMethods.filter(p => p.currentState === 'TRIAGEM_IA' && p.iaStatus === 'Apto')
+        },
+        {
+          id: 'document_pending',
+          label: 'Pendência Documental',
+          items: submissionMethods.filter(p => p.currentState === 'PENDENTE_AJUSTE')
+        },
+        {
+          id: 'triage_concluded',
+          label: 'Triagem Concluída',
+          items: submissionMethods.filter(p => p.currentState === 'APTO' || p.currentState === 'NAO_ELEGIVEL')
+        }
+      ];
+    }
 
     if (groupBy === 'stage') {
       const stages = Object.values(MACRO_STAGES).sort((a, b) => a.order - b.order);
@@ -137,8 +167,8 @@ const Workspace = () => {
       <main className="workspace-content">
         <div className="content-top-bar">
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <button 
-              className="btn btn-secondary" 
+            <button
+              className="btn btn-secondary"
               onClick={() => navigate('/workspace')}
               style={{ padding: '8px 12px', borderRadius: '8px' }}
             >
@@ -181,13 +211,13 @@ const Workspace = () => {
       <div className="content-top-bar">
         <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
           <h2 style={{ margin: 0 }}>Seus Métodos</h2>
-          
+
           <div className="view-controls">
             <div className="control-group search-box-wrapper">
               <svg className="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-              <input 
-                type="text" 
-                placeholder="Buscar por nome ou ID..." 
+              <input
+                type="text"
+                placeholder="Buscar por nome ou ID..."
                 className="search-input"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -197,14 +227,14 @@ const Workspace = () => {
             <div className="control-group">
               <span className="control-label">Vista:</span>
               <div className="btn-toggle-group">
-                <button 
+                <button
                   className={`btn-toggle ${viewMode === 'grid' ? 'active' : ''}`}
                   onClick={() => setViewMode('grid')}
                   title="Vista em Cartões"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                 </button>
-                <button 
+                <button
                   className={`btn-toggle ${viewMode === 'columns' ? 'active' : ''}`}
                   onClick={() => setViewMode('columns')}
                   title="Vista em Colunas"
@@ -217,7 +247,7 @@ const Workspace = () => {
             {viewMode === 'grid' && (
               <div className="control-group">
                 <span className="control-label">Ordenar:</span>
-                <select 
+                <select
                   className="sort-select"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
@@ -231,20 +261,28 @@ const Workspace = () => {
 
             {viewMode === 'columns' && (
               <div className="control-group">
-                <span className="control-label">Agrupar por:</span>
+                <span className="control-label">Tipo de Visualização:</span>
                 <div className="btn-toggle-group">
-                  <button 
+                  <button
                     className={`btn-toggle ${groupBy === 'stage' ? 'active' : ''}`}
                     onClick={() => setGroupBy('stage')}
                   >
-                    Etapa
+                    Por Etapa
                   </button>
-                  <button 
+                  <button
                     className={`btn-toggle ${groupBy === 'role' ? 'active' : ''}`}
                     onClick={() => setGroupBy('role')}
                   >
-                    Função
+                    Por Função
                   </button>
+                  {['Admin', 'Equipe BraCVAM', 'Org. de Validação (Admin)'].includes(user.role) && (
+                    <button
+                      className={`btn-toggle ${groupBy === 'triage_kanban' ? 'active' : ''}`}
+                      onClick={() => setGroupBy('triage_kanban')}
+                    >
+                      Fluxo de Triagem
+                    </button>
+                  )}
                 </div>
               </div>
             )}
@@ -262,7 +300,7 @@ const Workspace = () => {
         <div className="left-panel">
           <section className="processes-section">
             <h3 className="section-title">Fluxo de Validação</h3>
-            
+
             {viewMode === 'grid' ? (
               <div className="process-grid">
                 {userProcesses.map(p => (
@@ -308,7 +346,7 @@ const Workspace = () => {
                 <div className="modern-card simulation-context">
                   <h5>Visualização de {user.role}</h5>
                   <p className="text-small">
-                    Você está visualizando apenas os métodos em que atua como **{user.role}**. 
+                    Você está visualizando apenas os métodos em que atua como **{user.role}**.
                     O sistema filtra automaticamente sua área de trabalho para garantir o foco nas suas responsabilidades.
                   </p>
                 </div>
@@ -322,8 +360,8 @@ const Workspace = () => {
                       <div className="demand-info">
                         <div className="process-role" style={{ marginBottom: '8px' }}>{p.role}</div>
                         <h4>
-                          {['Admin', 'Org. de Validação (Admin)'].includes(user.role) 
-                            ? `Validar triagem em: ${p.id}` 
+                          {['Admin', 'Org. de Validação (Admin)'].includes(user.role)
+                            ? `Validar triagem em: ${p.id}`
                             : `Ajuste solicitado por IA em: ${p.id}`
                           }
                         </h4>

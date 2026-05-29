@@ -1,10 +1,10 @@
 import { Outlet } from 'react-router-dom';
 import Header from '../components/Header/Header';
 
-const MainLayout = ({ isLight, onThemeToggle }) => {
+const MainLayout = ({ isDark, onThemeToggle }) => {
   return (
     <div className="app-shell">
-      <Header isLight={isLight} onThemeToggle={onThemeToggle} />
+      <Header isDark={isDark} onThemeToggle={onThemeToggle} />
       <div className="app-viewport">
         <Outlet />
       </div>

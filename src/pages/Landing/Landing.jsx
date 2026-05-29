@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import './Landing.css';
 
-const Landing = ({ isLight, onThemeToggle }) => {
+const Landing = ({ isDark, onThemeToggle }) => {
   return (
     <div className="landing-container scrollable-view">
       {/* Seção Principal (Hero) */}
@@ -60,9 +60,7 @@ const Landing = ({ isLight, onThemeToggle }) => {
         </div>
         <button className="footer-theme-toggle" onClick={onThemeToggle}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            {isLight ? (
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            ) : (
+            {isDark ? (
               <>
                 <circle cx="12" cy="12" r="5"></circle>
                 <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -74,9 +72,11 @@ const Landing = ({ isLight, onThemeToggle }) => {
                 <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
                 <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
               </>
+            ) : (
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
             )}
           </svg>
-          Tema {isLight ? 'Escuro' : 'Claro'}
+          Tema {isDark ? 'Claro' : 'Escuro'}
         </button>
       </footer>
     </div>

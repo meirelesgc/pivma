@@ -10,35 +10,35 @@ import PrivateLayout from './layouts/PrivateLayout'
 import './App.css'
 
 export default function App() {
-  const [isLight, setIsLight] = useState(() => {
-    return localStorage.getItem('theme') === 'light'
+  const [isDark, setIsDark] = useState(() => {
+    return localStorage.getItem('theme') === 'dark'
   })
 
   useEffect(() => {
-    if (isLight) {
-      document.body.classList.add('theme-light')
-      localStorage.setItem('theme', 'light')
-    } else {
-      document.body.classList.remove('theme-light')
+    if (isDark) {
+      document.body.classList.add('theme-dark')
       localStorage.setItem('theme', 'dark')
+    } else {
+      document.body.classList.remove('theme-dark')
+      localStorage.setItem('theme', 'light')
     }
-  }, [isLight])
+  }, [isDark])
 
-  const onThemeToggle = () => setIsLight(!isLight)
+  const onThemeToggle = () => setIsDark(!isDark)
 
   return (
     <Router basename={import.meta.env.BASE_URL}>
       <Routes>
         {/* Global Layout (Root) */}
-        <Route element={<MainLayout isLight={isLight} onThemeToggle={onThemeToggle} />}>
+        <Route element={<MainLayout isDark={isDark} onThemeToggle={onThemeToggle} />}>
           {/* Public Routes */}
-          <Route path="/" element={<Landing isLight={isLight} onThemeToggle={onThemeToggle} />} />
+          <Route path="/" element={<Landing isDark={isDark} onThemeToggle={onThemeToggle} />} />
           <Route path="/login" element={<Login />} />
           
           {/* Private Routes with Sidebar */}
           <Route element={<PrivateLayout />}>
-            <Route path="/workspace" element={<Workspace isLight={isLight} onThemeToggle={onThemeToggle} />} />
-            <Route path="/workspace/:processId" element={<Workspace isLight={isLight} onThemeToggle={onThemeToggle} />} />
+            <Route path="/workspace" element={<Workspace isDark={isDark} onThemeToggle={onThemeToggle} />} />
+            <Route path="/workspace/:processId" element={<Workspace isDark={isDark} onThemeToggle={onThemeToggle} />} />
             <Route path="/form-builder" element={<FormBuilderPage />} />
             <Route path="/new-submission" element={<SubmissionTypePage />} />
           </Route>

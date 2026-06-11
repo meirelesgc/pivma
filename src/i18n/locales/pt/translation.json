@@ -1,0 +1,28 @@
+{
+  "login": {
+    "title": "Acessar Plataforma",
+    "emailLabel": "E-mail",
+    "passwordLabel": "Senha",
+    "submitButton": "Entrar",
+    "instruction": "Selecione um usuário para entrar:",
+    "errorLoading": "Erro ao carregar usuários",
+    "loginAs": "Entrar como {{name}}"
+  },
+  "reception": {
+    "welcomeMessage": "Bem-vindo ao BraCVAM",
+    "instructions": "Plataforma de Inspeção de Veículos e Ativos Móveis",
+    "accessButton": "Acessar a Plataforma"
+  },
+  "dashboard": {
+    "header": "Dashboard BraCVAM",
+    "welcome": "Olá, {{name}}",
+    "logout": "Sair",
+    "loggedArea": "Área Logada",
+    "successMessage": "Você acessou a plataforma com sucesso! Aqui ficarão as funcionalidades restritas.",
+    "metricsSection": "Métricas",
+    "recentActivity": "Atividade"
+  },
+  "common": {
+    "loading": "Carregando..."
+  }
+}

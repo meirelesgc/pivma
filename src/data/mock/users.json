@@ -2,11 +2,13 @@
   {
     "id": 1,
     "name": "João Silva",
-    "email": "joao@email.com"
+    "email": "joao@email.com",
+    "systemRole": "admin"
   },
   {
     "id": 2,
     "name": "Maria Souza",
-    "email": "maria@email.com"
+    "email": "maria@email.com",
+    "systemRole": "default"
   }
 ]

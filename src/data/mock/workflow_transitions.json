@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "workflow_id": 1,
+        "from_node_id": 1,
+        "condition_type": "always",
+        "condition_value": null,
+        "to_node_id": 2
+    },
+    {
+        "id": 2,
+        "workflow_id": 1,
+        "from_node_id": 2,
+        "condition_type": "decision",
+        "condition_value": "approved",
+        "to_node_id": 3
+    },
+    {
+        "id": 3,
+        "workflow_id": 1,
+        "from_node_id": 2,
+        "condition_type": "decision",
+        "condition_value": "rejected",
+        "to_node_id": 1
+    }
+]

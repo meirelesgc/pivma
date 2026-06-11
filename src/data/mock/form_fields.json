@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "form_id": 1,
+        "label": "Nome do Método",
+        "field_type": "text",
+        "required": true,
+        "sort_order": 1
+    },
+    {
+        "id": 2,
+        "form_id": 1,
+        "label": "Descrição",
+        "field_type": "textarea",
+        "required": true,
+        "sort_order": 2
+    },
+    {
+        "id": 3,
+        "form_id": 1,
+        "label": "Protocolo",
+        "field_type": "file",
+        "required": true,
+        "sort_order": 3
+    }
+]

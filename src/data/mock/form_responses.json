@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "process_instance_id": 1,
+        "field_id": 1,
+        "value": "Método XYZ"
+    },
+    {
+        "id": 2,
+        "process_instance_id": 1,
+        "field_id": 2,
+        "value": "Descrição detalhada"
+    }
+]

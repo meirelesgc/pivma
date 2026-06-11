@@ -1,6 +1,6 @@
 import { Layout, Menu, Typography, Avatar, Button, Flex, Divider } from 'antd'
-import { 
-  AppstoreOutlined, 
+import {
+  AppstoreOutlined,
   LogoutOutlined,
   UserOutlined
 } from '@ant-design/icons'
@@ -26,19 +26,19 @@ export function Sidebar() {
       type: 'group',
       children: [
         {
-          key: '/dashboard',
+          key: '/workspace',
           icon: <AppstoreOutlined />,
-          label: t('layout.sidebar.dashboard'),
+          label: t('layout.sidebar.workspace'),
         },
       ],
     },
   ]
 
   return (
-    <Sider 
-      width={260} 
-      theme="light" 
-      style={{ 
+    <Sider
+      width={260}
+      theme="light"
+      style={{
         borderRight: '1px solid var(--border-color)',
         height: 'calc(100vh - 64px)',
         position: 'fixed',
@@ -59,9 +59,9 @@ export function Sidebar() {
 
         <div style={{ padding: '16px', borderTop: '1px solid var(--border-color)' }}>
           <Flex align="center" gap={12} style={{ marginBottom: 16 }}>
-            <Avatar 
-              size="large" 
-              icon={<UserOutlined />} 
+            <Avatar
+              size="large"
+              icon={<UserOutlined />}
               style={{ backgroundColor: 'var(--primary-color)' }}
             >
               {user.name?.charAt(0)}
@@ -71,19 +71,19 @@ export function Sidebar() {
               <Text type="secondary" style={{ fontSize: 12 }} ellipsis>{user.email}</Text>
             </Flex>
           </Flex>
-          
-          <Button 
-            type="text" 
-            danger 
-            icon={<LogoutOutlined />} 
+
+          <Button
+            type="text"
+            danger
+            icon={<LogoutOutlined />}
             onClick={() => {
               logout()
               navigate('/')
             }}
             block
-            style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
+            style={{
+              display: 'flex',
+              alignItems: 'center',
               justifyContent: 'flex-start',
               height: 40,
               borderRadius: 'var(--radius-m)'

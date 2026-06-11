@@ -24,10 +24,13 @@ export function MainLayout() {
           <Content 
             style={{ 
               minHeight: 'calc(100vh - 64px)',
-              overflowY: 'auto'
+              overflowY: 'auto',
+              padding: user ? '32px' : '0',
+              display: 'flex',
+              flexDirection: 'column'
             }}
           >
-            <div className="fade-in">
+            <div className="fade-in" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
               <Outlet />
             </div>
           </Content>

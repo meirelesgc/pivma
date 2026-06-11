@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { ConfigProvider } from 'antd'
 import { ReceptionPage } from './pages/Reception'
 import { LoginPage } from './pages/Login'
-import { DashboardPage } from './pages/Dashboard'
+import { WorkspacePage } from './pages/Workspace'
 import { PrivateRoute } from './components/PrivateRoute'
 import { MainLayout } from './components/MainLayout'
 import './App.css'
@@ -43,7 +43,7 @@ function App() {
 
             {/* Rotas Privadas */}
             <Route element={<PrivateRoute />}>
-              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/workspace" element={<WorkspacePage />} />
             </Route>
           </Route>
 

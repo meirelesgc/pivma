@@ -34,8 +34,8 @@
       "themeToggleLight": "Light Theme"
     }
   },
-  "dashboard": {
-    "header": "BraCVAM Dashboard",
+  "workspace": {
+    "header": "BraCVAM Workspace",
     "welcome": "Hello, {{name}}",
     "logout": "Logout",
     "loggedArea": "Logged Area",
@@ -53,7 +53,7 @@
     },
     "sidebar": {
       "platform": "Platform",
-      "dashboard": "Dashboard",
+      "workspace": "Workspace",
       "logout": "Logout"
     }
   }

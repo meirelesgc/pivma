@@ -12,9 +12,9 @@ export function LoginPage() {
   const navigate = useNavigate()
   const { t } = useTranslation()
 
-  // Se já estiver logado, redireciona para o dashboard
+  // Se já estiver logado, redireciona para o workspace
   if (currentUser) {
-    navigate('/dashboard')
+    navigate('/workspace')
   }
 
   if (error) {

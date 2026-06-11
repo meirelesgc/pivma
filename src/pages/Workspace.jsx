@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
-import { useProcesses } from '../hooks/useProcesses'
+import { useProcesses, useCreateProcess } from '../hooks/useProcesses'
 import {
   Typography,
   Tag,
@@ -69,12 +69,23 @@ const ProcessCard = ({ process, onClick }) => {
 export function WorkspacePage() {
   const { user } = useAuth()
   const { data: processes, isLoading } = useProcesses(user?.id)
+  const createMutation = useCreateProcess()
   const [searchTerm, setSearchTerm] = useState('')
 
   const filteredProcesses = processes?.filter(p =>
     p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     p.id.toString().includes(searchTerm)
   )
+
+  const handleCreateProcess = () => {
+    if (!user?.id) return
+
+    createMutation.mutate({
+      processTypeId: 1,
+      userId: user.id,
+      title: `Novo Método - ${new Date().toLocaleTimeString()}`
+    })
+  }
 
   const handleCardClick = (id) => {
     console.log('Navegar para', id)
@@ -93,7 +104,7 @@ export function WorkspacePage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             variant="filled"
-            style={{ 
+            style={{
               borderRadius: 'var(--radius-pill)',
               width: '300px',
               backgroundColor: 'var(--background-tertiary)'
@@ -105,6 +116,8 @@ export function WorkspacePage() {
           type="primary"
           icon={<PlusOutlined />}
           size="large"
+          loading={createMutation.isPending}
+          onClick={handleCreateProcess}
           style={{
             borderRadius: 'var(--radius-l)',
             height: '44px',
@@ -152,7 +165,12 @@ export function WorkspacePage() {
               }
               image={Empty.PRESENTED_IMAGE_SIMPLE}
             >
-              <Button type="primary" style={{ borderRadius: 'var(--radius-m)' }}>
+              <Button
+                type="primary"
+                style={{ borderRadius: 'var(--radius-m)' }}
+                loading={createMutation.isPending}
+                onClick={handleCreateProcess}
+              >
                 Iniciar Submissão
               </Button>
             </Empty>

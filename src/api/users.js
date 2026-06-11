@@ -1,6 +1,6 @@
-import users from '../data/mock/users.json'
+import * as userService from '../mockDb/services/userService'
 
 export async function getUsers() {
   await new Promise(resolve => setTimeout(resolve, 500))
-  return users
+  return userService.getAllUsers()
 }

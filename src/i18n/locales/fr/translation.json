@@ -9,9 +9,30 @@
     "loginAs": "Se connecter en tant que {{name}}"
   },
   "reception": {
-    "welcomeMessage": "Bienvenue chez BraCVAM",
-    "instructions": "Plateforme d'inspection de véhicules et d'actifs mobiles",
-    "accessButton": "Accéder à la plateforme"
+    "heroLabel": "Plateforme de Validation des Méthodes Alternatives",
+    "heroTitle": "Efficacité et Précision dans la Validation des Méthodes",
+    "heroDescription": "Simplifier le processus de validation des méthodes alternatives avec une collaboration en temps réel, une traçabilité complète et une analyse intelligente des données.",
+    "accessButton": "Accéder à la plateforme",
+    "moreInfoButton": "En savoir plus",
+    "features": {
+      "collaboration": {
+        "title": "Collaboration",
+        "description": "Connectez proposants, laboratoires et experts dans un environnement intégré unique pour une gestion fluide des projets de validation."
+      },
+      "traceability": {
+        "title": "Traçabilité",
+        "description": "Contrôle total de chaque étape du processus, avec enregistrement historique des données, des échantillons et des décisions techniques centralisées."
+      },
+      "transparency": {
+        "title": "Transparence",
+        "description": "Garantie d'intégrité et de visibilité à toutes les étapes, de la soumission initiale à la décision réglementaire finale."
+      }
+    },
+    "footer": {
+      "copyright": "© 2026 BraCVAM - Centre Brésilien de Validation des Méthodes Alternatives",
+      "themeToggleDark": "Thème sombre",
+      "themeToggleLight": "Thème clair"
+    }
   },
   "dashboard": {
     "header": "Tableau de bord BraCVAM",
@@ -24,5 +45,16 @@
   },
   "common": {
     "loading": "Chargement..."
+  },
+  "layout": {
+    "header": {
+      "notifications": "Notifications",
+      "support": "Support"
+    },
+    "sidebar": {
+      "platform": "Plateforme",
+      "dashboard": "Tableau de bord",
+      "logout": "Déconnexion"
+    }
   }
 }

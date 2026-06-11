@@ -1,33 +1,71 @@
 import { useAuth } from '../hooks/useAuth'
-import { Button, Card, Typography, Space, Layout } from 'antd'
+import { Card, Typography, Space, Row, Col, Statistic } from 'antd'
 import { useTranslation } from 'react-i18next'
+import { 
+  BarChartOutlined, 
+  CheckCircleOutlined, 
+  ClockCircleOutlined 
+} from '@ant-design/icons'
 
-const { Header, Content } = Layout
-const { Title, Text } = Typography
+const { Title, Text, Paragraph } = Typography
 
 export function DashboardPage() {
-  const { user, logout } = useAuth()
+  const { user } = useAuth()
   const { t } = useTranslation()
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff', padding: '0 24px' }}>
-        <Title level={4} style={{ margin: 0 }}>{t('dashboard.header')}</Title>
-        <Space>
-          <Text>{t('dashboard.welcome', { name: user?.name })}</Text>
-          <Button onClick={() => logout()}>{t('dashboard.logout')}</Button>
-        </Space>
-      </Header>
-      <Content style={{ padding: '24px' }}>
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <Card title={t('dashboard.loggedArea')}>
-            <Text>{t('dashboard.successMessage')}</Text>
-          </Card>
-          <Card title={t('dashboard.metricsSection')}>
-             {/* Placeholder for metrics */}
-          </Card>
-        </Space>
-      </Content>
-    </Layout>
+    <div style={{ padding: '24px' }}>
+      <Space direction="vertical" size="large" style={{ width: '100%' }}>
+        <div style={{ marginBottom: 8 }}>
+          <Title level={2} style={{ fontFamily: 'var(--font-accent)', margin: 0 }}>
+            {t('dashboard.welcome', { name: user?.name })}
+          </Title>
+          <Text type="secondary">{t('dashboard.successMessage')}</Text>
+        </div>
+
+        <Row gutter={[24, 24]}>
+          <Col xs={24} sm={8}>
+            <Card bordered={false} className="modern-card">
+              <Statistic 
+                title={t('dashboard.metricsSection')}
+                value={12} 
+                prefix={<BarChartOutlined style={{ color: 'var(--primary-color)' }} />} 
+              />
+            </Card>
+          </Col>
+          <Col xs={24} sm={8}>
+            <Card bordered={false} className="modern-card">
+              <Statistic 
+                title={t('dashboard.recentActivity')}
+                value={95} 
+                suffix="%" 
+                prefix={<CheckCircleOutlined style={{ color: 'var(--primary-color)' }} />} 
+              />
+            </Card>
+          </Col>
+          <Col xs={24} sm={8}>
+            <Card bordered={false} className="modern-card">
+              <Statistic 
+                title="Tempo Médio"
+                value={4} 
+                suffix="d" 
+                prefix={<ClockCircleOutlined style={{ color: 'var(--primary-color)' }} />} 
+              />
+            </Card>
+          </Col>
+        </Row>
+
+        <Card 
+          title={<Text strong>{t('dashboard.loggedArea')}</Text>} 
+          bordered={false} 
+          className="modern-card"
+        >
+          <Paragraph>
+            Este é o seu painel de controle da <strong>Plataforma Inteligente de Validação de Métodos Alternativos</strong>.
+            Utilize o menu lateral para navegar entre as diferentes funcionalidades do sistema.
+          </Paragraph>
+        </Card>
+      </Space>
+    </div>
   )
 }

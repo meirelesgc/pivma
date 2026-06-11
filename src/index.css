@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Instrument+Serif:ital,wght@0,400;1,400&display=swap');
+
+:root {
+  /* Common Variables */
+  --primary-color: rgb(0, 156, 59);
+  --primary-color-rgb: 0, 156, 59;
+  --accent-color: var(--primary-color);
+  
+  /* Typography */
+  --font-main: 'Inter', sans-serif;
+  --font-accent: 'Instrument Serif', serif;
+  
+  /* UI Scale */
+  --font-size-smaller: 12px;
+  --font-size-small: 13px;
+  --font-size-medium: 15px;
+  --font-size-large: 20px;
+  
+  /* Weights */
+  --weight-light: 300;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 300; /* Aesthetic choice from provided styles */
+  
+  /* Shapes */
+  --radius-s: 4px;
+  --radius-m: 8px;
+  --radius-l: 12px;
+  --radius-pill: 100vh;
+  
+  /* Shadows */
+  --shadow-s: 0 4px 12px -4px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --shadow-l: 0 14px 62px rgba(0, 0, 0, 0.15);
+  --shadow-tactile: 0 1px 2px rgba(0, 0, 0, 0.04);
+
+  /* Movement & Animations */
+  --transition-curve: cubic-bezier(0.1, 0, 0.1, 1.25);
+  --duration-super-fast: 80ms;
+  --duration-fast: 160ms;
+  --duration-moderate: 320ms;
+  --duration-slow: 480ms;
+  
+  /* Theme Variables (Default Light) */
+  --background-primary: #f9f9f9;
+  --background-secondary: #ffffff;
+  --background-tertiary: #f0f0f0;
+  --border-color: #e0e0e0;
+  
+  --text-primary: #1a1a1a;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  font-weight: var(--weight-light);
+  font-size: var(--font-size-medium);
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-accent);
+  font-weight: var(--weight-regular);
+  color: var(--text-primary);
+}
+
+/* Custom Utilities */
+.modern-card {
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-l);
+  border: 1px solid var(--border-color);
+  padding: 24px;
+  transition: transform var(--duration-moderate) var(--transition-curve), box-shadow var(--duration-moderate) var(--transition-curve);
+}
+
+.modern-card:hover {
+  box-shadow: var(--shadow-s);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn var(--duration-moderate) var(--transition-curve) forwards;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-super-fast: 0ms;
+    --duration-fast: 0ms;
+    --duration-moderate: 0ms;
+    --duration-slow: 0ms;
+  }
+}

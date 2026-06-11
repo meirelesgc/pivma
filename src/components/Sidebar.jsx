@@ -1,4 +1,4 @@
-import { Layout, Menu, Typography, Avatar, Button, Flex, Divider } from 'antd'
+import { Layout, Menu, Typography, Avatar, Button, Flex } from 'antd'
 import {
   AppstoreOutlined,
   LogoutOutlined,

@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getProcessesByUser, createProcess } from '../api/processes'
+import { getProcessesByUser, createProcess, getProcessTypes, getProcessById, getProcessEvents } from '../api/processes'
+
 
 export function useProcesses(userId) {
   return useQuery({
@@ -9,13 +10,37 @@ export function useProcesses(userId) {
   })
 }
 
+export function useProcessTypes() {
+  return useQuery({
+    queryKey: ['processTypes'],
+    queryFn: getProcessTypes
+  })
+}
+
 export function useCreateProcess() {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: createProcess,
-    onSuccess: (_, variables) => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['processes', variables.userId] })
     }
   })
 }
+
+export function useProcessDetails(processId) {
+  return useQuery({
+    queryKey: ['process', processId],
+    queryFn: () => getProcessById(Number(processId)),
+    enabled: !!processId
+  })
+}
+
+export function useProcessEvents(processId) {
+  return useQuery({
+    queryKey: ['processEvents', processId],
+    queryFn: () => getProcessEvents(Number(processId)),
+    enabled: !!processId
+  })
+}
+

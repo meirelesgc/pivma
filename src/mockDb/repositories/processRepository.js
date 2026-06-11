@@ -9,7 +9,6 @@ export function findById(id) {
 }
 
 export function findByUserId(userId) {
-  // Encontra IDs de processos onde o usuário é participante
   const processIds = db.processParticipants
     .filter(p => p.user_id === userId)
     .map(p => p.process_instance_id)

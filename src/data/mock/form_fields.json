@@ -1,26 +1,32 @@
 [
-    {
-        "id": 1,
-        "form_id": 1,
-        "label": "Nome do Método",
-        "field_type": "text",
-        "required": true,
-        "sort_order": 1
-    },
-    {
-        "id": 2,
-        "form_id": 1,
-        "label": "Descrição",
-        "field_type": "textarea",
-        "required": true,
-        "sort_order": 2
-    },
-    {
-        "id": 3,
-        "form_id": 1,
-        "label": "Protocolo",
-        "field_type": "file",
-        "required": true,
-        "sort_order": 3
-    }
+  {
+    "id": 1,
+    "form_id": 1,
+    "label": "Nome do Método",
+    "field_name": "method_name",
+    "field_type": "text",
+    "required": true,
+    "placeholder": "Digite o nome oficial do método",
+    "sort_order": 1
+  },
+  {
+    "id": 2,
+    "form_id": 1,
+    "label": "Objetivo",
+    "field_name": "objective",
+    "field_type": "textarea",
+    "required": true,
+    "placeholder": "Descreva o objetivo principal deste método",
+    "sort_order": 2
+  },
+  {
+    "id": 3,
+    "form_id": 1,
+    "label": "Descrição Detalhada",
+    "field_name": "description",
+    "field_type": "textarea",
+    "required": true,
+    "placeholder": "Forneça uma descrição técnica detalhada",
+    "sort_order": 3
+  }
 ]

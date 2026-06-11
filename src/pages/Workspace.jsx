@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useProcesses, useCreateProcess } from '../hooks/useProcesses'
 import {
@@ -67,6 +68,7 @@ const ProcessCard = ({ process, onClick }) => {
 }
 
 export function WorkspacePage() {
+  const navigate = useNavigate()
   const { user } = useAuth()
   const { data: processes, isLoading } = useProcesses(user?.id)
   const createMutation = useCreateProcess()
@@ -78,17 +80,11 @@ export function WorkspacePage() {
   )
 
   const handleCreateProcess = () => {
-    if (!user?.id) return
-
-    createMutation.mutate({
-      processTypeId: 1,
-      userId: user.id,
-      title: `Novo Método - ${new Date().toLocaleTimeString()}`
-    })
+    navigate('/workspace/new-submission')
   }
 
   const handleCardClick = (id) => {
-    console.log('Navegar para', id)
+    navigate(`/workspace/processes/${id}`)
   }
 
   return (

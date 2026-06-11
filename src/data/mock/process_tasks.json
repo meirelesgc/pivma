@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "stage_id": 1,
+    "name": "Dados Gerais",
+    "task_type": "form",
+    "form_id": 1,
+    "sort_order": 1
+  },
+  {
+    "id": 2,
+    "stage_id": 1,
+    "name": "Documentação",
+    "task_type": "document_upload",
+    "sort_order": 2
+  },
+  {
+    "id": 3,
+    "stage_id": 1,
+    "name": "Resumo e Submissão",
+    "task_type": "form_summary",
+    "sort_order": 3
+  },
+  {
+    "id": 4,
+    "stage_id": 1,
+    "name": "Avaliação IA",
+    "task_type": "ai_review",
+    "sort_order": 4
+  },
+  {
+    "id": 5,
+    "stage_id": 1,
+    "name": "Aprovação BRACVAM",
+    "task_type": "approval",
+    "sort_order": 5
+  }
+]

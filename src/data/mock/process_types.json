@@ -3,14 +3,12 @@
         "id": 1,
         "name": "Método 100% novo",
         "description": "Método novo já desenvolvido",
-        "workflow_id": 1,
         "active": true
     },
     {
         "id": 2,
         "name": "Nova aplicação",
         "description": "Método validado com nova aplicação",
-        "workflow_id": 2,
         "active": true
     }
 ]

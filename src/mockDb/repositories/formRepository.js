@@ -20,3 +20,7 @@ export function saveResponse(response) {
 export function findResponsesByProcess(processId) {
   return db.formResponses.filter(r => r.process_instance_id === processId)
 }
+
+export function findAiRulesByField(fieldId) {
+  return db.fieldAiRules.filter(rule => rule.field_id === fieldId)
+}

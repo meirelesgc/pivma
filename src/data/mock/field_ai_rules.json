@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "field_id": 1,
+        "enabled": true,
+        "rule": "minimum_length",
+        "value": "500"
+    },
+    {
+        "id": 2,
+        "field_id": 2,
+        "enabled": true,
+        "rule": "required_keywords",
+        "value": "protocolo,validação,controle"
+    }
+]

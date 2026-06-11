@@ -1,10 +1,8 @@
 [
-    {
-        "id": 1,
-        "name": "Método Novo"
-    },
-    {
-        "id": 2,
-        "name": "Nova Aplicação"
-    }
+  {
+    "id": 1,
+    "name": "Dados Gerais",
+    "description": "Informações básicas sobre o método alternativo em desenvolvimento ou validação.",
+    "submit_label": "Salvar e Continuar"
+  }
 ]

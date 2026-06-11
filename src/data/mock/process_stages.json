@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "process_type_id": 1,
+        "name": "Submissão e Triagem",
+        "sort_order": 1,
+        "requires_admin_approval": true
+    },
+    {
+        "id": 2,
+        "process_type_id": 1,
+        "name": "Planejamento",
+        "sort_order": 2,
+        "requires_admin_approval": true
+    }
+]

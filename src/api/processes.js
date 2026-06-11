@@ -7,6 +7,11 @@ export async function getProcessesByUser(userId) {
   return processService.getUserProcesses(userId)
 }
 
+export async function getProcessTypes() {
+  await new Promise(resolve => setTimeout(resolve, 300))
+  return processService.getProcessTypes()
+}
+
 export async function createProcess(data) {
   await new Promise(resolve => setTimeout(resolve, 500))
 
@@ -18,3 +23,9 @@ export async function getProcessById(id) {
 
   return processService.getProcessDetails(id)
 }
+
+export async function getProcessEvents(processId) {
+  await new Promise(resolve => setTimeout(resolve, 300))
+  return processService.getProcessEvents(processId)
+}
+

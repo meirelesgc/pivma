@@ -3,6 +3,8 @@ import { ConfigProvider } from 'antd'
 import { ReceptionPage } from './pages/Reception'
 import { LoginPage } from './pages/Login'
 import { WorkspacePage } from './pages/Workspace'
+import { NewSubmissionPage } from './pages/NewSubmission'
+import { ProcessDetailsPage } from './pages/ProcessDetails'
 import { PrivateRoute } from './components/PrivateRoute'
 import { MainLayout } from './components/MainLayout'
 import './App.css'
@@ -44,6 +46,8 @@ function App() {
             {/* Rotas Privadas */}
             <Route element={<PrivateRoute />}>
               <Route path="/workspace" element={<WorkspacePage />} />
+              <Route path="/workspace/new-submission" element={<NewSubmissionPage />} />
+              <Route path="/workspace/processes/:id" element={<ProcessDetailsPage />} />
             </Route>
           </Route>
 

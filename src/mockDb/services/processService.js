@@ -107,14 +107,23 @@ export async function createProcess({
   // 5. Criar TaskInstances para todas as tarefas da etapa inicial (primeira como pending, outras como locked)
   const stageTasks = taskRepository.findTasksByStage(firstStage.id)
   stageTasks.forEach((t, index) => {
-    taskInstanceRepository.create({
+    const isPending = index === 0
+    const taskData = {
       stage_instance_id: stageInstanceId,
       process_instance_id: processId,
       task_id: t.id,
-      status: index === 0 ? 'pending' : 'locked',
-      started_at: index === 0 ? new Date().toISOString() : null,
+      status: isPending ? 'pending' : 'locked',
+      started_at: isPending ? new Date().toISOString() : null,
       completed_at: null
-    })
+    }
+
+    if (isPending && t.due_days) {
+      const dueDate = new Date()
+      dueDate.setDate(dueDate.getDate() + t.due_days)
+      taskData.due_date = dueDate.toISOString()
+    }
+
+    taskInstanceRepository.create(taskData)
   })
 
   return process
@@ -141,7 +150,9 @@ export async function getProcessDetails(id) {
       viewer_roles: def?.viewer_roles || [],
       editor_roles: def?.editor_roles || [],
       approver_roles: def?.approver_roles || [],
-      target_role_id: def?.target_role_id || null
+      target_role_id: def?.target_role_id || null,
+      depends_on: def?.depends_on || [],
+      due_days: def?.due_days || null
     }
   }).sort((a, b) => a.sort_order - b.sort_order)
 

@@ -9,7 +9,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [1],
     "approver_roles": [4],
-    "requires_approval": false
+    "requires_approval": false,
+    "depends_on": [],
+    "due_days": 10
   },
   {
     "id": 2,
@@ -20,7 +22,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [1],
     "approver_roles": [4],
-    "requires_approval": false
+    "requires_approval": false,
+    "depends_on": [1],
+    "due_days": 10
   },
   {
     "id": 3,
@@ -31,7 +35,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [1],
     "approver_roles": [4],
-    "requires_approval": false
+    "requires_approval": false,
+    "depends_on": [2],
+    "due_days": 5
   },
   {
     "id": 4,
@@ -42,7 +48,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [1],
     "approver_roles": [4],
-    "requires_approval": false
+    "requires_approval": false,
+    "depends_on": [3],
+    "due_days": 1
   },
   {
     "id": 5,
@@ -53,7 +61,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [4],
     "approver_roles": [4],
-    "requires_approval": false
+    "requires_approval": false,
+    "depends_on": [4],
+    "due_days": 7
   },
   {
     "id": 6,
@@ -65,7 +75,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [1],
     "approver_roles": [4],
-    "requires_approval": false
+    "requires_approval": false,
+    "depends_on": [],
+    "due_days": 15
   },
   {
     "id": 7,
@@ -77,7 +89,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [1],
     "approver_roles": [4],
-    "requires_approval": false
+    "requires_approval": false,
+    "depends_on": [6],
+    "due_days": 15
   },
   {
     "id": 8,
@@ -89,7 +103,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [1],
     "approver_roles": [4],
-    "requires_approval": false
+    "requires_approval": false,
+    "depends_on": [7],
+    "due_days": 10
   },
   {
     "id": 9,
@@ -101,7 +117,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [4],
     "approver_roles": [4],
-    "requires_approval": false
+    "requires_approval": false,
+    "depends_on": [8],
+    "due_days": 30
   },
   {
     "id": 10,
@@ -113,7 +131,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [3],
     "approver_roles": [4],
-    "requires_approval": true
+    "requires_approval": true,
+    "depends_on": [8],
+    "due_days": 30
   },
   {
     "id": 11,
@@ -125,7 +145,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [3],
     "approver_roles": [4],
-    "requires_approval": true
+    "requires_approval": true,
+    "depends_on": [8],
+    "due_days": 30
   },
   {
     "id": 12,
@@ -137,7 +159,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [3],
     "approver_roles": [4],
-    "requires_approval": true
+    "requires_approval": true,
+    "depends_on": [8],
+    "due_days": 30
   },
   {
     "id": 13,
@@ -149,7 +173,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [3],
     "approver_roles": [4],
-    "requires_approval": true
+    "requires_approval": true,
+    "depends_on": [8],
+    "due_days": 30
   },
   {
     "id": 14,
@@ -161,7 +187,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [3],
     "approver_roles": [4],
-    "requires_approval": true
+    "requires_approval": true,
+    "depends_on": [8],
+    "due_days": 30
   },
   {
     "id": 15,
@@ -173,7 +201,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [3],
     "approver_roles": [4],
-    "requires_approval": true
+    "requires_approval": true,
+    "depends_on": [8],
+    "due_days": 30
   },
   {
     "id": 16,
@@ -184,7 +214,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [3],
     "approver_roles": [4],
-    "requires_approval": true
+    "requires_approval": true,
+    "depends_on": [8],
+    "due_days": 30
   },
   {
     "id": 17,
@@ -196,7 +228,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [3],
     "approver_roles": [4],
-    "requires_approval": true
+    "requires_approval": true,
+    "depends_on": [8],
+    "due_days": 30
   },
   {
     "id": 18,
@@ -208,7 +242,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [3],
     "approver_roles": [4],
-    "requires_approval": true
+    "requires_approval": true,
+    "depends_on": [8],
+    "due_days": 30
   },
   {
     "id": 19,
@@ -220,7 +256,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [3],
     "approver_roles": [4],
-    "requires_approval": true
+    "requires_approval": true,
+    "depends_on": [8],
+    "due_days": 30
   },
   {
     "id": 20,
@@ -232,7 +270,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [3],
     "approver_roles": [4],
-    "requires_approval": true
+    "requires_approval": true,
+    "depends_on": [8],
+    "due_days": 30
   },
   {
     "id": 21,
@@ -244,7 +284,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [3],
     "approver_roles": [4],
-    "requires_approval": true
+    "requires_approval": true,
+    "depends_on": [8],
+    "due_days": 30
   },
   {
     "id": 22,
@@ -256,7 +298,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [3],
     "approver_roles": [4],
-    "requires_approval": true
+    "requires_approval": true,
+    "depends_on": [8],
+    "due_days": 30
   },
   {
     "id": 23,
@@ -268,7 +312,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [3],
     "approver_roles": [4],
-    "requires_approval": true
+    "requires_approval": true,
+    "depends_on": [8],
+    "due_days": 30
   },
   {
     "id": 24,
@@ -280,7 +326,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [3],
     "approver_roles": [4],
-    "requires_approval": true
+    "requires_approval": true,
+    "depends_on": [8],
+    "due_days": 30
   },
   {
     "id": 25,
@@ -292,7 +340,9 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [1, 2],
     "approver_roles": [4],
-    "requires_approval": true
+    "requires_approval": true,
+    "depends_on": [8],
+    "due_days": 30
   },
   {
     "id": 26,
@@ -303,6 +353,10 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [4],
     "approver_roles": [4],
-    "requires_approval": false
+    "requires_approval": false,
+    "depends_on": [
+      9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25
+    ],
+    "due_days": 7
   }
 ]

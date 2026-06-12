@@ -31,28 +31,53 @@ async function advanceWorkflowAfterCompletion(taskInstance, currentTask, userId)
     await logEvent(processInstance.id, userId, 'approval', 'Etapa de Submissão e Triagem aprovada pela BRACVAM.')
   }
 
-  // 2. Encontrar a próxima tarefa do processo que está bloqueada
+  // 2. Encontrar todas as instâncias de tarefas do processo
   const processTaskInstances = taskInstanceRepository.findByProcess(processInstance.id)
-  const allTasks = taskRepository.findTasksByStage(currentTask.stage_id)
-  const nextTaskDef = allTasks.find(t => t.sort_order > currentTask.sort_order)
+  const stageTaskInstances = processTaskInstances.filter(ti => ti.stage_instance_id === stageInstance.id)
 
-  if (nextTaskDef) {
-    const nextTaskInstance = processTaskInstances.find(ti => ti.task_id === nextTaskDef.id)
-    if (nextTaskInstance) {
-      taskInstanceRepository.update(nextTaskInstance.id, {
+  // 3. Atualizar tarefas bloqueadas cujas dependências foram todas cumpridas
+  const lockedInstances = stageTaskInstances.filter(ti => ti.status === 'locked')
+  lockedInstances.forEach(ti => {
+    const tDef = db.processTasks.find(pt => pt.id === ti.task_id)
+    const dependsOn = tDef?.depends_on || []
+    
+    const depsSatisfied = dependsOn.every(depId => {
+      const depInstance = processTaskInstances.find(inst => inst.task_id === depId)
+      return depInstance && depInstance.status === 'completed'
+    })
+
+    if (depsSatisfied) {
+      const updateData = {
         status: 'pending',
         started_at: new Date().toISOString()
-      })
+      }
+      if (tDef?.due_days) {
+        const dueDate = new Date()
+        dueDate.setDate(dueDate.getDate() + tDef.due_days)
+        updateData.due_date = dueDate.toISOString()
+      }
+      taskInstanceRepository.update(ti.id, updateData)
     }
+  })
+
+  // Recarregar instâncias após as atualizações
+  const updatedStageTaskInstances = taskInstanceRepository.findByProcess(processInstance.id)
+    .filter(ti => ti.stage_instance_id === stageInstance.id)
+
+  const incompleteInstances = updatedStageTaskInstances.filter(ti => ti.status !== 'completed')
+
+  if (incompleteInstances.length > 0) {
+    const nextPending = incompleteInstances.find(ti => ti.status === 'pending' || ti.status === 'in_progress')
+    const nextTaskToShow = nextPending || incompleteInstances[0]
 
     processRepository.update(processInstance.id, {
-      current_task_id: nextTaskDef.id,
+      current_task_id: nextTaskToShow.task_id,
       updated_at: new Date().toISOString()
     })
 
-    return { nextTaskId: nextTaskInstance?.id, finished: false }
+    return { nextTaskId: nextTaskToShow.id, finished: false }
   } else {
-    // Não há mais tarefas nesta etapa
+    // Não há mais tarefas nesta etapa (todas concluídas)
     stageRepository.updateStageInstance(stageInstance.id, {
       status: 'completed',
       completed_at: new Date().toISOString()
@@ -74,26 +99,52 @@ async function advanceWorkflowAfterCompletion(taskInstance, currentTask, userId)
       })
 
       const nextStageTasks = taskRepository.findTasksByStage(nextStageDef.id)
-      
-      nextStageTasks.forEach((tDef, idx) => {
-        taskInstanceRepository.create({
+      let firstPendingTaskId = null
+
+      nextStageTasks.forEach((tDef) => {
+        const dependsOn = tDef.depends_on || []
+        const depsSatisfied = dependsOn.every(depId => {
+          const depInstance = db.taskInstances.find(inst => inst.process_instance_id === processInstance.id && inst.task_id === depId)
+          return depInstance && depInstance.status === 'completed'
+        })
+
+        const status = depsSatisfied ? 'pending' : 'locked'
+        const started_at = depsSatisfied ? new Date().toISOString() : null
+
+        const instanceData = {
           stage_instance_id: nextStageInstanceId,
           process_instance_id: processInstance.id,
           task_id: tDef.id,
-          status: idx === 0 ? 'pending' : 'locked',
-          started_at: idx === 0 ? new Date().toISOString() : null,
+          status,
+          started_at,
           completed_at: null
-        })
+        }
+
+        if (depsSatisfied && tDef.due_days) {
+          const dueDate = new Date()
+          dueDate.setDate(dueDate.getDate() + tDef.due_days)
+          instanceData.due_date = dueDate.toISOString()
+        }
+
+        taskInstanceRepository.create(instanceData)
+
+        if (depsSatisfied && !firstPendingTaskId) {
+          firstPendingTaskId = tDef.id
+        }
       })
 
-      const firstTaskOfNextStage = nextStageTasks[0]
+      if (!firstPendingTaskId && nextStageTasks.length > 0) {
+        firstPendingTaskId = nextStageTasks[0].id
+      }
+
       processRepository.update(processInstance.id, {
         current_stage_id: nextStageDef.id,
-        current_task_id: firstTaskOfNextStage ? firstTaskOfNextStage.id : null,
+        current_task_id: firstPendingTaskId,
         updated_at: new Date().toISOString()
       })
 
       await logEvent(processInstance.id, userId, 'stage_completed', `Etapa "${currentStageObj.name}" concluída. Transição para etapa "${nextStageDef.name}".`)
+      return { finished: false }
     } else {
       processRepository.update(processInstance.id, {
         status: 'completed',
@@ -101,9 +152,8 @@ async function advanceWorkflowAfterCompletion(taskInstance, currentTask, userId)
         updated_at: new Date().toISOString()
       })
       await logEvent(processInstance.id, userId, 'process_completed', 'Processo de validação concluído.')
+      return { finished: true }
     }
-
-    return { finished: true }
   }
 }
 

@@ -87,9 +87,30 @@ export function ProcessDetailsPage() {
     return 'Proponente'
   }
 
-  const getDeadline = (taskType) => {
-    if (taskType === 'approval') return '7 dias úteis'
+  const getDeadline = (task) => {
+    if (task.due_date) {
+      return new Date(task.due_date).toLocaleDateString('pt-BR')
+    }
+    if (task.due_days) {
+      return `${task.due_days} dias`
+    }
+    if (task.task_type === 'approval') return '7 dias úteis'
     return 'Imediato'
+  }
+
+  const getDependencyStatusMessage = (task, allProcessTasks) => {
+    if (!task.depends_on || task.depends_on.length === 0) return null
+    
+    const incompleteDeps = task.depends_on
+      .map(depId => allProcessTasks.find(pt => pt.task_id === depId))
+      .filter(depTask => depTask && depTask.status !== 'completed')
+
+    if (incompleteDeps.length === 0) return null
+
+    if (incompleteDeps.length === 1) {
+      return `Aguardando: ${incompleteDeps[0].name}`
+    }
+    return `Aguardando ${incompleteDeps.length} tarefas`
   }
 
   const getStatusTag = (status) => {
@@ -211,7 +232,8 @@ export function ProcessDetailsPage() {
                         if (!isLocked) {
                           setSelectedTaskId(t.task_id)
                         } else {
-                          message.warning('Esta tarefa está bloqueada. Conclua as anteriores primeiro.')
+                          const depMsg = getDependencyStatusMessage(t, process.tasks)
+                          message.warning(depMsg || 'Esta tarefa está bloqueada. Conclua as anteriores primeiro.')
                         }
                       }}>
                       <Flex vertical gap={12}>
@@ -224,9 +246,15 @@ export function ProcessDetailsPage() {
                           </Flex>
                           <Divider style={{ margin: '8px 0' }} />
                           <Flex vertical gap={2}>
-                            <Text type="secondary" style={{ fontSize: '11px' }}>
-                              Prazo: <Text strong style={{ fontSize: '11px' }}>{getDeadline(t.task_type)}</Text>
-                            </Text>
+                            {isLocked ? (
+                              <Text type="danger" style={{ fontSize: '11px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={getDependencyStatusMessage(t, process.tasks)}>
+                                {getDependencyStatusMessage(t, process.tasks) || 'Bloqueada'}
+                              </Text>
+                            ) : (
+                              <Text type="secondary" style={{ fontSize: '11px' }}>
+                                Prazo: <Text strong style={{ fontSize: '11px' }}>{getDeadline(t)}</Text>
+                              </Text>
+                            )}
                             <Text type="secondary" style={{ fontSize: '11px' }}>
                               Resp: <Text strong style={{ fontSize: '11px' }}>{getResponsibility(t.task_type)}</Text>
                             </Text>

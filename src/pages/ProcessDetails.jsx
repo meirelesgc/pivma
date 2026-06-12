@@ -54,10 +54,10 @@ export function ProcessDetailsPage() {
   const visibleTasks = process?.tasks?.filter(t => !t.viewer_roles || t.viewer_roles.includes(myRoleId)) || []
 
   React.useEffect(() => {
-    if (process && !selectedTaskId) {
+    if (process) {
       setSelectedTaskId(process.current_task_id)
     }
-  }, [process, selectedTaskId])
+  }, [process?.current_task_id])
 
   if (isLoading) {
     return (

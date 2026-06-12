@@ -2,7 +2,6 @@ import { useAuth } from '../hooks/useAuth'
 import { useUsers } from '../hooks/useUsers'
 import { Button, Card, Typography, Space, List, Alert, Flex } from 'antd'
 import { useNavigate } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 
 const { Title, Text } = Typography
 
@@ -10,7 +9,6 @@ export function LoginPage() {
   const { data: users, isLoading: isLoadingUsers, error } = useUsers()
   const { login, user: currentUser } = useAuth()
   const navigate = useNavigate()
-  const { t } = useTranslation()
 
   // Se já estiver logado, redireciona para o workspace
   if (currentUser) {
@@ -20,7 +18,7 @@ export function LoginPage() {
   if (error) {
     return (
       <Flex justify="center" align="center" style={{ minHeight: 'calc(100vh - 64px)', padding: '24px' }}>
-        <Alert message={t('login.errorLoading')} type="error" showIcon />
+        <Alert message="Erro ao carregar usuários" type="error" showIcon />
       </Flex>
     )
   }
@@ -35,9 +33,9 @@ export function LoginPage() {
         <Space direction="vertical" size="large" style={{ width: '100%', textAlign: 'center' }}>
           <div>
             <Title level={2} style={{ fontFamily: 'var(--font-accent)', margin: 0 }}>
-              {t('login.title')}
+              Acessar Plataforma
             </Title>
-            <Text type="secondary">{t('login.instruction')}</Text>
+            <Text type="secondary">Selecione um usuário para entrar:</Text>
           </div>
 
           <List
@@ -58,7 +56,7 @@ export function LoginPage() {
                     fontSize: 16
                   }}
                 >
-                  {t('login.loginAs', { name: user.name })}
+                  Entrar como {user.name}
                 </Button>
               </List.Item>
             )}

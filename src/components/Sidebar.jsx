@@ -5,7 +5,6 @@ import {
   UserOutlined
 } from '@ant-design/icons'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 import { useAuth } from '../hooks/useAuth'
 
 const { Sider } = Layout
@@ -14,7 +13,6 @@ const { Text } = Typography
 export function Sidebar() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { t } = useTranslation()
   const { user, logout } = useAuth()
 
   if (!user) return null
@@ -22,13 +20,13 @@ export function Sidebar() {
   const menuItems = [
     {
       key: 'platform-label',
-      label: t('layout.sidebar.platform'),
+      label: 'Plataforma',
       type: 'group',
       children: [
         {
           key: '/workspace',
           icon: <AppstoreOutlined />,
-          label: t('layout.sidebar.workspace'),
+          label: 'Área de trabalho',
         },
       ],
     },
@@ -89,7 +87,7 @@ export function Sidebar() {
               borderRadius: 'var(--radius-m)'
             }}
           >
-            {t('layout.sidebar.logout')}
+            Sair da Conta
           </Button>
         </div>
       </Flex>

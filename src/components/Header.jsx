@@ -1,17 +1,10 @@
-import { Layout, Typography, Space, Button, Badge, Radio } from 'antd'
+import { Layout, Typography, Space, Button, Badge } from 'antd'
 import { BellOutlined, QuestionCircleOutlined } from '@ant-design/icons'
-import { useTranslation } from 'react-i18next'
 
 const { Header: AntHeader } = Layout
 const { Text, Title } = Typography
 
 export function Header({ title }) {
-  const { t, i18n } = useTranslation()
-
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng)
-  }
-
   return (
     <AntHeader
       style={{
@@ -62,8 +55,6 @@ export function Header({ title }) {
       </div>
 
       <Space size="large">
-
-
         <Space size="middle">
           <Button
             type="text"
@@ -71,7 +62,7 @@ export function Header({ title }) {
             style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-secondary)' }}
           >
             <Text type="secondary" style={{ fontSize: 'var(--font-size-small)' }}>
-              {t('layout.header.notifications')}
+              Notificações
             </Text>
           </Button>
           <Button
@@ -80,21 +71,10 @@ export function Header({ title }) {
             style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-secondary)' }}
           >
             <Text type="secondary" style={{ fontSize: 'var(--font-size-small)' }}>
-              {t('layout.header.support')}
+              Suporte
             </Text>
           </Button>
         </Space>
-        <Radio.Group
-          value={i18n.language}
-          onChange={(e) => changeLanguage(e.target.value)}
-          size="small"
-          optionType="button"
-          buttonStyle="solid"
-        >
-          <Radio.Button value="pt">🇧🇷</Radio.Button>
-          <Radio.Button value="en">🇺🇸</Radio.Button>
-          <Radio.Button value="fr">🇫🇷</Radio.Button>
-        </Radio.Group>
       </Space>
     </AntHeader>
   )

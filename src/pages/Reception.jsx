@@ -1,6 +1,5 @@
 import { Typography, Button, Row, Col, Card, Space, Flex } from 'antd'
 import { useNavigate } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 import { 
   RightOutlined, 
   InfoCircleOutlined, 
@@ -13,7 +12,6 @@ const { Title, Paragraph, Text } = Typography
 
 export function ReceptionPage() {
   const navigate = useNavigate()
-  const { t } = useTranslation()
 
   return (
     <Flex vertical style={{ background: 'var(--background-secondary)' }}>
@@ -35,7 +33,7 @@ export function ReceptionPage() {
           marginBottom: 16,
           fontSize: 'var(--font-size-smaller)'
         }}>
-          {t('reception.heroLabel')}
+          Plataforma de Validação de Métodos Alternativos
         </Text>
         <Title level={1} style={{ 
           fontSize: 'clamp(2.5rem, 5vw, 4rem)', 
@@ -44,7 +42,7 @@ export function ReceptionPage() {
           fontFamily: 'var(--font-accent)',
           fontWeight: 'var(--weight-regular)'
         }}>
-          {t('reception.heroTitle')}
+          Eficiência e Precisão na Validação de Métodos
         </Title>
         <Paragraph style={{ 
           fontSize: 'var(--font-size-large)', 
@@ -54,7 +52,7 @@ export function ReceptionPage() {
           lineHeight: 1.4,
           fontWeight: 'var(--weight-light)'
         }}>
-          {t('reception.heroDescription')}
+          Simplificando o processo de validação de métodos alternativos com colaboração em tempo real, rastreabilidade completa e análise inteligente de dados.
         </Paragraph>
         <Space size="large">
           <Button 
@@ -71,7 +69,7 @@ export function ReceptionPage() {
               boxShadow: 'var(--shadow-tactile)'
             }}
           >
-            {t('reception.accessButton')}
+            Acessar a Plataforma
           </Button>
           <Button 
             size="large" 
@@ -85,7 +83,7 @@ export function ReceptionPage() {
               background: 'var(--background-secondary)'
             }}
           >
-            {t('reception.moreInfoButton')}
+            Saiba Mais
           </Button>
         </Space>
       </Flex>
@@ -103,10 +101,10 @@ export function ReceptionPage() {
                 <TeamOutlined />
               </div>
               <Title level={3} style={{ fontFamily: 'var(--font-accent)', marginBottom: 16 }}>
-                {t('reception.features.collaboration.title')}
+                Colaboração
               </Title>
               <Paragraph style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-medium)', marginBottom: 0 }}>
-                {t('reception.features.collaboration.description')}
+                Conecte proponentes, laboratórios e especialistas em um único ambiente integrado para gestão fluida de projetos de validação.
               </Paragraph>
             </Card>
           </Col>
@@ -120,10 +118,10 @@ export function ReceptionPage() {
                 <HistoryOutlined />
               </div>
               <Title level={3} style={{ fontFamily: 'var(--font-accent)', marginBottom: 16 }}>
-                {t('reception.features.traceability.title')}
+                Rastreabilidade
               </Title>
               <Paragraph style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-medium)', marginBottom: 0 }}>
-                {t('reception.features.traceability.description')}
+                Controle total sobre cada etapa do processo, com registro histórico de dados, amostras e decisões técnicas centralizadas.
               </Paragraph>
             </Card>
           </Col>
@@ -137,10 +135,10 @@ export function ReceptionPage() {
                 <EyeOutlined />
               </div>
               <Title level={3} style={{ fontFamily: 'var(--font-accent)', marginBottom: 16 }}>
-                {t('reception.features.transparency.title')}
+                Transparência
               </Title>
               <Paragraph style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-medium)', marginBottom: 0 }}>
-                {t('reception.features.transparency.description')}
+                Garantia de integridade e visibilidade em todas as fases, desde a submissão inicial até a decisão regulatória final.
               </Paragraph>
             </Card>
           </Col>
@@ -155,7 +153,7 @@ export function ReceptionPage() {
         background: 'var(--background-secondary)'
       }}>
         <Text style={{ color: 'var(--text-tertiary)', fontSize: 'var(--font-size-small)' }}>
-          {t('reception.footer.copyright')}
+          © 2026 BraCVAM - Centro Brasileiro de Validação de Métodos Alternativos
         </Text>
       </div>
     </Flex>

@@ -4,6 +4,7 @@ import {
   Button,
   Space,
   Card,
+  Tag,
   Divider,
   Flex,
   Input,
@@ -28,26 +29,16 @@ import {
   useUpdateTaskInstance,
   useLogProcessEvent,
   useDocuments,
-  useTaskInstanceByProcessAndTask
+  useTaskInstanceByProcessAndTask,
+  useFieldFeedbacks,
+  useCreateFieldFeedback,
+  useDeleteFeedbacksByTaskInstance
 } from '../../hooks/useTasks'
 import { useFormResponses, useSubmitFormResponse } from '../../hooks/useForms'
 import { useAuth } from '../../hooks/useAuth'
 
 const { Title, Paragraph, Text } = Typography
 const { TextArea } = Input
-
-const fieldErrorsDetail = {
-  objective: {
-    title: 'Falta de Termos Técnicos no Objetivo',
-    description: 'A IA do BraCVAM analisou o objetivo do método e identificou que termos chaves essenciais para a contextualização regulatória não foram declarados. Métodos alternativos submetidos ao centro precisam conter clareza sobre o escopo de aplicação (ex: se é um teste de toxicidade, irritação dérmica, corrosão ocular) e referenciar as palavras-chave do protocolo.',
-    tip: 'Tente reescrever o objetivo incluindo termos como "protocolo", "validação" ou "controle". Exemplo: "Este protocolo visa a validação do método alternativo de irritabilidade cutânea in vitro com controle de qualidade..."'
-  },
-  description: {
-    title: 'Descrição Técnica Insuficiente',
-    description: 'A descrição técnica apresentada está muito curta ou superficial. A triagem automática requer que o proponente explique detalhadamente a base científica do método, a preparação dos tecidos ou reagentes, o modelo de predição e os critérios de aceitação do teste.',
-    tip: 'Escreva uma descrição detalhada com pelo menos 500 caracteres, abordando o passo a passo metodológico, a linhagem celular utilizada ou sistema in vitro, os controles positivo/negativo e o modelo de predição matemática.'
-  }
-}
 
 export function AIReviewTask({ task, taskInstance, processId }) {
   const { user } = useAuth()
@@ -60,7 +51,7 @@ export function AIReviewTask({ task, taskInstance, processId }) {
 
   // Controle do Drawer de ajuda
   const [drawerVisible, setDrawerVisible] = React.useState(false)
-  const [activeField, setActiveField] = React.useState(null)
+  const [activeFeedback, setActiveFeedback] = React.useState(null)
 
   // Carregar respostas do formulário
   const { data: responses, isLoading: isLoadingResponses } = useFormResponses(processId)
@@ -69,10 +60,15 @@ export function AIReviewTask({ task, taskInstance, processId }) {
   const { data: uploadInstance } = useTaskInstanceByProcessAndTask(processId, 2)
   const { data: documents, isLoading: isLoadingDocs } = useDocuments(uploadInstance?.id)
 
+  // Obter feedbacks salvos no banco de dados para este processo
+  const { data: feedbacks, isLoading: isLoadingFeedbacks } = useFieldFeedbacks(processId)
+
   const completeTaskMutation = useCompleteTask()
   const updateTaskInstanceMutation = useUpdateTaskInstance()
   const logEventMutation = useLogProcessEvent()
   const submitFormMutation = useSubmitFormResponse()
+  const createFeedbackMutation = useCreateFieldFeedback()
+  const deleteFeedbacksMutation = useDeleteFeedbacksByTaskInstance()
 
   const form1Responses = responses?.filter(r => r.form_id === 1) || []
   const latestResponseObj = form1Responses[form1Responses.length - 1]
@@ -94,18 +90,35 @@ export function AIReviewTask({ task, taskInstance, processId }) {
 
     setTimeout(async () => {
       let aiResult
+      let generatedFeedbacks = []
+
+      // 1. Limpar feedbacks antigos gerados por esta instância de tarefa no banco
+      await deleteFeedbacksMutation.mutateAsync(taskInstance.id)
 
       // Na primeira execução, a IA sempre retorna com pendências (Requisito 3)
       if (!isReevaluation) {
         aiResult = {
           score: 65,
           status: 'pending_correction',
-          message: 'Foram encontradas pendências na documentação e dados gerais do método.',
-          findings: [
-            { field: 'objective', message: 'Falta de termos técnicos fundamentais (ex: protocolo, validação).' },
-            { field: 'description', message: 'Descrição técnica muito curta (mínimo de 500 caracteres).' }
-          ]
+          message: 'Foram encontradas pendências na documentação e dados gerais do método.'
         }
+        
+        generatedFeedbacks = [
+          {
+            field_name: 'objective',
+            type: 'inconsistency',
+            title: 'Falta de Termos Técnicos no Objetivo',
+            description: 'A IA do BraCVAM analisou o objetivo do método e identificou que termos chaves essenciais para a contextualização regulatória não foram declarados. Métodos alternativos submetidos ao centro precisam conter clareza sobre o escopo de aplicação (ex: se é um teste de toxicidade, irritação dérmica, corrosão ocular) e referenciar as palavras-chave do protocolo.',
+            tip: 'Tente reescrever o objetivo incluindo termos como "protocolo", "validação" ou "controle". Exemplo: "Este protocolo visa a validação do método alternativo de irritabilidade cutânea in vitro com controle de qualidade..."'
+          },
+          {
+            field_name: 'description',
+            type: 'inconsistency',
+            title: 'Descrição Técnica Insuficiente',
+            description: 'A descrição técnica apresentada está muito curta ou superficial. A triagem automática requer que o proponente explique detalhadamente a base científica do método, a preparação dos tecidos ou reagentes, o modelo de predição e os critérios de aceitação do teste.',
+            tip: 'Escreva uma descrição detalhada com pelo menos 500 caracteres, abordando o passo a passo metodológico, a linhagem celular utilizada ou sistema in vitro, os controles positivo/negativo e o modelo de predição matemática.'
+          }
+        ]
       } else {
         // Nas reavaliações, avalia o texto digitado
         const objText = valuesToEval.objective || ''
@@ -120,34 +133,47 @@ export function AIReviewTask({ task, taskInstance, processId }) {
           aiResult = {
             score: 100,
             status: 'success',
-            message: 'A documentação fornecida está em total conformidade com os requisitos e regras do BraCVAM.',
-            findings: []
+            message: 'A documentação fornecida está em total conformidade com os requisitos e regras do BraCVAM.'
           }
         } else {
-          const findings = []
           if (!hasKeywords) {
-            findings.push({
-              field: 'objective',
-              message: 'Falta de termos técnicos fundamentais (ex: protocolo, validação).'
+            generatedFeedbacks.push({
+              field_name: 'objective',
+              type: 'inconsistency',
+              title: 'Falta de Termos Técnicos no Objetivo',
+              description: 'A IA do BraCVAM analisou o objetivo do método e identificou que termos chaves essenciais para a contextualização regulatória não foram declarados. Métodos alternativos submetidos ao centro precisam conter clareza sobre o escopo de aplicação (ex: se é um teste de toxicidade, irritação dérmica, corrosão ocular) e referenciar as palavras-chave do protocolo.',
+              tip: 'Tente reescrever o objetivo incluindo termos como "protocolo", "validação" ou "controle". Exemplo: "Este protocolo visa a validação do método alternativo de irritabilidade cutânea in vitro com controle de qualidade..."'
             })
           }
           if (!isLongEnough) {
-            findings.push({
-              field: 'description',
-              message: `Descrição técnica muito curta (${descText.length} caracteres, mínimo 500).`
+            generatedFeedbacks.push({
+              field_name: 'description',
+              type: 'suggestion',
+              title: 'Descrição Técnica Insuficiente',
+              description: `A descrição técnica apresentada está muito curta (${descText.length} caracteres). A triagem automática requer uma fundamentação mais robusta.`,
+              tip: 'Escreva uma descrição detalhada com pelo menos 500 caracteres, abordando o passo a passo metodológico, a linhagem celular utilizada ou sistema in vitro, os controles positivo/negativo e o modelo de predição matemática.'
             })
           }
 
           aiResult = {
-            score: findings.length === 2 ? 60 : 80,
+            score: generatedFeedbacks.length === 2 ? 60 : 80,
             status: 'pending_correction',
-            message: 'Foram encontradas pendências na documentação e dados gerais do método.',
-            findings
+            message: 'Foram encontradas pendências na documentação e dados gerais do método.'
           }
         }
       }
 
       try {
+        // Salvar feedbacks gerados no banco de dados
+        for (const fb of generatedFeedbacks) {
+          await createFeedbackMutation.mutateAsync({
+            ...fb,
+            process_instance_id: processId,
+            task_instance_id: taskInstance.id,
+            created_by: 0 // System/IA
+          })
+        }
+
         // Salvar resultado e histórico
         await updateTaskInstanceMutation.mutateAsync({
           taskInstanceId: taskInstance.id,
@@ -174,7 +200,7 @@ export function AIReviewTask({ task, taskInstance, processId }) {
         setAnalyzing(false)
         message.error('Erro ao salvar resultado da IA.')
       }
-    }, 5000) // Delay de 5 segundos (Requisito 4.1)
+    }, 5000)
   }
 
   // Disparo automático na montagem do componente (Requisito 1)
@@ -271,34 +297,42 @@ export function AIReviewTask({ task, taskInstance, processId }) {
     }
   }
 
+  // Filtrar feedbacks gerados pela IA (created_by === 0)
+  const iaFeedbacks = feedbacks?.filter(f => f.task_instance_id === taskInstance.id && f.created_by === 0) || []
+
   const openDrawer = (fieldName) => {
-    setActiveField(fieldName)
-    setDrawerVisible(true)
+    const fb = iaFeedbacks.find(f => f.field_name === fieldName)
+    if (fb) {
+      setActiveFeedback(fb)
+      setDrawerVisible(true)
+    }
   }
 
   const renderFieldLabel = (label, fieldName) => {
-    const hasError = result?.findings?.some(f => f.field === fieldName)
-    if (!hasError) return label
+    const fb = iaFeedbacks.find(f => f.field_name === fieldName)
+    if (!fb) return label
+
+    const isSuggestion = fb.type === 'suggestion'
 
     return (
       <Space size={4}>
         <span>{label}</span>
         <AlertOutlined
-          style={{ color: 'var(--ant-warning-color, #d48806)', cursor: 'pointer' }}
+          style={{ color: isSuggestion ? 'var(--ant-info-color, #1890ff)' : 'var(--ant-warning-color, #d48806)', cursor: 'pointer' }}
           onClick={() => openDrawer(fieldName)}
         />
         <Text
-          type="warning"
+          type={isSuggestion ? 'secondary' : 'warning'}
           style={{ fontSize: '11px', cursor: 'pointer', textDecoration: 'underline' }}
           onClick={() => openDrawer(fieldName)}
         >
-          Pendência IA (Clique para ver)
+          {isSuggestion ? 'Sugestão IA (Clique para ver)' : 'Pendência IA (Clique para ver)'}
         </Text>
       </Space>
     )
   }
 
-  const isLoading = isLoadingResponses || isLoadingDocs
+  const isLoading = isLoadingResponses || isLoadingDocs || isLoadingFeedbacks
 
   if (isLoading) {
     return <Skeleton active paragraph={{ rows: 8 }} />
@@ -484,12 +518,12 @@ export function AIReviewTask({ task, taskInstance, processId }) {
         )}
       </Space>
 
-      {/* Drawer explicativo de erro/pendência */}
+      {/* Drawer explicativo de erro/pendência carregado do banco de dados */}
       <Drawer
         title={
           <Space>
-            <InfoCircleOutlined style={{ color: 'var(--ant-warning-color, #d48806)' }} />
-            <span>{activeField ? fieldErrorsDetail[activeField]?.title : ''}</span>
+            <InfoCircleOutlined style={{ color: activeFeedback?.type === 'suggestion' ? 'var(--ant-info-color, #1890ff)' : 'var(--ant-warning-color, #d48806)' }} />
+            <span>{activeFeedback ? activeFeedback.title : ''}</span>
           </Space>
         }
         placement="right"
@@ -498,29 +532,38 @@ export function AIReviewTask({ task, taskInstance, processId }) {
         open={drawerVisible}
         styles={{ body: { padding: '24px' } }}
       >
-        {activeField && fieldErrorsDetail[activeField] && (
+        {activeFeedback && (
           <Space direction="vertical" size={24} style={{ width: '100%' }}>
+            <div>
+              <Text type="secondary" style={{ display: 'block', marginBottom: '8px' }}>Tipo da observação:</Text>
+              <Tag color={activeFeedback.type === 'suggestion' ? 'blue' : 'warning'}>
+                {activeFeedback.type === 'suggestion' ? 'Sugestão' : 'Inconsistência'}
+              </Tag>
+            </div>
+
             <div>
               <Text type="secondary" style={{ display: 'block', marginBottom: '8px' }}>Por que isso ocorreu?</Text>
               <Paragraph style={{ fontSize: '14px', lineHeight: '1.6' }}>
-                {fieldErrorsDetail[activeField].description}
+                {activeFeedback.description}
               </Paragraph>
             </div>
             
-            <Alert
-              message="Dica de Correção"
-              description={fieldErrorsDetail[activeField].tip}
-              type="warning"
-              showIcon
-              style={{ borderRadius: 'var(--radius-m)' }}
-            />
+            {activeFeedback.tip && (
+              <Alert
+                message="Dica de Correção"
+                description={activeFeedback.tip}
+                type="warning"
+                showIcon
+                style={{ borderRadius: 'var(--radius-m)' }}
+              />
+            )}
             
             <Button 
               type="primary" 
               onClick={() => setDrawerVisible(false)} 
               style={{ borderRadius: 'var(--radius-m)', width: '100%', marginTop: '16px' }}
             >
-              Entendido, vou corrigir
+              Entendido
             </Button>
           </Space>
         )}

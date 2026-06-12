@@ -4,6 +4,7 @@ import * as processRepository from '../repositories/processRepository'
 import * as eventRepository from '../repositories/eventRepository'
 import * as documentRepository from '../repositories/documentRepository'
 import * as commentRepository from '../repositories/commentRepository'
+import * as feedbackRepository from '../repositories/feedbackRepository'
 import { nextId } from '../repositories/baseRepository'
 import { db } from '../database'
 
@@ -129,6 +130,48 @@ export async function completeTask(taskInstanceId, userId) {
   }
 }
 
+export async function requestAdjustments(processId, userId) {
+  const processInstance = db.processInstances.find(pi => pi.id === processId)
+  if (!processInstance) throw new Error('Processo não encontrado')
+
+  // 1. Log event
+  await logEvent(processId, userId, 'adjustments_requested', 'BRACVAM solicitou ajustes no formulário devido a não-conformidades.')
+
+  // 2. Set task to Task 1 ("Dados Gerais")
+  processInstance.current_task_id = 1
+  processInstance.updated_at = new Date().toISOString()
+
+  // 3. Reset the task instances
+  const stageInstance = db.stageInstances.find(si => si.process_instance_id === processId && si.status === 'active')
+  if (stageInstance) {
+    // Definir tarefa 1 como pendente, resetar completed_at
+    const task1Instance = db.taskInstances.find(ti => ti.stage_instance_id === stageInstance.id && ti.task_id === 1)
+    if (task1Instance) {
+      task1Instance.status = 'pending'
+      task1Instance.completed_at = null
+    }
+
+    // Resetar status das outras tarefas para pending e completed_at para null para que o fluxo reinicie
+    const otherTasks = [2, 3, 4, 5]
+    otherTasks.forEach(taskId => {
+      const tiObj = db.taskInstances.find(ti => ti.stage_instance_id === stageInstance.id && ti.task_id === taskId)
+      if (tiObj) {
+        tiObj.status = 'pending'
+        tiObj.completed_at = null
+        // Se for a IA, apagar resultado anterior e resetar reevaluated
+        if (taskId === 4) {
+          tiObj.result = null
+          tiObj.reevaluated = false
+          // Excluir feedbacks antigos da IA para recomeçar limpo
+          feedbackRepository.deleteByTaskInstanceId(tiObj.id)
+        }
+      }
+    })
+  }
+  return processInstance
+}
+
+
 export async function logEvent(processId, userId, type, description) {
   return eventRepository.create({
     process_instance_id: processId,
@@ -157,4 +200,21 @@ export async function getCommentsByTaskInstance(taskInstanceId) {
 export async function updateTaskInstance(taskInstanceId, data) {
   return taskRepository.updateTaskInstance(taskInstanceId, data)
 }
+
+export async function getFieldFeedbacks(processId) {
+  return feedbackRepository.findByProcessId(processId)
+}
+
+export async function createFieldFeedback(feedback) {
+  return feedbackRepository.create(feedback)
+}
+
+export async function deleteFieldFeedback(id) {
+  return feedbackRepository.deleteById(id)
+}
+
+export async function deleteFeedbacksByTaskInstance(taskInstanceId) {
+  return feedbackRepository.deleteByTaskInstanceId(taskInstanceId)
+}
+
 

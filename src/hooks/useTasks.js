@@ -96,4 +96,61 @@ export function useLogProcessEvent() {
   })
 }
 
+export function useFieldFeedbacks(processId) {
+  return useQuery({
+    queryKey: ['fieldFeedbacks', processId],
+    queryFn: () => taskApi.getFieldFeedbacks(processId),
+    enabled: !!processId
+  })
+}
+
+export function useCreateFieldFeedback() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: taskApi.createFieldFeedback,
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['fieldFeedbacks', variables.process_instance_id] })
+    }
+  })
+}
+
+export function useDeleteFieldFeedback() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: taskApi.deleteFieldFeedback,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['fieldFeedbacks'] })
+    }
+  })
+}
+
+export function useDeleteFeedbacksByTaskInstance() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: taskApi.deleteFeedbacksByTaskInstance,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['fieldFeedbacks'] })
+    }
+  })
+}
+
+export function useRequestAdjustments() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ processId, userId }) => taskApi.requestAdjustments(processId, userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['processes'] })
+      queryClient.invalidateQueries({ queryKey: ['process'] })
+      queryClient.invalidateQueries({ queryKey: ['taskInstance'] })
+      queryClient.invalidateQueries({ queryKey: ['fieldFeedbacks'] })
+    }
+  })
+}
+
+
+
 

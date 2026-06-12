@@ -48,3 +48,30 @@ export async function updateTaskInstance(taskInstanceId, data) {
   return taskService.updateTaskInstance(taskInstanceId, data)
 }
 
+export async function getFieldFeedbacks(processId) {
+  await new Promise(resolve => setTimeout(resolve, 300))
+  return taskService.getFieldFeedbacks(processId)
+}
+
+export async function createFieldFeedback(data) {
+  await new Promise(resolve => setTimeout(resolve, 300))
+  return taskService.createFieldFeedback(data)
+}
+
+export async function deleteFieldFeedback(id) {
+  await new Promise(resolve => setTimeout(resolve, 200))
+  return taskService.deleteFieldFeedback(id)
+}
+
+export async function deleteFeedbacksByTaskInstance(taskInstanceId) {
+  await new Promise(resolve => setTimeout(resolve, 200))
+  return taskService.deleteFeedbacksByTaskInstance(taskInstanceId)
+}
+
+export async function requestAdjustments(processId, userId) {
+  await new Promise(resolve => setTimeout(resolve, 400))
+  return taskService.requestAdjustments(processId, userId)
+}
+
+
+

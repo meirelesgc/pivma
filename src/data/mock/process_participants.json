@@ -26,5 +26,33 @@
     "user_id": 1,
     "process_role_id": 4,
     "joined_at": "2026-06-11T15:00:00.000Z"
+  },
+  {
+    "id": 5,
+    "process_instance_id": "BRA-2026-005",
+    "user_id": 6,
+    "process_role_id": 5,
+    "joined_at": "2026-06-12T08:00:00.000Z"
+  },
+  {
+    "id": 6,
+    "process_instance_id": "BRA-2026-005",
+    "user_id": 7,
+    "process_role_id": 6,
+    "joined_at": "2026-06-12T08:00:00.000Z"
+  },
+  {
+    "id": 7,
+    "process_instance_id": "BRA-2026-005",
+    "user_id": 8,
+    "process_role_id": 7,
+    "joined_at": "2026-06-12T08:00:00.000Z"
+  },
+  {
+    "id": 8,
+    "process_instance_id": "BRA-2026-005",
+    "user_id": 9,
+    "process_role_id": 8,
+    "joined_at": "2026-06-12T08:00:00.000Z"
   }
 ]

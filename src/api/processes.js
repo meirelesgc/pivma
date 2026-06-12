@@ -39,4 +39,14 @@ export async function removeProcessParticipant(data) {
   return processService.removeProcessParticipant(data)
 }
 
+export async function getAllStages() {
+  await new Promise(resolve => setTimeout(resolve, 200))
+  return processService.getAllStages()
+}
+
+export async function getAllProcesses() {
+  await new Promise(resolve => setTimeout(resolve, 200))
+  return processService.getAllProcesses()
+}
+
 

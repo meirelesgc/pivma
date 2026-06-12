@@ -237,5 +237,96 @@
     "status": "completed",
     "started_at": "2026-06-12T07:05:00.000Z",
     "completed_at": "2026-06-12T08:00:00.000Z"
+  },
+  {
+    "id": 27,
+    "stage_instance_id": 3,
+    "process_instance_id": "BRA-2026-005",
+    "task_id": 27,
+    "status": "pending",
+    "started_at": "2026-06-12T08:21:00.000Z",
+    "completed_at": null,
+    "due_date": "2026-06-17T08:21:00.000Z"
+  },
+  {
+    "id": 28,
+    "stage_instance_id": 3,
+    "process_instance_id": "BRA-2026-005",
+    "task_id": 28,
+    "status": "locked",
+    "started_at": null,
+    "completed_at": null
+  },
+  {
+    "id": 29,
+    "stage_instance_id": 3,
+    "process_instance_id": "BRA-2026-005",
+    "task_id": 29,
+    "status": "locked",
+    "started_at": null,
+    "completed_at": null
+  },
+  {
+    "id": 30,
+    "stage_instance_id": 3,
+    "process_instance_id": "BRA-2026-005",
+    "task_id": 30,
+    "status": "locked",
+    "started_at": null,
+    "completed_at": null
+  },
+  {
+    "id": 31,
+    "stage_instance_id": 3,
+    "process_instance_id": "BRA-2026-005",
+    "task_id": 31,
+    "status": "locked",
+    "started_at": null,
+    "completed_at": null
+  },
+  {
+    "id": 32,
+    "stage_instance_id": 3,
+    "process_instance_id": "BRA-2026-005",
+    "task_id": 32,
+    "status": "locked",
+    "started_at": null,
+    "completed_at": null
+  },
+  {
+    "id": 33,
+    "stage_instance_id": 3,
+    "process_instance_id": "BRA-2026-005",
+    "task_id": 33,
+    "status": "locked",
+    "started_at": null,
+    "completed_at": null
+  },
+  {
+    "id": 34,
+    "stage_instance_id": 3,
+    "process_instance_id": "BRA-2026-005",
+    "task_id": 34,
+    "status": "locked",
+    "started_at": null,
+    "completed_at": null
+  },
+  {
+    "id": 35,
+    "stage_instance_id": 3,
+    "process_instance_id": "BRA-2026-005",
+    "task_id": 35,
+    "status": "locked",
+    "started_at": null,
+    "completed_at": null
+  },
+  {
+    "id": 36,
+    "stage_instance_id": 3,
+    "process_instance_id": "BRA-2026-005",
+    "task_id": 36,
+    "status": "locked",
+    "started_at": null,
+    "completed_at": null
   }
 ]

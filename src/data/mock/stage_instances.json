@@ -14,5 +14,13 @@
     "status": "completed",
     "started_at": "2026-06-11T12:05:00.000Z",
     "completed_at": "2026-06-12T08:00:00.000Z"
+  },
+  {
+    "id": 3,
+    "process_instance_id": "BRA-2026-005",
+    "stage_id": 3,
+    "status": "active",
+    "started_at": "2026-06-12T08:21:00.000Z",
+    "completed_at": null
   }
 ]

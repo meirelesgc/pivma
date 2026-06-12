@@ -83,3 +83,50 @@ export async function deleteFieldFeedback(id) {
 export async function deleteFeedbacksByTaskInstance(taskInstanceId) {
   return feedbackRepository.deleteByTaskInstanceId(taskInstanceId)
 }
+
+export async function getAllTaskInstances() {
+  return db.taskInstances.map(ti => {
+    const task = taskRepository.findTaskById(ti.task_id)
+    const processInstance = db.processInstances.find(pi => pi.id === ti.process_instance_id)
+    const stage = db.processStages.find(s => s.id === task?.stage_id)
+    
+    // Resolve assignee
+    let assignee = null
+    if (ti.assigned_user_id) {
+      assignee = db.users.find(u => u.id === ti.assigned_user_id)
+    } else if (task && processInstance) {
+      // Find a participant of the process that matches the editor_roles of this task
+      const participant = db.processParticipants.find(p => 
+        p.process_instance_id === processInstance.id && 
+        task.editor_roles?.includes(p.process_role_id)
+      )
+      if (participant) {
+        assignee = db.users.find(u => u.id === participant.user_id)
+      }
+    }
+    
+    // Calculate due_date if not present in the instance
+    let dueDate = ti.due_date
+    if (!dueDate && ti.started_at && task?.due_days) {
+      const date = new Date(ti.started_at)
+      date.setDate(date.getDate() + task.due_days)
+      dueDate = date.toISOString()
+    }
+
+    return {
+      ...ti,
+      due_date: dueDate,
+      task_name: task?.name || 'Tarefa sem nome',
+      task_type: task?.task_type || 'custom',
+      stage_name: stage?.name || 'Etapa sem nome',
+      stage_id: stage?.id,
+      process_title: processInstance?.title || 'Processo sem nome',
+      assignee_name: assignee?.name || 'Não atribuído',
+      assignee_id: assignee?.id
+    }
+  })
+}
+
+export async function getAllProcessEvents() {
+  return eventRepository.findAll()
+}

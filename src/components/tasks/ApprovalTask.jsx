@@ -44,7 +44,7 @@ import {
 const { Title, Paragraph, Text } = Typography
 const { TextArea } = Input
 
-export function ApprovalTask({ task, taskInstance, processId, canEdit = true, myRoleId, myRoleName }) {
+export function ApprovalTask({ task, taskInstance, processId, canEdit = true, myRoleId }) {
   const { user } = useAuth()
   const [complaintForm] = Form.useForm()
 
@@ -79,9 +79,9 @@ export function ApprovalTask({ task, taskInstance, processId, canEdit = true, my
         taskInstanceId: taskInstance.id,
         userId: user.id
       })
-      message.success('Etapa de Submissão e Triagem aprovada com sucesso!')
+      message.success(task.id === 5 ? 'Etapa de Submissão e Triagem aprovada com sucesso!' : `Tarefa "${task.name}" aprovada com sucesso!`)
     } catch (err) {
-      message.error('Erro ao aprovar etapa: ' + err.message)
+      message.error('Erro ao aprovar: ' + err.message)
     }
   }
 
@@ -139,16 +139,6 @@ export function ApprovalTask({ task, taskInstance, processId, canEdit = true, my
     return <Skeleton active paragraph={{ rows: 10 }} />
   }
 
-  const form1Responses = responses?.filter(r => r.form_id === 1) || []
-  const latestResponseObj = form1Responses[form1Responses.length - 1]
-  const generalDataResponse = latestResponseObj?.responses || {}
-  const showAdminView = myRoleId === 3 || myRoleId === 4
-
-  // Filtrar feedbacks criados pela IA (created_by === 0) e pela BRACVAM (created_by !== 0)
-  const iaFeedbacks = feedbacks?.filter(f => f.created_by === 0) || []
-  const bracvamFeedbacks = feedbacks?.filter(f => f.created_by !== 0) || []
-
-  // Formatar a timeline de eventos
   const timelineItems = events?.map(event => {
     let color = 'gray'
     if (event.event_type === 'submission') color = 'blue'
@@ -169,6 +159,66 @@ export function ApprovalTask({ task, taskInstance, processId, canEdit = true, my
       )
     }
   }) || []
+
+  if (task.id !== 5) {
+    return (
+      <div className="approval-task-generic">
+        <Space direction="vertical" size={24} style={{ width: '100%' }}>
+          <Card bordered style={{ borderRadius: 'var(--radius-l)' }}>
+            <Space direction="vertical" size={20} style={{ width: '100%' }}>
+              <div>
+                <Title level={4} style={{ margin: 0 }}>{task.name}</Title>
+                <Paragraph type="secondary" style={{ marginTop: 8, marginBottom: 0 }}>
+                  Esta tarefa exige a aprovação do responsável designado para o prosseguimento do fluxo.
+                </Paragraph>
+              </div>
+
+              {canEdit ? (
+                <Flex justify="end">
+                  <Button
+                    type="primary"
+                    size="large"
+                    icon={<CheckCircleOutlined />}
+                    onClick={handleApprove}
+                    loading={completeTaskMutation.isPending}
+                    style={{
+                      height: '48px',
+                      borderRadius: 'var(--radius-m)',
+                      padding: '0 32px'
+                    }}
+                  >
+                    Confirmar Aprovação / Conclusão
+                  </Button>
+                </Flex>
+              ) : (
+                <Alert
+                  message="Aguardando Aprovação"
+                  description="Você está visualizando esta tarefa. Ela aguarda a aprovação pelo responsável designado."
+                  type="info"
+                  showIcon
+                  icon={<AuditOutlined />}
+                  style={{ borderRadius: 'var(--radius-m)' }}
+                />
+              )}
+            </Space>
+          </Card>
+
+          <Card bordered title="Histórico de Eventos do Processo" style={{ borderRadius: 'var(--radius-l)' }}>
+            <Timeline items={timelineItems} />
+          </Card>
+        </Space>
+      </div>
+    )
+  }
+
+  const form1Responses = responses?.filter(r => r.form_id === 1) || []
+  const latestResponseObj = form1Responses[form1Responses.length - 1]
+  const generalDataResponse = latestResponseObj?.responses || {}
+  const showAdminView = myRoleId === 3 || myRoleId === 4
+
+  // Filtrar feedbacks criados pela IA (created_by === 0) e pela BRACVAM (created_by !== 0)
+  const iaFeedbacks = feedbacks?.filter(f => f.created_by === 0) || []
+  const bracvamFeedbacks = feedbacks?.filter(f => f.created_by !== 0) || []
 
   // Visualização para Usuário Comum (Aguardando aprovação)
   if (!showAdminView) {

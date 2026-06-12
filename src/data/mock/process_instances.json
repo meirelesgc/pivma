@@ -4,10 +4,10 @@
     "title": "Método de Difusão em Gel para Toxicidade Cutânea",
     "process_type_id": 1,
     "created_by": 5,
-    "status": "completed",
-    "current_stage_id": 2,
-    "current_task_id": null,
+    "status": "active",
+    "current_stage_id": 3,
+    "current_task_id": 27,
     "created_at": "2026-06-10T10:00:00.000Z",
-    "updated_at": "2026-06-12T08:00:00.000Z"
+    "updated_at": "2026-06-12T08:20:00.000Z"
   }
 ]

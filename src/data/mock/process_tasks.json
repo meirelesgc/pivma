@@ -6,9 +6,18 @@
     "task_type": "form",
     "form_id": 1,
     "sort_order": 1,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [1],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      1
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": false,
     "depends_on": [],
     "due_days": 10
@@ -19,11 +28,22 @@
     "name": "Documentação",
     "task_type": "document_upload",
     "sort_order": 2,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [1],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      1
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": false,
-    "depends_on": [1],
+    "depends_on": [
+      1
+    ],
     "due_days": 10
   },
   {
@@ -32,11 +52,22 @@
     "name": "Resumo e Submissão",
     "task_type": "form_summary",
     "sort_order": 3,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [1],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      1
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": false,
-    "depends_on": [2],
+    "depends_on": [
+      2
+    ],
     "due_days": 5
   },
   {
@@ -45,11 +76,22 @@
     "name": "Avaliação IA",
     "task_type": "ai_review",
     "sort_order": 4,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [1],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      1
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": false,
-    "depends_on": [3],
+    "depends_on": [
+      3
+    ],
     "due_days": 1
   },
   {
@@ -58,11 +100,22 @@
     "name": "Aprovação BRACVAM",
     "task_type": "approval",
     "sort_order": 5,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [4],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      4
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": false,
-    "depends_on": [4],
+    "depends_on": [
+      4
+    ],
     "due_days": 7
   },
   {
@@ -72,9 +125,18 @@
     "task_type": "participant_assignment",
     "target_role_id": 2,
     "sort_order": 1,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [1],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      1
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": false,
     "depends_on": [],
     "due_days": 15
@@ -86,11 +148,22 @@
     "task_type": "participant_assignment",
     "target_role_id": 3,
     "sort_order": 2,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [1],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      1
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": false,
-    "depends_on": [6],
+    "depends_on": [
+      6
+    ],
     "due_days": 15
   },
   {
@@ -100,11 +173,22 @@
     "task_type": "participant_assignment",
     "target_role_id": 4,
     "sort_order": 3,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [1],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      1
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": false,
-    "depends_on": [7],
+    "depends_on": [
+      7
+    ],
     "due_days": 10
   },
   {
@@ -114,11 +198,22 @@
     "task_type": "form",
     "form_id": 2,
     "sort_order": 4,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [4],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      4
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": false,
-    "depends_on": [8],
+    "depends_on": [
+      8
+    ],
     "due_days": 30
   },
   {
@@ -128,11 +223,22 @@
     "task_type": "form",
     "form_id": 3,
     "sort_order": 5,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [3],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": true,
-    "depends_on": [8],
+    "depends_on": [
+      8
+    ],
     "due_days": 30
   },
   {
@@ -142,11 +248,22 @@
     "task_type": "form",
     "form_id": 4,
     "sort_order": 6,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [3],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": true,
-    "depends_on": [8],
+    "depends_on": [
+      8
+    ],
     "due_days": 30
   },
   {
@@ -156,11 +273,22 @@
     "task_type": "form",
     "form_id": 5,
     "sort_order": 7,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [3],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": true,
-    "depends_on": [8],
+    "depends_on": [
+      8
+    ],
     "due_days": 30
   },
   {
@@ -170,11 +298,22 @@
     "task_type": "form",
     "form_id": 6,
     "sort_order": 8,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [3],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": true,
-    "depends_on": [8],
+    "depends_on": [
+      8
+    ],
     "due_days": 30
   },
   {
@@ -184,11 +323,22 @@
     "task_type": "form",
     "form_id": 7,
     "sort_order": 9,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [3],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": true,
-    "depends_on": [8],
+    "depends_on": [
+      8
+    ],
     "due_days": 30
   },
   {
@@ -198,11 +348,22 @@
     "task_type": "form",
     "form_id": 8,
     "sort_order": 10,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [3],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": true,
-    "depends_on": [8],
+    "depends_on": [
+      8
+    ],
     "due_days": 30
   },
   {
@@ -211,11 +372,22 @@
     "name": "Enviar Protocolo Padronizado",
     "task_type": "document_upload",
     "sort_order": 11,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [3],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": true,
-    "depends_on": [8],
+    "depends_on": [
+      8
+    ],
     "due_days": 30
   },
   {
@@ -225,11 +397,22 @@
     "task_type": "form",
     "form_id": 9,
     "sort_order": 12,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [3],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": true,
-    "depends_on": [8],
+    "depends_on": [
+      8
+    ],
     "due_days": 30
   },
   {
@@ -239,11 +422,22 @@
     "task_type": "form",
     "form_id": 10,
     "sort_order": 13,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [3],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": true,
-    "depends_on": [8],
+    "depends_on": [
+      8
+    ],
     "due_days": 30
   },
   {
@@ -253,11 +447,22 @@
     "task_type": "form",
     "form_id": 11,
     "sort_order": 14,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [3],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": true,
-    "depends_on": [8],
+    "depends_on": [
+      8
+    ],
     "due_days": 30
   },
   {
@@ -267,11 +472,22 @@
     "task_type": "form",
     "form_id": 12,
     "sort_order": 15,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [3],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": true,
-    "depends_on": [8],
+    "depends_on": [
+      8
+    ],
     "due_days": 30
   },
   {
@@ -281,11 +497,22 @@
     "task_type": "form",
     "form_id": 13,
     "sort_order": 16,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [3],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": true,
-    "depends_on": [8],
+    "depends_on": [
+      8
+    ],
     "due_days": 30
   },
   {
@@ -295,11 +522,22 @@
     "task_type": "form",
     "form_id": 14,
     "sort_order": 17,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [3],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": true,
-    "depends_on": [8],
+    "depends_on": [
+      8
+    ],
     "due_days": 30
   },
   {
@@ -309,11 +547,22 @@
     "task_type": "form",
     "form_id": 15,
     "sort_order": 18,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [3],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": true,
-    "depends_on": [8],
+    "depends_on": [
+      8
+    ],
     "due_days": 30
   },
   {
@@ -323,11 +572,22 @@
     "task_type": "form",
     "form_id": 16,
     "sort_order": 19,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [3],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": true,
-    "depends_on": [8],
+    "depends_on": [
+      8
+    ],
     "due_days": 30
   },
   {
@@ -337,11 +597,23 @@
     "task_type": "form",
     "form_id": 17,
     "sort_order": 20,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [1, 2],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      1,
+      2
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": true,
-    "depends_on": [8],
+    "depends_on": [
+      8
+    ],
     "due_days": 30
   },
   {
@@ -350,13 +622,683 @@
     "name": "Aprovação do Planejamento",
     "task_type": "approval",
     "sort_order": 21,
-    "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [4],
-    "approver_roles": [4],
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      4
+    ],
+    "approver_roles": [
+      4
+    ],
     "requires_approval": false,
     "depends_on": [
-      9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25
     ],
     "due_days": 7
+  },
+  {
+    "id": 27,
+    "stage_id": 3,
+    "name": "Disponibilizar Codificação Cega",
+    "task_type": "document_upload",
+    "sort_order": 1,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      1,
+      3,
+      4
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [],
+    "due_days": 5
+  },
+  {
+    "id": 28,
+    "stage_id": 3,
+    "name": "Confirmar Recebimento da Codificação",
+    "task_type": "acknowledgement",
+    "sort_order": 2,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      1,
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      27
+    ],
+    "due_days": 5
+  },
+  {
+    "id": 29,
+    "stage_id": 3,
+    "name": "Upload do Relatório de Treinamento",
+    "task_type": "document_upload",
+    "sort_order": 3,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      1,
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      28
+    ],
+    "due_days": 10
+  },
+  {
+    "id": 30,
+    "stage_id": 3,
+    "name": "Disponibilizar Template de Resultados",
+    "task_type": "document_upload",
+    "sort_order": 4,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      1,
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      29
+    ],
+    "due_days": 5
+  },
+  {
+    "id": 31,
+    "stage_id": 3,
+    "name": "Download do Template",
+    "task_type": "document_download",
+    "sort_order": 5,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      1,
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      30
+    ],
+    "due_days": 5
+  },
+  {
+    "id": 32,
+    "stage_id": 3,
+    "name": "Submeter Resultados Experimentais",
+    "task_type": "dataset_submission",
+    "sort_order": 6,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      1,
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      31
+    ],
+    "due_days": 15
+  },
+  {
+    "id": 33,
+    "stage_id": 3,
+    "name": "Relatar Problemas ou Desvios",
+    "task_type": "form",
+    "form_id": 18,
+    "sort_order": 7,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      1,
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      32
+    ],
+    "due_days": 10
+  },
+  {
+    "id": 34,
+    "stage_id": 3,
+    "name": "Registrar Material Remanescente",
+    "task_type": "form",
+    "form_id": 19,
+    "sort_order": 8,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      1,
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      32
+    ],
+    "due_days": 10
+  },
+  {
+    "id": 35,
+    "stage_id": 3,
+    "name": "Confirmar Devolução do Material",
+    "task_type": "acknowledgement",
+    "sort_order": 9,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      1,
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      34
+    ],
+    "due_days": 5
+  },
+  {
+    "id": 36,
+    "stage_id": 3,
+    "name": "Encerrar Execução Experimental",
+    "task_type": "approval",
+    "sort_order": 10,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "editor_roles": [
+      4
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      33,
+      35
+    ],
+    "due_days": 5
+  },
+  {
+    "id": 37,
+    "stage_id": 4,
+    "name": "Consolidação dos Dados",
+    "task_type": "acknowledgement",
+    "sort_order": 1,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "editor_roles": [
+      3,
+      5
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [],
+    "due_days": 5
+  },
+  {
+    "id": 38,
+    "stage_id": 4,
+    "name": "Upload dos Dados Consolidados",
+    "task_type": "document_upload",
+    "sort_order": 2,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "editor_roles": [
+      3,
+      5
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      37
+    ],
+    "due_days": 3
+  },
+  {
+    "id": 39,
+    "stage_id": 4,
+    "name": "Download dos Dados Consolidados",
+    "task_type": "document_download",
+    "sort_order": 3,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "editor_roles": [
+      6
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      38
+    ],
+    "due_days": 2
+  },
+  {
+    "id": 40,
+    "stage_id": 4,
+    "name": "Envio do Relatório Estatístico",
+    "task_type": "document_upload",
+    "sort_order": 4,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "editor_roles": [
+      6
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      39
+    ],
+    "due_days": 7
+  },
+  {
+    "id": 41,
+    "stage_id": 4,
+    "name": "Montagem do Dossiê",
+    "task_type": "acknowledgement",
+    "sort_order": 5,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "editor_roles": [
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      40
+    ],
+    "due_days": 5
+  },
+  {
+    "id": 42,
+    "stage_id": 4,
+    "name": "Upload do Dossiê Consolidado",
+    "task_type": "document_upload",
+    "sort_order": 6,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "editor_roles": [
+      3
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      41
+    ],
+    "due_days": 3
+  },
+  {
+    "id": 43,
+    "stage_id": 4,
+    "name": "Download do Dossiê",
+    "task_type": "document_download",
+    "sort_order": 7,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "editor_roles": [
+      7
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      42
+    ],
+    "due_days": 5
+  },
+  {
+    "id": 44,
+    "stage_id": 4,
+    "name": "Submissão do Parecer",
+    "task_type": "form",
+    "form_id": 20,
+    "sort_order": 8,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "editor_roles": [
+      7
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      43
+    ],
+    "due_days": 10
+  },
+  {
+    "id": 45,
+    "stage_id": 4,
+    "name": "Registro da Reunião de Pareceres",
+    "task_type": "document_upload",
+    "sort_order": 9,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "editor_roles": [
+      4
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      44
+    ],
+    "due_days": 5
+  },
+  {
+    "id": 46,
+    "stage_id": 4,
+    "name": "Consolidação das Avaliações",
+    "task_type": "document_upload",
+    "sort_order": 10,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "editor_roles": [
+      4
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      45
+    ],
+    "due_days": 5
+  },
+  {
+    "id": 47,
+    "stage_id": 4,
+    "name": "Emissão do Parecer Conclusivo",
+    "task_type": "document_upload",
+    "sort_order": 11,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "editor_roles": [
+      4
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      46
+    ],
+    "due_days": 5
+  },
+  {
+    "id": 48,
+    "stage_id": 4,
+    "name": "Registro de Aprovação Institucional",
+    "task_type": "document_upload",
+    "sort_order": 12,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "editor_roles": [
+      8
+    ],
+    "approver_roles": [
+      8
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      47
+    ],
+    "due_days": 10
+  },
+  {
+    "id": 49,
+    "stage_id": 4,
+    "name": "Inclusão em Base Oficial",
+    "task_type": "approval",
+    "sort_order": 13,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "editor_roles": [
+      8
+    ],
+    "approver_roles": [
+      8
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      48
+    ],
+    "due_days": 5
+  },
+  {
+    "id": 50,
+    "stage_id": 4,
+    "name": "Notificação de Encerramento",
+    "task_type": "acknowledgement",
+    "sort_order": 14,
+    "viewer_roles": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "editor_roles": [
+      1,
+      4
+    ],
+    "approver_roles": [
+      4
+    ],
+    "requires_approval": false,
+    "depends_on": [
+      49
+    ],
+    "due_days": 1
   }
 ]

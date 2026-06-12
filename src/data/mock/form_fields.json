@@ -188,5 +188,101 @@
     "required": true,
     "placeholder": "Termos de propriedade intelectual e confidencialidade assinados...",
     "sort_order": 1
+  },
+  {
+    "id": 18,
+    "form_id": 18,
+    "label": "Tipo do Problema",
+    "field_name": "problem_type",
+    "field_type": "text",
+    "required": true,
+    "placeholder": "Ex: Contaminação de células, queda de energia, etc.",
+    "sort_order": 1
+  },
+  {
+    "id": 19,
+    "form_id": 18,
+    "label": "Descrição",
+    "field_name": "problem_description",
+    "field_type": "textarea",
+    "required": true,
+    "placeholder": "Descreva detalhadamente o ocorrido...",
+    "sort_order": 2
+  },
+  {
+    "id": 20,
+    "form_id": 18,
+    "label": "Impacto no Estudo",
+    "field_name": "problem_impact",
+    "field_type": "textarea",
+    "required": true,
+    "placeholder": "Descreva o impacto estimado nos resultados experimentais...",
+    "sort_order": 3
+  },
+  {
+    "id": 21,
+    "form_id": 18,
+    "label": "Data da Ocorrência",
+    "field_name": "problem_date",
+    "field_type": "text",
+    "required": true,
+    "placeholder": "DD/MM/AAAA",
+    "sort_order": 4
+  },
+  {
+    "id": 22,
+    "form_id": 19,
+    "label": "Sobrou material?",
+    "field_name": "has_remanescent_material",
+    "field_type": "text",
+    "required": true,
+    "placeholder": "Sim / Não",
+    "sort_order": 1
+  },
+  {
+    "id": 23,
+    "form_id": 19,
+    "label": "Quantidade Restante",
+    "field_name": "remanescent_quantity",
+    "field_type": "text",
+    "required": true,
+    "placeholder": "Ex: 3 frascos, 5ml, etc.",
+    "sort_order": 2
+  },
+  {
+    "id": 24,
+    "form_id": 19,
+    "label": "Observações",
+    "field_name": "remanescent_observations",
+    "field_type": "textarea",
+    "required": false,
+    "placeholder": "Outras informações relevantes sobre o descarte ou devolução...",
+    "sort_order": 3
+  },
+  {
+    "id": 25,
+    "form_id": 20,
+    "label": "Recomendação / Decisão",
+    "field_name": "decision_recommendation",
+    "field_type": "select",
+    "required": true,
+    "placeholder": "Selecione uma recomendação",
+    "options": [
+      { "value": "approved", "label": "Aprovado" },
+      { "value": "approved_with_restrictions", "label": "Aprovado com restrições" },
+      { "value": "rejected", "label": "Rejeitado" },
+      { "value": "request_more_data", "label": "Solicitar nova rodada de dados" }
+    ],
+    "sort_order": 1
+  },
+  {
+    "id": 26,
+    "form_id": 20,
+    "label": "Justificativa Fundamentada",
+    "field_name": "decision_justification",
+    "field_type": "textarea",
+    "required": true,
+    "placeholder": "Apresente suas razões técnicas e embasamento...",
+    "sort_order": 2
   }
 ]

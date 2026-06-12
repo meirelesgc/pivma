@@ -6,7 +6,9 @@ import {
   getProcessById, 
   getProcessEvents,
   addProcessParticipant,
-  removeProcessParticipant
+  removeProcessParticipant,
+  getAllStages,
+  getAllProcesses
 } from '../api/processes'
 
 
@@ -73,6 +75,20 @@ export function useRemoveProcessParticipant() {
       queryClient.invalidateQueries({ queryKey: ['process', variables.processInstanceId] })
       queryClient.invalidateQueries({ queryKey: ['processEvents', variables.processInstanceId] })
     }
+  })
+}
+
+export function useAllStages() {
+  return useQuery({
+    queryKey: ['allStages'],
+    queryFn: getAllStages
+  })
+}
+
+export function useAllProcesses() {
+  return useQuery({
+    queryKey: ['allProcesses'],
+    queryFn: getAllProcesses
   })
 }
 

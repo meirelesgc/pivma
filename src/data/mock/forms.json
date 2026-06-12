@@ -100,5 +100,23 @@
     "name": "Termo de Confidencialidade",
     "description": "Registre os acordos de confidencialidade e propriedade intelectual estabelecidos.",
     "submit_label": "Salvar e Enviar para Aprovação"
+  },
+  {
+    "id": 18,
+    "name": "Relatar Problemas ou Desvios",
+    "description": "Registre eventuais não-conformidades, falhas de equipamentos ou desvios do protocolo durante a execução.",
+    "submit_label": "Salvar e Enviar Relato"
+  },
+  {
+    "id": 19,
+    "name": "Registrar Material Remanescente",
+    "description": "Informe o inventário do material biológico ou químico restante após a conclusão dos ensaios.",
+    "submit_label": "Salvar e Enviar Inventário"
+  },
+  {
+    "id": 20,
+    "name": "Parecer do Avaliador",
+    "description": "Preenchimento de formulário de avaliação técnica contendo a recomendação e justificativa fundamentada.",
+    "submit_label": "Submeter Parecer Final"
   }
 ]

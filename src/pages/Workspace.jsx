@@ -86,10 +86,9 @@ export function WorkspacePage() {
   const handleCardClick = (id) => {
     navigate(`/workspace/processes/${id}`)
   }
-
   return (
-    <main className="workspace-content fade-in">
-      <Flex justify="space-between" align="center" className="content-top-bar">
+    <main className="workspace-content fade-in" style={{ padding: '24px', maxWidth: '100%', overflowX: 'hidden' }}>
+      <Flex justify="space-between" align="center" className="content-top-bar" style={{ marginBottom: 20 }}>
         <Space align="center" size={32}>
           <Title level={2} style={{ margin: 0, fontFamily: "var(--font-accent)" }}>
             Meus Métodos
@@ -103,7 +102,8 @@ export function WorkspacePage() {
             style={{
               borderRadius: 'var(--radius-pill)',
               width: '300px',
-              backgroundColor: 'var(--background-tertiary)'
+              backgroundColor: 'var(--background-tertiary)',
+              height: '40px'
             }}
           />
         </Space>

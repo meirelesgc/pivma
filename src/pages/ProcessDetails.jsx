@@ -1,5 +1,5 @@
 import React from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useProcessDetails } from '../hooks/useProcesses'
 import { useAuth } from '../hooks/useAuth'
 import {
@@ -35,6 +35,8 @@ const { Title, Text } = Typography
 export function ProcessDetailsPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const queryTaskId = searchParams.get('taskId') ? parseInt(searchParams.get('taskId')) : null
   const { user } = useAuth()
 
   const { data: process, isLoading, error } = useProcessDetails(id)
@@ -72,9 +74,13 @@ export function ProcessDetailsPage() {
 
   React.useEffect(() => {
     if (process) {
-      setSelectedTaskId(process.current_task_id)
+      if (queryTaskId) {
+        setSelectedTaskId(queryTaskId)
+      } else {
+        setSelectedTaskId(process.current_task_id)
+      }
     }
-  }, [process?.current_task_id])
+  }, [process?.current_task_id, queryTaskId])
 
   React.useEffect(() => {
     if (visibleTasks.length > 0) {

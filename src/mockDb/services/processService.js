@@ -251,3 +251,11 @@ export async function removeProcessParticipant({ processInstanceId, userId, proc
   return removed
 }
 
+export async function getAllStages() {
+  return db.processStages
+}
+
+export async function getAllProcesses() {
+  return processRepository.findAll()
+}
+

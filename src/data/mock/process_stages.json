@@ -12,5 +12,19 @@
         "name": "Planejamento",
         "sort_order": 2,
         "requires_admin_approval": true
+    },
+    {
+        "id": 3,
+        "process_type_id": 1,
+        "name": "Execução da Validação",
+        "sort_order": 3,
+        "requires_admin_approval": false
+    },
+    {
+        "id": 4,
+        "process_type_id": 1,
+        "name": "Revisão e decisão",
+        "sort_order": 4,
+        "requires_admin_approval": false
     }
 ]

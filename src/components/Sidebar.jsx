@@ -1,4 +1,3 @@
-import React from 'react'
 import { Layout, Menu, Typography, Avatar, Button, Flex } from 'antd'
 import {
   AppstoreOutlined,
@@ -7,7 +6,8 @@ import {
   CheckCircleFilled,
   PlayCircleFilled,
   ClockCircleOutlined,
-  HistoryOutlined
+  HistoryOutlined,
+  ScheduleOutlined
 } from '@ant-design/icons'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
@@ -51,6 +51,11 @@ export function Sidebar() {
           key: '/workspace',
           icon: <AppstoreOutlined />,
           label: 'Área de trabalho',
+        },
+        {
+          key: '/workspace/activities',
+          icon: <ScheduleOutlined />,
+          label: 'Quadro de Atividades',
         },
       ],
     },

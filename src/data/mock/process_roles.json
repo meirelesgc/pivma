@@ -2,5 +2,9 @@
   { "id": 1, "name": "Proponente" },
   { "id": 2, "name": "Patrocinador" },
   { "id": 3, "name": "Grupo Gestor" },
-  { "id": 4, "name": "Coordenador do Grupo Gestor" }
+  { "id": 4, "name": "Coordenador do Grupo Gestor" },
+  { "id": 5, "name": "Laboratório Líder" },
+  { "id": 6, "name": "Estatístico" },
+  { "id": 7, "name": "Especialista Temático" },
+  { "id": 8, "name": "BraCVAM" }
 ]

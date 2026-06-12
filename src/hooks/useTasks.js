@@ -178,6 +178,20 @@ export function useRequestAdjustments() {
   })
 }
 
+export function useAllTaskInstances() {
+  return useQuery({
+    queryKey: ['allTaskInstances'],
+    queryFn: taskApi.getAllTaskInstances
+  })
+}
+
+export function useAllProcessEvents() {
+  return useQuery({
+    queryKey: ['allProcessEvents'],
+    queryFn: taskApi.getAllProcessEvents
+  })
+}
+
 
 
 

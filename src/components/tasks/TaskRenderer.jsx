@@ -31,6 +31,9 @@ import { AIReviewTask } from './AIReviewTask'
 import { FormSummaryTask } from './FormSummaryTask'
 import { ApprovalTask } from './ApprovalTask'
 import { ParticipantAssignmentTask } from './ParticipantAssignmentTask'
+import { AcknowledgementTask } from './AcknowledgementTask'
+import { DocumentDownloadTask } from './DocumentDownloadTask'
+import { DatasetSubmissionTask } from './DatasetSubmissionTask'
 import processRoles from '../../data/mock/process_roles.json'
 
 const { Title, Paragraph, Text } = Typography
@@ -154,6 +157,12 @@ export function TaskRenderer({ processId, taskId, currentStageId, myRoleId, myRo
         return <ApprovalTask task={task} taskInstance={taskInstance} processId={processId} canEdit={canEdit} myRoleId={myRoleId} myRoleName={myRoleName} />
       case 'participant_assignment':
         return <ParticipantAssignmentTask task={task} taskInstance={taskInstance} processId={processId} canEdit={canEdit} myRoleId={myRoleId} myRoleName={myRoleName} />
+      case 'acknowledgement':
+        return <AcknowledgementTask task={task} taskInstance={taskInstance} processId={processId} canEdit={canEdit} />
+      case 'document_download':
+        return <DocumentDownloadTask task={task} taskInstance={taskInstance} processId={processId} canEdit={canEdit} />
+      case 'dataset_submission':
+        return <DatasetSubmissionTask task={task} taskInstance={taskInstance} processId={processId} canEdit={canEdit} />
       default:
         return (
           <Result

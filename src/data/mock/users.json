@@ -28,5 +28,29 @@
     "name": "Mariana Costa (Proponente)",
     "email": "mariana@email.com",
     "system_role": "default"
+  },
+  {
+    "id": 6,
+    "name": "Roberto Dias (Laboratório Líder)",
+    "email": "roberto@email.com",
+    "system_role": "default"
+  },
+  {
+    "id": 7,
+    "name": "Patricia Ramos (Estatístico)",
+    "email": "patricia@email.com",
+    "system_role": "default"
+  },
+  {
+    "id": 8,
+    "name": "Bruno Mello (Especialista Temático)",
+    "email": "bruno@email.com",
+    "system_role": "default"
+  },
+  {
+    "id": 9,
+    "name": "Luciana Santos (Representante BraCVAM)",
+    "email": "luciana@email.com",
+    "system_role": "default"
   }
 ]

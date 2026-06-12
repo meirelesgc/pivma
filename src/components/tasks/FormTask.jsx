@@ -8,7 +8,8 @@ import {
   Typography,
   Skeleton,
   message,
-  Space
+  Space,
+  Select
 } from 'antd'
 
 const { Title, Paragraph } = Typography
@@ -81,6 +82,14 @@ export function FormTask({ task, taskInstance, processId, canEdit = true }) {
             >
               {field.field_type === 'textarea' ? (
                 <TextArea placeholder={field.placeholder} rows={4} />
+              ) : field.field_type === 'select' ? (
+                <Select placeholder={field.placeholder}>
+                  {field.options?.map(opt => (
+                    <Select.Option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </Select.Option>
+                  ))}
+                </Select>
               ) : (
                 <Input placeholder={field.placeholder} />
               )}

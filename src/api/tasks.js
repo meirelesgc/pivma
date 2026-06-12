@@ -83,6 +83,16 @@ export async function rejectTask(taskInstanceId, userId, commentText) {
   return taskService.rejectTask(taskInstanceId, userId, commentText)
 }
 
+export async function getAllTaskInstances() {
+  await new Promise(resolve => setTimeout(resolve, 300))
+  return taskService.getAllTaskInstances()
+}
+
+export async function getAllProcessEvents() {
+  await new Promise(resolve => setTimeout(resolve, 300))
+  return taskService.getAllProcessEvents()
+}
+
 
 
 

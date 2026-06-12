@@ -31,7 +31,7 @@ export function useCreateProcess() {
 export function useProcessDetails(processId) {
   return useQuery({
     queryKey: ['process', processId],
-    queryFn: () => getProcessById(Number(processId)),
+    queryFn: () => getProcessById(processId),
     enabled: !!processId
   })
 }
@@ -39,7 +39,7 @@ export function useProcessDetails(processId) {
 export function useProcessEvents(processId) {
   return useQuery({
     queryKey: ['processEvents', processId],
-    queryFn: () => getProcessEvents(Number(processId)),
+    queryFn: () => getProcessEvents(processId),
     enabled: !!processId
   })
 }

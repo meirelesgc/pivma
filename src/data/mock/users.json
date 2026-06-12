@@ -1,14 +1,26 @@
 [
   {
     "id": 1,
-    "name": "João Silva (BracVAM)",
+    "name": "João Silva (Coordenador BRACVAM)",
     "email": "joao@email.com",
     "system_role": "admin"
   },
   {
     "id": 2,
-    "name": "Maria Souza (Usuário comum)",
+    "name": "Maria Souza (Proponente)",
     "email": "maria@email.com",
+    "system_role": "default"
+  },
+  {
+    "id": 3,
+    "name": "Carlos Santos (Patrocinador)",
+    "email": "carlos@email.com",
+    "system_role": "default"
+  },
+  {
+    "id": 4,
+    "name": "Ana Lima (Grupo Gestor)",
+    "email": "ana@email.com",
     "system_role": "default"
   }
 ]

@@ -40,7 +40,7 @@ import { useAuth } from '../../hooks/useAuth'
 const { Title, Paragraph, Text } = Typography
 const { TextArea } = Input
 
-export function AIReviewTask({ task, taskInstance, processId }) {
+export function AIReviewTask({ task, taskInstance, processId, canEdit = true }) {
   const { user } = useAuth()
   const [form] = Form.useForm()
 
@@ -411,7 +411,7 @@ export function AIReviewTask({ task, taskInstance, processId }) {
               <Form
                 form={form}
                 layout="vertical"
-                disabled={result.status === 'success'}
+                disabled={result.status === 'success' || !canEdit}
               >
                 <Form.Item
                   label="Nome do Método"
@@ -447,6 +447,7 @@ export function AIReviewTask({ task, taskInstance, processId }) {
                 icon={<LikeOutlined />}
                 onClick={handleAccept}
                 loading={completeTaskMutation.isPending}
+                disabled={!canEdit}
                 style={{ borderRadius: 'var(--radius-m)', height: '48px', alignSelf: 'flex-start' }}
               >
                 Aceitar e Encaminhar para BRACVAM
@@ -460,6 +461,7 @@ export function AIReviewTask({ task, taskInstance, processId }) {
                       size="large"
                       onClick={handleSaveAndReevaluate}
                       loading={updateTaskInstanceMutation.isPending || analyzing}
+                      disabled={!canEdit}
                       style={{ borderRadius: 'var(--radius-m)', height: '48px' }}
                     >
                       Salvar Alterações e Reavaliar
@@ -469,6 +471,7 @@ export function AIReviewTask({ task, taskInstance, processId }) {
                       size="large"
                       icon={<DislikeOutlined />}
                       onClick={() => setShowContestForm(true)}
+                      disabled={!canEdit}
                       style={{ borderRadius: 'var(--radius-m)', height: '48px' }}
                     >
                       Contestar Análise
@@ -486,6 +489,7 @@ export function AIReviewTask({ task, taskInstance, processId }) {
                       rows={4}
                       value={justification}
                       onChange={(e) => setJustification(e.target.value)}
+                      disabled={!canEdit}
                       style={{ borderRadius: 'var(--radius-m)' }}
                     />
                     <Space size="middle">
@@ -495,6 +499,7 @@ export function AIReviewTask({ task, taskInstance, processId }) {
                         size="large"
                         onClick={handleContest}
                         loading={completeTaskMutation.isPending}
+                        disabled={!canEdit}
                         style={{ borderRadius: 'var(--radius-m)' }}
                       >
                         Enviar Contestação e Encaminhar

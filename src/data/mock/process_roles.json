@@ -1,0 +1,6 @@
+[
+  { "id": 1, "name": "Proponente" },
+  { "id": 2, "name": "Patrocinador" },
+  { "id": 3, "name": "Grupo Gestor" },
+  { "id": 4, "name": "Coordenador do Grupo Gestor" }
+]

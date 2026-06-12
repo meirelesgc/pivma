@@ -13,7 +13,7 @@ import { InboxOutlined } from '@ant-design/icons'
 const { Title, Paragraph } = Typography
 const { Dragger } = Upload
 
-export function UploadTask({ task, taskInstance, processId }) {
+export function UploadTask({ task, taskInstance, processId, canEdit = true }) {
   const { user } = useAuth()
   const [fileList, setFileList] = useState([])
 
@@ -42,6 +42,7 @@ export function UploadTask({ task, taskInstance, processId }) {
     name: 'file',
     multiple: true,
     fileList,
+    disabled: !canEdit,
     onChange(info) {
       setFileList(info.fileList)
     },
@@ -86,7 +87,7 @@ export function UploadTask({ task, taskInstance, processId }) {
             size="large"
             onClick={handleComplete}
             loading={completeTaskMutation.isPending}
-            disabled={fileList.length === 0}
+            disabled={!canEdit || fileList.length === 0}
             style={{ borderRadius: 'var(--radius-m)', height: '48px', padding: '0 32px' }}
           >
             Concluir Envio de Documentos

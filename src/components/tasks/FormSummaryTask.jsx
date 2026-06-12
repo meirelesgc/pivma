@@ -17,7 +17,7 @@ import { FileOutlined, CheckCircleOutlined } from '@ant-design/icons'
 
 const { Title, Paragraph, Text } = Typography
 
-export function FormSummaryTask({ task, taskInstance, processId }) {
+export function FormSummaryTask({ task, taskInstance, processId, canEdit = true }) {
   const { user } = useAuth()
   
   // 1. Obter respostas do formulário
@@ -115,6 +115,7 @@ export function FormSummaryTask({ task, taskInstance, processId }) {
           icon={<CheckCircleOutlined />}
           onClick={handleConfirmSubmit}
           loading={completeTaskMutation.isPending}
+          disabled={!canEdit}
           style={{
             height: '48px',
             borderRadius: 'var(--radius-m)',

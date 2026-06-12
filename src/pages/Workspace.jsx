@@ -92,7 +92,7 @@ export function WorkspacePage() {
       <Flex justify="space-between" align="center" className="content-top-bar">
         <Space align="center" size={32}>
           <Title level={2} style={{ margin: 0, fontFamily: "var(--font-accent)" }}>
-            Seus Métodos
+            Meus Métodos
           </Title>
           <Input
             placeholder="Buscar por nome ou ID..."

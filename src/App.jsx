@@ -5,6 +5,8 @@ import { LoginPage } from './pages/Login'
 import { WorkspacePage } from './pages/Workspace'
 import { NewSubmissionPage } from './pages/NewSubmission'
 import { ProcessDetailsPage } from './pages/ProcessDetails'
+import { ProcessParticipantsPage } from './pages/ProcessParticipants'
+import { ProcessHistoryPage } from './pages/ProcessHistory'
 import { PrivateRoute } from './components/PrivateRoute'
 import { MainLayout } from './components/MainLayout'
 import './App.css'
@@ -48,6 +50,8 @@ function App() {
               <Route path="/workspace" element={<WorkspacePage />} />
               <Route path="/workspace/new-submission" element={<NewSubmissionPage />} />
               <Route path="/workspace/processes/:id" element={<ProcessDetailsPage />} />
+              <Route path="/workspace/processes/:id/participants" element={<ProcessParticipantsPage />} />
+              <Route path="/workspace/processes/:id/history" element={<ProcessHistoryPage />} />
             </Route>
           </Route>
 

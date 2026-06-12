@@ -14,7 +14,7 @@ import {
 const { Title, Paragraph } = Typography
 const { TextArea } = Input
 
-export function FormTask({ task, taskInstance, processId }) {
+export function FormTask({ task, taskInstance, processId, canEdit = true }) {
   const [form] = Form.useForm()
   const { user } = useAuth()
 
@@ -70,6 +70,7 @@ export function FormTask({ task, taskInstance, processId }) {
           layout="vertical"
           onFinish={onFinish}
           requiredMark="optional"
+          disabled={!canEdit}
         >
           {formDetails.fields?.map(field => (
             <Form.Item
@@ -92,6 +93,7 @@ export function FormTask({ task, taskInstance, processId }) {
               htmlType="submit"
               size="large"
               loading={isPending}
+              disabled={!canEdit}
               style={{ borderRadius: 'var(--radius-m)', height: '48px', padding: '0 32px' }}
             >
               {formDetails.submit_label || 'Salvar e Continuar'}

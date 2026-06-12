@@ -5,6 +5,7 @@ import * as eventRepository from '../repositories/eventRepository'
 import * as documentRepository from '../repositories/documentRepository'
 import * as commentRepository from '../repositories/commentRepository'
 import * as feedbackRepository from '../repositories/feedbackRepository'
+import * as workflowService from './workflowService'
 import { nextId } from '../repositories/baseRepository'
 import { db } from '../database'
 
@@ -23,152 +24,11 @@ export async function getTaskInstanceByProcessAndTask(processId, taskId) {
 }
 
 export async function completeTask(taskInstanceId, userId) {
-  const taskInstance = db.taskInstances.find(ti => ti.id === taskInstanceId)
-  if (!taskInstance) throw new Error('Instância de tarefa não encontrada')
-
-  // 1. Marcar tarefa atual como concluída
-  taskRepository.updateTaskInstance(taskInstanceId, {
-    status: 'completed',
-    completed_at: new Date().toISOString()
-  })
-
-  const stageInstance = db.stageInstances.find(si => si.id === taskInstance.stage_instance_id)
-  const processInstance = db.processInstances.find(pi => pi.id === stageInstance.process_instance_id)
-  
-  // 2. Encontrar a próxima tarefa
-  const currentTask = taskRepository.findTaskById(taskInstance.task_id)
-  const allTasks = taskRepository.findTasksByStage(currentTask.stage_id)
-  const nextTask = allTasks.find(t => t.sort_order > currentTask.sort_order)
-
-  // Log completion of the specific task
-  await logEvent(processInstance.id, userId, 'task_completed', `Tarefa "${currentTask.name}" concluída.`)
-
-  // Se for a tarefa 3 (Resumo e Submissão), registrar evento de submissão
-  if (currentTask.id === 3) {
-    await logEvent(processInstance.id, userId, 'submission', 'Processo submetido para avaliação preliminar automatizada.')
-  }
-
-  // Se for a tarefa 5 (Aprovação BRACVAM), registrar aprovação
-  if (currentTask.id === 5) {
-    await logEvent(processInstance.id, userId, 'approval', 'Etapa de Submissão e Triagem aprovada pela BRACVAM.')
-  }
-
-  if (nextTask) {
-    // Criar próxima TaskInstance
-    const newTaskId = nextId(db.taskInstances)
-    taskRepository.createTaskInstance({
-      id: newTaskId,
-      stage_instance_id: stageInstance.id,
-      task_id: nextTask.id,
-      status: 'pending',
-      started_at: new Date().toISOString(),
-      completed_at: null
-    })
-
-    // Atualizar ProcessInstance
-    processRepository.update(processInstance.id, {
-      current_task_id: nextTask.id,
-      updated_at: new Date().toISOString()
-    })
-
-    return { nextTaskId: newTaskId, finished: false }
-  } else {
-    // Não há mais tarefas nesta etapa
-    stageRepository.updateStageInstance(stageInstance.id, {
-      status: 'completed',
-      completed_at: new Date().toISOString()
-    })
-
-    // Encontrar próxima etapa
-    const allStages = stageRepository.findStagesByProcessType(processInstance.process_type_id)
-    const currentStageObj = stageRepository.findStageById(stageInstance.stage_id)
-    const nextStage = allStages.find(s => s.sort_order > currentStageObj.sort_order)
-
-    if (nextStage) {
-      const nextStageInstanceId = nextId(db.stageInstances)
-      stageRepository.createStageInstance({
-        id: nextStageInstanceId,
-        process_instance_id: processInstance.id,
-        stage_id: nextStage.id,
-        status: 'active',
-        started_at: new Date().toISOString(),
-        completed_at: null
-      })
-
-      const nextStageTasks = taskRepository.findTasksByStage(nextStage.id)
-      const firstTaskOfNextStage = nextStageTasks[0]
-
-      if (firstTaskOfNextStage) {
-        taskRepository.createTaskInstance({
-          id: nextId(db.taskInstances),
-          stage_instance_id: nextStageInstanceId,
-          task_id: firstTaskOfNextStage.id,
-          status: 'pending',
-          started_at: new Date().toISOString(),
-          completed_at: null
-        })
-      }
-
-      processRepository.update(processInstance.id, {
-        current_stage_id: nextStage.id,
-        current_task_id: firstTaskOfNextStage ? firstTaskOfNextStage.id : null,
-        updated_at: new Date().toISOString()
-      })
-
-      await logEvent(processInstance.id, userId, 'stage_completed', `Etapa "${currentStageObj.name}" concluída. Transição para etapa "${nextStage.name}".`)
-    } else {
-      // Processo concluído totalmente
-      processRepository.update(processInstance.id, {
-        status: 'completed',
-        current_task_id: null,
-        updated_at: new Date().toISOString()
-      })
-      await logEvent(processInstance.id, userId, 'process_completed', 'Processo de validação concluído.')
-    }
-
-    return { finished: true }
-  }
+  return workflowService.completeTask(taskInstanceId, userId)
 }
 
 export async function requestAdjustments(processId, userId) {
-  const processInstance = db.processInstances.find(pi => pi.id === processId)
-  if (!processInstance) throw new Error('Processo não encontrado')
-
-  // 1. Log event
-  await logEvent(processId, userId, 'adjustments_requested', 'BRACVAM solicitou ajustes no formulário devido a não-conformidades.')
-
-  // 2. Set task to Task 1 ("Dados Gerais")
-  processInstance.current_task_id = 1
-  processInstance.updated_at = new Date().toISOString()
-
-  // 3. Reset the task instances
-  const stageInstance = db.stageInstances.find(si => si.process_instance_id === processId && si.status === 'active')
-  if (stageInstance) {
-    // Definir tarefa 1 como pendente, resetar completed_at
-    const task1Instance = db.taskInstances.find(ti => ti.stage_instance_id === stageInstance.id && ti.task_id === 1)
-    if (task1Instance) {
-      task1Instance.status = 'pending'
-      task1Instance.completed_at = null
-    }
-
-    // Resetar status das outras tarefas para pending e completed_at para null para que o fluxo reinicie
-    const otherTasks = [2, 3, 4, 5]
-    otherTasks.forEach(taskId => {
-      const tiObj = db.taskInstances.find(ti => ti.stage_instance_id === stageInstance.id && ti.task_id === taskId)
-      if (tiObj) {
-        tiObj.status = 'pending'
-        tiObj.completed_at = null
-        // Se for a IA, apagar resultado anterior e resetar reevaluated
-        if (taskId === 4) {
-          tiObj.result = null
-          tiObj.reevaluated = false
-          // Excluir feedbacks antigos da IA para recomeçar limpo
-          feedbackRepository.deleteByTaskInstanceId(tiObj.id)
-        }
-      }
-    })
-  }
-  return processInstance
+  return workflowService.requestAdjustments(processId, userId)
 }
 
 

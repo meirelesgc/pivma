@@ -3,6 +3,7 @@ import processTypes from '../data/mock/process_types.json'
 import processStages from '../data/mock/process_stages.json'
 import processTasks from '../data/mock/process_tasks.json'
 import fieldAiRules from '../data/mock/field_ai_rules.json'
+import processRoles from '../data/mock/process_roles.json'
 
 import processInstances from '../data/mock/process_instances.json'
 import processParticipants from '../data/mock/process_participants.json'
@@ -23,6 +24,7 @@ export const db = {
   processTypes: structuredClone(processTypes),
   processStages: structuredClone(processStages),
   processTasks: structuredClone(processTasks),
+  processRoles: structuredClone(processRoles),
   fieldAiRules: structuredClone(fieldAiRules),
   
   // Execution

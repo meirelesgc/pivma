@@ -44,7 +44,7 @@ import {
 const { Title, Paragraph, Text } = Typography
 const { TextArea } = Input
 
-export function ApprovalTask({ task, taskInstance, processId }) {
+export function ApprovalTask({ task, taskInstance, processId, canEdit = true, myRoleId, myRoleName }) {
   const { user } = useAuth()
   const [complaintForm] = Form.useForm()
 
@@ -142,7 +142,7 @@ export function ApprovalTask({ task, taskInstance, processId }) {
   const form1Responses = responses?.filter(r => r.form_id === 1) || []
   const latestResponseObj = form1Responses[form1Responses.length - 1]
   const generalDataResponse = latestResponseObj?.responses || {}
-  const isAdmin = user?.system_role === 'admin'
+  const showAdminView = myRoleId === 3 || myRoleId === 4
 
   // Filtrar feedbacks criados pela IA (created_by === 0) e pela BRACVAM (created_by !== 0)
   const iaFeedbacks = feedbacks?.filter(f => f.created_by === 0) || []
@@ -171,7 +171,7 @@ export function ApprovalTask({ task, taskInstance, processId }) {
   }) || []
 
   // Visualização para Usuário Comum (Aguardando aprovação)
-  if (!isAdmin) {
+  if (!showAdminView) {
     // Verificar se o último evento foi solicitação de ajustes.
     // Se foi, mostrar alerta proeminente e a lista de reclamações do BraCVAM
     const lastEvent = events?.[events.length - 1]
@@ -230,9 +230,7 @@ export function ApprovalTask({ task, taskInstance, processId }) {
             </Card>
           )}
 
-          <Card bordered title="Histórico do Processo" style={{ borderRadius: 'var(--radius-l)' }}>
-            <Timeline items={timelineItems} />
-          </Card>
+
 
           <Card bordered title="Resumo do Envio" style={{ borderRadius: 'var(--radius-l)' }}>
             <Descriptions column={1} bordered size="small">
@@ -261,7 +259,7 @@ export function ApprovalTask({ task, taskInstance, processId }) {
           dataSource={fieldFbs}
           renderItem={(fb) => (
             <List.Item
-              actions={[
+              actions={canEdit ? [
                 <Button
                   type="text"
                   danger
@@ -269,7 +267,7 @@ export function ApprovalTask({ task, taskInstance, processId }) {
                   onClick={() => handleDeleteFeedback(fb.id)}
                   size="small"
                 />
-              ]}
+              ] : []}
               style={{ padding: '8px 0' }}
             >
               <List.Item.Meta
@@ -307,7 +305,7 @@ export function ApprovalTask({ task, taskInstance, processId }) {
               size="large"
               icon={<CommentOutlined />}
               onClick={handleRequestAdjustments}
-              disabled={bracvamFeedbacks.length === 0}
+              disabled={bracvamFeedbacks.length === 0 || !canEdit}
               loading={requestAdjustmentsMutation.isPending}
               style={{
                 height: '48px',
@@ -322,6 +320,7 @@ export function ApprovalTask({ task, taskInstance, processId }) {
               icon={<CheckCircleOutlined />}
               onClick={handleApprove}
               loading={completeTaskMutation.isPending}
+              disabled={!canEdit}
               style={{
                 height: '48px',
                 borderRadius: 'var(--radius-m)',
@@ -363,14 +362,16 @@ export function ApprovalTask({ task, taskInstance, processId }) {
               label={
                 <Flex justify="space-between" align="center" style={{ width: '100%' }}>
                   <Text strong>Nome do Método</Text>
-                  <Button 
-                    type="link" 
-                    icon={<PlusOutlined />} 
-                    size="small"
-                    onClick={() => openComplaintDrawer('method_name')}
-                  >
-                    Apontar Falha
-                  </Button>
+                  {canEdit && (
+                    <Button 
+                      type="link" 
+                      icon={<PlusOutlined />} 
+                      size="small"
+                      onClick={() => openComplaintDrawer('method_name')}
+                    >
+                      Apontar Falha
+                    </Button>
+                  )}
                 </Flex>
               }
             >
@@ -382,14 +383,16 @@ export function ApprovalTask({ task, taskInstance, processId }) {
               label={
                 <Flex justify="space-between" align="center" style={{ width: '100%' }}>
                   <Text strong>Objetivo</Text>
-                  <Button 
-                    type="link" 
-                    icon={<PlusOutlined />} 
-                    size="small"
-                    onClick={() => openComplaintDrawer('objective')}
-                  >
-                    Apontar Falha
-                  </Button>
+                  {canEdit && (
+                    <Button 
+                      type="link" 
+                      icon={<PlusOutlined />} 
+                      size="small"
+                      onClick={() => openComplaintDrawer('objective')}
+                    >
+                      Apontar Falha
+                    </Button>
+                  )}
                 </Flex>
               }
             >
@@ -401,14 +404,16 @@ export function ApprovalTask({ task, taskInstance, processId }) {
               label={
                 <Flex justify="space-between" align="center" style={{ width: '100%' }}>
                   <Text strong>Descrição Detalhada</Text>
-                  <Button 
-                    type="link" 
-                    icon={<PlusOutlined />} 
-                    size="small"
-                    onClick={() => openComplaintDrawer('description')}
-                  >
-                    Apontar Falha
-                  </Button>
+                  {canEdit && (
+                    <Button 
+                      type="link" 
+                      icon={<PlusOutlined />} 
+                      size="small"
+                      onClick={() => openComplaintDrawer('description')}
+                    >
+                      Apontar Falha
+                    </Button>
+                  )}
                 </Flex>
               }
             >
@@ -474,9 +479,7 @@ export function ApprovalTask({ task, taskInstance, processId }) {
           )}
         </Card>
 
-        <Card bordered title="4. Histórico de Eventos e Trilha de Auditoria" style={{ borderRadius: 'var(--radius-l)' }}>
-          <Timeline items={timelineItems} />
-        </Card>
+
       </Space>
 
       {/* Drawer do Formulário de Não-Conformidade */}

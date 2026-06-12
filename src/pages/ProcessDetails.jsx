@@ -15,6 +15,7 @@ import {
   Divider,
   Row,
   Col,
+  Switch,
   message
 } from 'antd'
 import {
@@ -39,6 +40,8 @@ export function ProcessDetailsPage() {
   const { data: process, isLoading, error } = useProcessDetails(id)
 
   const [selectedTaskId, setSelectedTaskId] = React.useState(null)
+  const [filterEditableOnly, setFilterEditableOnly] = React.useState(false)
+  const [filterPendingOnly, setFilterPendingOnly] = React.useState(false)
 
   const carouselRef = React.useRef(null)
 
@@ -51,16 +54,36 @@ export function ProcessDetailsPage() {
     myRoleName = 'Coordenador do Grupo Gestor'
   }
 
-  const visibleTasks = process?.tasks?.filter(t => 
-    t.stage_id === process.current_stage_id && 
-    (!t.viewer_roles || t.viewer_roles.includes(myRoleId))
-  ) || []
+  const visibleTasks = process?.tasks?.filter(t => {
+    // 1. Filtrar pela etapa atual
+    if (t.stage_id !== process.current_stage_id) return false
+
+    // 2. Filtrar pelas permissões de visualização
+    if (t.viewer_roles && !t.viewer_roles.includes(myRoleId)) return false
+
+    // 3. Filtro opcional: apenas editáveis por mim
+    if (filterEditableOnly && (!t.editor_roles || !t.editor_roles.includes(myRoleId))) return false
+
+    // 4. Filtro opcional: apenas pendentes (não concluídas e não bloqueadas)
+    if (filterPendingOnly && (t.status === 'completed' || t.status === 'locked')) return false
+
+    return true
+  }) || []
 
   React.useEffect(() => {
     if (process) {
       setSelectedTaskId(process.current_task_id)
     }
   }, [process?.current_task_id])
+
+  React.useEffect(() => {
+    if (visibleTasks.length > 0) {
+      if (!visibleTasks.some(t => t.task_id === selectedTaskId)) {
+        const firstUnlocked = visibleTasks.find(t => t.status !== 'locked')
+        setSelectedTaskId(firstUnlocked ? firstUnlocked.task_id : visibleTasks[0].task_id)
+      }
+    }
+  }, [filterEditableOnly, filterPendingOnly, visibleTasks])
 
   if (isLoading) {
     return (
@@ -189,17 +212,37 @@ export function ProcessDetailsPage() {
           </Tag>
         </Flex>
 
-        {visibleTasks && visibleTasks.length > 0 && (
-          <Card
-            bordered={false}
-            className="modern-card"
-            title={
-              <Text strong style={{ fontSize: '15px' }}>
-                Progresso das Tarefas da Etapa: {process.current_stage_name}
-              </Text>
-            }
-            styles={{ body: { padding: '16px 24px' } }}
-          >
+        <Card
+          bordered={false}
+          className="modern-card"
+          title={
+            <Text strong style={{ fontSize: '15px' }}>
+              Progresso das Tarefas da Etapa: {process.current_stage_name}
+            </Text>
+          }
+          extra={
+            <Flex gap={16} align="center">
+              <Flex align="center" gap={8}>
+                <Text style={{ fontSize: '13px' }}>Minhas atribuições</Text>
+                <Switch 
+                  size="small"
+                  checked={filterEditableOnly} 
+                  onChange={setFilterEditableOnly}
+                />
+              </Flex>
+              <Flex align="center" gap={8}>
+                <Text style={{ fontSize: '13px' }}>Apenas pendentes</Text>
+                <Switch 
+                  size="small"
+                  checked={filterPendingOnly} 
+                  onChange={setFilterPendingOnly}
+                />
+              </Flex>
+            </Flex>
+          }
+          styles={{ body: { padding: '16px 24px' } }}
+        >
+          {visibleTasks.length > 0 ? (
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
               <Button
                 type="text"
@@ -274,8 +317,12 @@ export function ProcessDetailsPage() {
                 style={{ position: 'absolute', right: -12, zIndex: 10, background: '#fff', boxShadow: 'var(--shadow-s)' }}
               />
             </div>
-          </Card>
-        )}
+          ) : (
+            <Flex align="center" justify="center" style={{ padding: '24px 0' }}>
+              <Text type="secondary">Nenhuma tarefa corresponde aos filtros selecionados.</Text>
+            </Flex>
+          )}
+        </Card>
 
         <Card bordered={false} className="modern-card" style={{ minHeight: '300px' }}>
           <TaskRenderer

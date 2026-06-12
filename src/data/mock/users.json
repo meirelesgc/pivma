@@ -22,5 +22,11 @@
     "name": "Ana Lima (Grupo Gestor)",
     "email": "ana@email.com",
     "system_role": "default"
+  },
+  {
+    "id": 5,
+    "name": "Mariana Costa (Proponente)",
+    "email": "mariana@email.com",
+    "system_role": "default"
   }
 ]

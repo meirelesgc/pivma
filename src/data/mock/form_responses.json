@@ -1,14 +1,186 @@
 [
-    {
-        "id": 1,
-        "process_instance_id": 1,
-        "field_id": 1,
-        "value": "Método XYZ"
+  {
+    "id": 1,
+    "process_instance_id": 1,
+    "field_id": 1,
+    "value": "Método XYZ"
+  },
+  {
+    "id": 2,
+    "process_instance_id": 1,
+    "field_id": 2,
+    "value": "Descrição detalhada"
+  },
+  {
+    "id": 3,
+    "process_instance_id": "BRA-2026-005",
+    "form_id": 1,
+    "responses": {
+      "method_name": "Método de Difusão em Gel para Toxicidade Cutânea",
+      "objective": "Este protocolo visa a validação do método alternativo de irritabilidade cutânea in vitro com controle de qualidade para cosméticos.",
+      "description": "Este método foi desenvolvido para prever o potencial irritante de ingredientes cosméticos in vitro. Utiliza um modelo reconstituído de epiderme humana (RhE) associado a um ensaio colorimétrico de MTT para medição de viabilidade celular. O modelo de predição classifica substâncias com viabilidade celular menor ou igual a 50% como irritantes, enquanto substâncias com viabilidade maior que 50% são classificadas como não irritantes. O protocolo descreve o passo a passo metodológico, linhagem celular, controles positivo/negativo e modelagem estatística."
     },
-    {
-        "id": 2,
-        "process_instance_id": 1,
-        "field_id": 2,
-        "value": "Descrição detalhada"
-    }
+    "user_id": 5,
+    "submitted_at": "2026-06-10T12:00:00.000Z"
+  },
+  {
+    "id": 4,
+    "process_instance_id": "BRA-2026-005",
+    "form_id": 2,
+    "responses": {
+      "collaborator_group": "Grupo Colaborador: Labs de Toxicologia da USP e UNICAMP. Grupo Observador: Representantes da ANVISA e do MCTI."
+    },
+    "user_id": 5,
+    "submitted_at": "2026-06-11T15:30:00.000Z"
+  },
+  {
+    "id": 5,
+    "process_instance_id": "BRA-2026-005",
+    "form_id": 3,
+    "responses": {
+      "lead_laboratory": "Laboratório Nacional de Biociências (LNBio)"
+    },
+    "user_id": 5,
+    "submitted_at": "2026-06-11T16:30:00.000Z"
+  },
+  {
+    "id": 6,
+    "process_instance_id": "BRA-2026-005",
+    "form_id": 4,
+    "responses": {
+      "participating_laboratories": "1. USP Ribeirão Preto - Dr. Thiago Santos\n2. UNESP Araraquara - Dra. Clara Mendes\n3. UFRJ - Dr. Roberto Dias"
+    },
+    "user_id": 5,
+    "submitted_at": "2026-06-11T17:30:00.000Z"
+  },
+  {
+    "id": 7,
+    "process_instance_id": "BRA-2026-005",
+    "form_id": 5,
+    "responses": {
+      "sample_selection_group": "Equipe do LNBio, coordenada pela Dra. Mariana Costa. Seleção de 20 compostos de referência com graus conhecidos de toxicidade."
+    },
+    "user_id": 5,
+    "submitted_at": "2026-06-11T18:15:00.000Z"
+  },
+  {
+    "id": 8,
+    "process_instance_id": "BRA-2026-005",
+    "form_id": 6,
+    "responses": {
+      "responsible_statistician": "Dr. Alan Turing Melo - CONRE nº 9876"
+    },
+    "user_id": 5,
+    "submitted_at": "2026-06-11T18:45:00.000Z"
+  },
+  {
+    "id": 9,
+    "process_instance_id": "BRA-2026-005",
+    "form_id": 7,
+    "responses": {
+      "study_design": "Estudo cego interlaboratorial com 3 laboratórios independentes, testando 20 substâncias químicas cegas em triplicata, com 3 execuções independentes por substância."
+    },
+    "user_id": 5,
+    "submitted_at": "2026-06-11T19:30:00.000Z"
+  },
+  {
+    "id": 10,
+    "process_instance_id": "BRA-2026-005",
+    "form_id": 8,
+    "responses": {
+      "primary_outcome": "Viabilidade celular determinada por leitura de absorbância a 570nm no ensaio de MTT. Desfecho binário: irritante vs. não irritante."
+    },
+    "user_id": 5,
+    "submitted_at": "2026-06-11T20:30:00.000Z"
+  },
+  {
+    "id": 11,
+    "process_instance_id": "BRA-2026-005",
+    "form_id": 9,
+    "responses": {
+      "sample_coding_strategy": "Codificação aleatória gerada pelo estatístico responsável. Amostras envasadas com rótulos de código de barras único de 5 dígitos."
+    },
+    "user_id": 5,
+    "submitted_at": "2026-06-11T22:30:00.000Z"
+  },
+  {
+    "id": 12,
+    "process_instance_id": "BRA-2026-005",
+    "form_id": 10,
+    "responses": {
+      "sample_distribution": "Transporte refrigerado (4ºC a 8ºC) via transportadora homologada para material biológico. Registro de temperatura contínuo."
+    },
+    "user_id": 5,
+    "submitted_at": "2026-06-11T23:30:00.000Z"
+  },
+  {
+    "id": 13,
+    "process_instance_id": "BRA-2026-005",
+    "form_id": 11,
+    "responses": {
+      "data_collection_procedure": "Preenchimento de planilhas padronizadas do LNBio contendo leituras brutas de DO e submissão à plataforma PI*VMA."
+    },
+    "user_id": 5,
+    "submitted_at": "2026-06-12T00:30:00.000Z"
+  },
+  {
+    "id": 14,
+    "process_instance_id": "BRA-2026-005",
+    "form_id": 12,
+    "responses": {
+      "acceptance_criteria": "Desvio padrão de replicatas menor que 15%, viabilidade dos controles dentro da faixa histórica aceitável (SD < 20%)."
+    },
+    "user_id": 5,
+    "submitted_at": "2026-06-12T01:30:00.000Z"
+  },
+  {
+    "id": 15,
+    "process_instance_id": "BRA-2026-005",
+    "form_id": 13,
+    "responses": {
+      "statistical_plan": "Cálculo de acurácia, sensibilidade, especificidade e concordância kappa de Cohen. Análise de variância (ANOVA) para efeito de laboratório."
+    },
+    "user_id": 5,
+    "submitted_at": "2026-06-12T02:30:00.000Z"
+  },
+  {
+    "id": 16,
+    "process_instance_id": "BRA-2026-005",
+    "form_id": 14,
+    "responses": {
+      "error_possibilities": "Contaminação celular: descarte e re-preparação. Falha de temperatura no envio: descarte do lote afetado e envio de novo lote codificado."
+    },
+    "user_id": 5,
+    "submitted_at": "2026-06-12T03:30:00.000Z"
+  },
+  {
+    "id": 17,
+    "process_instance_id": "BRA-2026-005",
+    "form_id": 15,
+    "responses": {
+      "macro_schedule": "Mês 1-2: Codificação e distribuição. Mês 3-4: Ensaios experimentais. Mês 5: Análise estatística e relatório final."
+    },
+    "user_id": 5,
+    "submitted_at": "2026-06-12T04:30:00.000Z"
+  },
+  {
+    "id": 18,
+    "process_instance_id": "BRA-2026-005",
+    "form_id": 16,
+    "responses": {
+      "thematic_specialists": "1. Dra. Helenis Maria (UNESP) - Especialista em métodos alternativos.\n2. Dr. Marcos Vinicius (FIOCRUZ) - Toxicologista regulatório."
+    },
+    "user_id": 5,
+    "submitted_at": "2026-06-12T05:30:00.000Z"
+  },
+  {
+    "id": 19,
+    "process_instance_id": "BRA-2026-005",
+    "form_id": 17,
+    "responses": {
+      "confidentiality_terms": "Termo de confidencialidade assinado por todos os laboratórios participantes e integrantes do grupo gestor em 10/06/2026."
+    },
+    "user_id": 5,
+    "submitted_at": "2026-06-12T06:30:00.000Z"
+  }
 ]

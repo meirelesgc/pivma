@@ -29,3 +29,14 @@ export async function getProcessEvents(processId) {
   return processService.getProcessEvents(processId)
 }
 
+export async function addProcessParticipant(data) {
+  await new Promise(resolve => setTimeout(resolve, 300))
+  return processService.addProcessParticipant(data)
+}
+
+export async function removeProcessParticipant(data) {
+  await new Promise(resolve => setTimeout(resolve, 300))
+  return processService.removeProcessParticipant(data)
+}
+
+

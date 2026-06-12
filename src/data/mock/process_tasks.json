@@ -7,7 +7,9 @@
     "form_id": 1,
     "sort_order": 1,
     "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [1]
+    "editor_roles": [1],
+    "approver_roles": [4],
+    "requires_approval": false
   },
   {
     "id": 2,
@@ -16,7 +18,9 @@
     "task_type": "document_upload",
     "sort_order": 2,
     "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [1]
+    "editor_roles": [1],
+    "approver_roles": [4],
+    "requires_approval": false
   },
   {
     "id": 3,
@@ -25,7 +29,9 @@
     "task_type": "form_summary",
     "sort_order": 3,
     "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [1]
+    "editor_roles": [1],
+    "approver_roles": [4],
+    "requires_approval": false
   },
   {
     "id": 4,
@@ -34,7 +40,9 @@
     "task_type": "ai_review",
     "sort_order": 4,
     "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [1]
+    "editor_roles": [1],
+    "approver_roles": [4],
+    "requires_approval": false
   },
   {
     "id": 5,
@@ -43,6 +51,258 @@
     "task_type": "approval",
     "sort_order": 5,
     "viewer_roles": [1, 2, 3, 4],
-    "editor_roles": [4]
+    "editor_roles": [4],
+    "approver_roles": [4],
+    "requires_approval": false
+  },
+  {
+    "id": 6,
+    "stage_id": 2,
+    "name": "Definir Patrocinador",
+    "task_type": "participant_assignment",
+    "target_role_id": 2,
+    "sort_order": 1,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [1],
+    "approver_roles": [4],
+    "requires_approval": true
+  },
+  {
+    "id": 7,
+    "stage_id": 2,
+    "name": "Definir Integrantes do Grupo Gestor",
+    "task_type": "participant_assignment",
+    "target_role_id": 3,
+    "sort_order": 2,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [1],
+    "approver_roles": [4],
+    "requires_approval": true
+  },
+  {
+    "id": 8,
+    "stage_id": 2,
+    "name": "Definir Coordenador do Grupo Gestor",
+    "task_type": "participant_assignment",
+    "target_role_id": 4,
+    "sort_order": 3,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [1],
+    "approver_roles": [4],
+    "requires_approval": true
+  },
+  {
+    "id": 9,
+    "stage_id": 2,
+    "name": "Cadastrar Grupo Colaborador / Observador",
+    "task_type": "form",
+    "form_id": 2,
+    "sort_order": 4,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [4],
+    "approver_roles": [4],
+    "requires_approval": false
+  },
+  {
+    "id": 10,
+    "stage_id": 2,
+    "name": "Definir Laboratório Líder",
+    "task_type": "form",
+    "form_id": 3,
+    "sort_order": 5,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [3],
+    "approver_roles": [4],
+    "requires_approval": true
+  },
+  {
+    "id": 11,
+    "stage_id": 2,
+    "name": "Definir Laboratórios Participantes",
+    "task_type": "form",
+    "form_id": 4,
+    "sort_order": 6,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [3],
+    "approver_roles": [4],
+    "requires_approval": true
+  },
+  {
+    "id": 12,
+    "stage_id": 2,
+    "name": "Definir Grupo de Seleção de Amostras",
+    "task_type": "form",
+    "form_id": 5,
+    "sort_order": 7,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [3],
+    "approver_roles": [4],
+    "requires_approval": true
+  },
+  {
+    "id": 13,
+    "stage_id": 2,
+    "name": "Definir Estatístico Responsável",
+    "task_type": "form",
+    "form_id": 6,
+    "sort_order": 8,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [3],
+    "approver_roles": [4],
+    "requires_approval": true
+  },
+  {
+    "id": 14,
+    "stage_id": 2,
+    "name": "Cadastrar Desenho do Estudo",
+    "task_type": "form",
+    "form_id": 7,
+    "sort_order": 9,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [3],
+    "approver_roles": [4],
+    "requires_approval": true
+  },
+  {
+    "id": 15,
+    "stage_id": 2,
+    "name": "Definir Desfecho Principal",
+    "task_type": "form",
+    "form_id": 8,
+    "sort_order": 10,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [3],
+    "approver_roles": [4],
+    "requires_approval": true
+  },
+  {
+    "id": 16,
+    "stage_id": 2,
+    "name": "Enviar Protocolo Padronizado",
+    "task_type": "document_upload",
+    "sort_order": 11,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [3],
+    "approver_roles": [4],
+    "requires_approval": true
+  },
+  {
+    "id": 17,
+    "stage_id": 2,
+    "name": "Definir Estratégia de Codificação das Amostras",
+    "task_type": "form",
+    "form_id": 9,
+    "sort_order": 12,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [3],
+    "approver_roles": [4],
+    "requires_approval": true
+  },
+  {
+    "id": 18,
+    "stage_id": 2,
+    "name": "Definir Distribuição das Amostras",
+    "task_type": "form",
+    "form_id": 10,
+    "sort_order": 13,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [3],
+    "approver_roles": [4],
+    "requires_approval": true
+  },
+  {
+    "id": 19,
+    "stage_id": 2,
+    "name": "Definir Procedimento de Coleta de Dados",
+    "task_type": "form",
+    "form_id": 11,
+    "sort_order": 14,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [3],
+    "approver_roles": [4],
+    "requires_approval": true
+  },
+  {
+    "id": 20,
+    "stage_id": 2,
+    "name": "Definir Critérios de Aceitação",
+    "task_type": "form",
+    "form_id": 12,
+    "sort_order": 15,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [3],
+    "approver_roles": [4],
+    "requires_approval": true
+  },
+  {
+    "id": 21,
+    "stage_id": 2,
+    "name": "Definir Plano Estatístico",
+    "task_type": "form",
+    "form_id": 13,
+    "sort_order": 16,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [3],
+    "approver_roles": [4],
+    "requires_approval": true
+  },
+  {
+    "id": 22,
+    "stage_id": 2,
+    "name": "Mapear Possibilidades de Erro",
+    "task_type": "form",
+    "form_id": 14,
+    "sort_order": 17,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [3],
+    "approver_roles": [4],
+    "requires_approval": true
+  },
+  {
+    "id": 23,
+    "stage_id": 2,
+    "name": "Definir Cronograma Macro",
+    "task_type": "form",
+    "form_id": 15,
+    "sort_order": 18,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [3],
+    "approver_roles": [4],
+    "requires_approval": true
+  },
+  {
+    "id": 24,
+    "stage_id": 2,
+    "name": "Indicar Especialistas Temáticos",
+    "task_type": "form",
+    "form_id": 16,
+    "sort_order": 19,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [3],
+    "approver_roles": [4],
+    "requires_approval": true
+  },
+  {
+    "id": 25,
+    "stage_id": 2,
+    "name": "Registrar Confidencialidade",
+    "task_type": "form",
+    "form_id": 17,
+    "sort_order": 20,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [1, 2],
+    "approver_roles": [4],
+    "requires_approval": true
+  },
+  {
+    "id": 26,
+    "stage_id": 2,
+    "name": "Aprovação do Planejamento",
+    "task_type": "approval",
+    "sort_order": 21,
+    "viewer_roles": [1, 2, 3, 4],
+    "editor_roles": [4],
+    "approver_roles": [4],
+    "requires_approval": false
   }
 ]

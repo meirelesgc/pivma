@@ -4,5 +4,101 @@
     "name": "Dados Gerais",
     "description": "Informações básicas sobre o método alternativo em desenvolvimento ou validação.",
     "submit_label": "Salvar e Continuar"
+  },
+  {
+    "id": 2,
+    "name": "Grupo Colaborador / Observador",
+    "description": "Indique os membros do grupo colaborador e do grupo observador.",
+    "submit_label": "Salvar e Enviar para Aprovação"
+  },
+  {
+    "id": 3,
+    "name": "Laboratório Líder",
+    "description": "Defina o laboratório líder responsável pela condução dos estudos.",
+    "submit_label": "Salvar e Enviar para Aprovação"
+  },
+  {
+    "id": 4,
+    "name": "Laboratórios Participantes",
+    "description": "Liste todos os laboratórios que participarão dos estudos interlaboratoriais.",
+    "submit_label": "Salvar e Enviar para Aprovação"
+  },
+  {
+    "id": 5,
+    "name": "Grupo de Seleção de Amostras",
+    "description": "Especifique a equipe ou grupo responsável pela seleção e distribuição das amostras.",
+    "submit_label": "Salvar e Enviar para Aprovação"
+  },
+  {
+    "id": 6,
+    "name": "Estatístico Responsável",
+    "description": "Indique o estatístico responsável pelo plano de análise estatística.",
+    "submit_label": "Salvar e Enviar para Aprovação"
+  },
+  {
+    "id": 7,
+    "name": "Desenho do Estudo",
+    "description": "Descreva o desenho experimental do estudo de validação.",
+    "submit_label": "Salvar e Enviar para Aprovação"
+  },
+  {
+    "id": 8,
+    "name": "Desfecho Principal",
+    "description": "Defina os desfechos principais e secundários do estudo.",
+    "submit_label": "Salvar e Enviar para Aprovação"
+  },
+  {
+    "id": 9,
+    "name": "Estratégia de Codificação",
+    "description": "Especifique o protocolo de codificação cega das amostras.",
+    "submit_label": "Salvar e Enviar para Aprovação"
+  },
+  {
+    "id": 10,
+    "name": "Distribuição das Amostras",
+    "description": "Defina a logística de envio e armazenamento temporário das amostras.",
+    "submit_label": "Salvar e Enviar para Aprovação"
+  },
+  {
+    "id": 11,
+    "name": "Procedimento de Coleta de Dados",
+    "description": "Defina como as medições e observações experimentais serão registradas.",
+    "submit_label": "Salvar e Enviar para Aprovação"
+  },
+  {
+    "id": 12,
+    "name": "Critérios de Aceitação",
+    "description": "Defina os limites de aceitabilidade para a precisão, robustez e exatidão.",
+    "submit_label": "Salvar e Enviar para Aprovação"
+  },
+  {
+    "id": 13,
+    "name": "Plano Estatístico",
+    "description": "Detalhamento das análises estatísticas que serão aplicadas aos resultados.",
+    "submit_label": "Salvar e Enviar para Aprovação"
+  },
+  {
+    "id": 14,
+    "name": "Mapeamento de Possibilidades de Erro",
+    "description": "Identificação preventiva de riscos experimentais e planos de contingência.",
+    "submit_label": "Salvar e Enviar para Aprovação"
+  },
+  {
+    "id": 15,
+    "name": "Cronograma Macro",
+    "description": "Defina as datas limites para cada etapa importante do planejamento.",
+    "submit_label": "Salvar e Enviar para Aprovação"
+  },
+  {
+    "id": 16,
+    "name": "Especialistas Temáticos",
+    "description": "Indique especialistas sugeridos para a revisão técnica dos resultados.",
+    "submit_label": "Salvar e Enviar para Aprovação"
+  },
+  {
+    "id": 17,
+    "name": "Termo de Confidencialidade",
+    "description": "Registre os acordos de confidencialidade e propriedade intelectual estabelecidos.",
+    "submit_label": "Salvar e Enviar para Aprovação"
   }
 ]

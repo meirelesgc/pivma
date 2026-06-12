@@ -93,9 +93,13 @@ export function ProcessDetailsPage() {
     switch (status) {
       case 'completed':
         return <Tag color="success" style={{ borderRadius: 'var(--radius-pill)', margin: 0 }}>Concluída</Tag>
+      case 'awaiting_approval':
+        return <Tag color="warning" style={{ borderRadius: 'var(--radius-pill)', margin: 0 }}>Revisão</Tag>
+      case 'rejected':
+        return <Tag color="error" style={{ borderRadius: 'var(--radius-pill)', margin: 0 }}>Recusada</Tag>
       case 'pending':
       case 'in_progress':
-        return <Tag color="processing" style={{ borderRadius: 'var(--radius-pill)', margin: 0 }}>Em andamento</Tag>
+        return <Tag color="processing" style={{ borderRadius: 'var(--radius-pill)', margin: 0 }}>Pendente</Tag>
       case 'locked':
       default:
         return <Tag color="default" style={{ borderRadius: 'var(--radius-pill)', margin: 0 }}>Bloqueada</Tag>
@@ -106,6 +110,10 @@ export function ProcessDetailsPage() {
     switch (status) {
       case 'completed':
         return <CheckCircleOutlined style={{ color: 'var(--ant-success-color, #52c41a)', fontSize: '20px' }} />
+      case 'awaiting_approval':
+        return <ClockCircleOutlined style={{ color: '#d48806', fontSize: '20px' }} />
+      case 'rejected':
+        return <CloseCircleOutlined style={{ color: '#f5222d', fontSize: '20px' }} />
       case 'pending':
       case 'in_progress':
         return <PlayCircleOutlined style={{ color: 'var(--primary-color)', fontSize: '20px' }} />
@@ -114,6 +122,7 @@ export function ProcessDetailsPage() {
         return <LockOutlined style={{ color: 'var(--text-tertiary, #bfbfbf)', fontSize: '20px' }} />
     }
   }
+
 
   const scrollCarousel = (direction) => {
     if (carouselRef.current) {

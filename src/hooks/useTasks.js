@@ -40,6 +40,33 @@ export function useCompleteTask() {
   })
 }
 
+export function useApproveTask() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ taskInstanceId, userId }) => taskApi.approveTask(taskInstanceId, userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['processes'] })
+      queryClient.invalidateQueries({ queryKey: ['process'] })
+      queryClient.invalidateQueries({ queryKey: ['taskInstance'] })
+    }
+  })
+}
+
+export function useRejectTask() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ taskInstanceId, userId, commentText }) => taskApi.rejectTask(taskInstanceId, userId, commentText),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['processes'] })
+      queryClient.invalidateQueries({ queryKey: ['process'] })
+      queryClient.invalidateQueries({ queryKey: ['taskInstance'] })
+    }
+  })
+}
+
+
 export function useUploadDocument() {
   const queryClient = useQueryClient()
 

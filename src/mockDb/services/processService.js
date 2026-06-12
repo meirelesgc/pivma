@@ -138,7 +138,9 @@ export async function getProcessDetails(id) {
       task_type: def?.task_type || 'custom',
       sort_order: def?.sort_order || 0,
       viewer_roles: def?.viewer_roles || [],
-      editor_roles: def?.editor_roles || []
+      editor_roles: def?.editor_roles || [],
+      approver_roles: def?.approver_roles || [],
+      target_role_id: def?.target_role_id || null
     }
   }).sort((a, b) => a.sort_order - b.sort_order)
 
@@ -188,3 +190,52 @@ export async function getProcessDetails(id) {
 export async function getProcessEvents(processId) {
   return eventRepository.findByProcessId(processId)
 }
+
+export async function addProcessParticipant({ processInstanceId, userId, processRoleId }) {
+  // Verifica se o participante já está associado a esse papel no processo
+  const existing = db.processParticipants.find(
+    p => p.process_instance_id === processInstanceId && 
+         p.user_id === userId && 
+         p.process_role_id === processRoleId
+  )
+  if (existing) return existing
+
+  const newParticipant = participantRepository.create({
+    id: nextId(db.processParticipants),
+    process_instance_id: processInstanceId,
+    user_id: userId,
+    process_role_id: processRoleId,
+    joined_at: new Date().toISOString()
+  })
+
+  // Log event
+  const user = db.users.find(u => u.id === userId)
+  const role = db.processRoles.find(r => r.id === processRoleId)
+  await eventRepository.create({
+    process_instance_id: processInstanceId,
+    user_id: userId,
+    event_type: 'participant_added',
+    description: `Usuário "${user?.name}" adicionado ao processo com o papel "${role?.name}".`,
+    created_at: new Date().toISOString()
+  })
+
+  return newParticipant
+}
+
+export async function removeProcessParticipant({ processInstanceId, userId, processRoleId }) {
+  const removed = participantRepository.removeByUserAndProcessAndRole(userId, processInstanceId, processRoleId)
+  if (removed) {
+    // Log event
+    const user = db.users.find(u => u.id === userId)
+    const role = db.processRoles.find(r => r.id === processRoleId)
+    await eventRepository.create({
+      process_instance_id: processInstanceId,
+      user_id: userId,
+      event_type: 'participant_removed',
+      description: `Usuário "${user?.name}" removido do papel "${role?.name}".`,
+      created_at: new Date().toISOString()
+    })
+  }
+  return removed
+}
+

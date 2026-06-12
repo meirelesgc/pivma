@@ -73,5 +73,16 @@ export async function requestAdjustments(processId, userId) {
   return taskService.requestAdjustments(processId, userId)
 }
 
+export async function approveTask(taskInstanceId, userId) {
+  await new Promise(resolve => setTimeout(resolve, 500))
+  return taskService.approveTask(taskInstanceId, userId)
+}
+
+export async function rejectTask(taskInstanceId, userId, commentText) {
+  await new Promise(resolve => setTimeout(resolve, 500))
+  return taskService.rejectTask(taskInstanceId, userId, commentText)
+}
+
+
 
 

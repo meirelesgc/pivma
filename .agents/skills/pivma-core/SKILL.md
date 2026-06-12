@@ -1,3 +1,8 @@
+---
+name: pivma-core
+description: Restrições de arquitetura, hooks, serviços e diretrizes gerais para o MVP do projeto PI*VMA. Sempre ativa para o projeto PI*VMA.
+---
+
 # PI*VMA Core
 Restrições de arquitetura e desenvolvimento do MVP.
 

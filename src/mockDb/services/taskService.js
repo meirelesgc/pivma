@@ -27,10 +27,17 @@ export async function completeTask(taskInstanceId, userId) {
   return workflowService.completeTask(taskInstanceId, userId)
 }
 
+export async function approveTask(taskInstanceId, userId) {
+  return workflowService.approveTask(taskInstanceId, userId)
+}
+
+export async function rejectTask(taskInstanceId, userId, commentText) {
+  return workflowService.rejectTask(taskInstanceId, userId, commentText)
+}
+
 export async function requestAdjustments(processId, userId) {
   return workflowService.requestAdjustments(processId, userId)
 }
-
 
 export async function logEvent(processId, userId, type, description) {
   return eventRepository.create({
@@ -76,5 +83,3 @@ export async function deleteFieldFeedback(id) {
 export async function deleteFeedbacksByTaskInstance(taskInstanceId) {
   return feedbackRepository.deleteByTaskInstanceId(taskInstanceId)
 }
-
-

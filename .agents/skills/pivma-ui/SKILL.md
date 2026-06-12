@@ -1,3 +1,8 @@
+---
+name: pivma-ui
+description: Padrões de interface, estilização e componentes de UI para o projeto PI*VMA (Ant Design, cores, fontes, layouts). Ativar ao criar ou modificar componentes de interface.
+---
+
 # PI*VMA UI
 Padrões de interface e estilização.
 

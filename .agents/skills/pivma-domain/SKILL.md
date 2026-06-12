@@ -1,3 +1,8 @@
+---
+name: pivma-domain
+description: Regras de negócio, fluxo de trabalho e hierarquia de entidades (Process, Stage, Task) da Plataforma de Validação de Métodos para o BraCVAM (PI*VMA). Ativar ao implementar fluxos de trabalho ou modelar dados.
+---
+
 # PI*VMA Domínio
 Regras de negócio e hierarquia de entidades.
 

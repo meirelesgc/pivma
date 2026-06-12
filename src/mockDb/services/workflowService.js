@@ -4,6 +4,7 @@ import * as stageRepository from '../repositories/stageRepository'
 import * as processRepository from '../repositories/processRepository'
 import * as eventRepository from '../repositories/eventRepository'
 import * as feedbackRepository from '../repositories/feedbackRepository'
+import * as commentRepository from '../repositories/commentRepository'
 import { nextId } from '../repositories/baseRepository'
 import { db } from '../database'
 
@@ -16,22 +17,9 @@ export async function logEvent(processId, userId, type, description) {
   })
 }
 
-export async function completeTask(taskInstanceId, userId) {
-  const taskInstance = db.taskInstances.find(ti => ti.id === taskInstanceId)
-  if (!taskInstance) throw new Error('Instância de tarefa não encontrada')
-
-  // 1. Marcar tarefa atual como concluída
-  taskInstanceRepository.update(taskInstanceId, {
-    status: 'completed',
-    completed_at: new Date().toISOString()
-  })
-
+async function advanceWorkflowAfterCompletion(taskInstance, currentTask, userId) {
   const stageInstance = db.stageInstances.find(si => si.id === taskInstance.stage_instance_id)
   const processInstance = db.processInstances.find(pi => pi.id === stageInstance.process_instance_id)
-  const currentTask = taskRepository.findTaskById(taskInstance.task_id)
-
-  // Log completion event
-  await logEvent(processInstance.id, userId, 'task_completed', `Tarefa "${currentTask.name}" concluída.`)
 
   // Se for a tarefa 3 (Resumo e Submissão), registrar evento de submissão
   if (currentTask.id === 3) {
@@ -117,6 +105,84 @@ export async function completeTask(taskInstanceId, userId) {
 
     return { finished: true }
   }
+}
+
+export async function completeTask(taskInstanceId, userId) {
+  const taskInstance = db.taskInstances.find(ti => ti.id === taskInstanceId)
+  if (!taskInstance) throw new Error('Instância de tarefa não encontrada')
+
+  const stageInstance = db.stageInstances.find(si => si.id === taskInstance.stage_instance_id)
+  const processInstance = db.processInstances.find(pi => pi.id === stageInstance.process_instance_id)
+  const currentTask = taskRepository.findTaskById(taskInstance.task_id)
+
+  // Se a tarefa exige aprovação, ela entra em estado de awaiting_approval
+  if (currentTask.requires_approval) {
+    taskInstanceRepository.update(taskInstanceId, {
+      status: 'awaiting_approval',
+      submitted_at: new Date().toISOString()
+    })
+
+    await logEvent(processInstance.id, userId, 'task_submitted', `Tarefa "${currentTask.name}" enviada para aprovação.`)
+
+    return { status: 'awaiting_approval', finished: false }
+  }
+
+  // 1. Marcar tarefa atual como concluída
+  taskInstanceRepository.update(taskInstanceId, {
+    status: 'completed',
+    completed_at: new Date().toISOString()
+  })
+
+  // Log completion event
+  await logEvent(processInstance.id, userId, 'task_completed', `Tarefa "${currentTask.name}" concluída.`)
+
+  return advanceWorkflowAfterCompletion(taskInstance, currentTask, userId)
+}
+
+export async function approveTask(taskInstanceId, userId) {
+  const taskInstance = db.taskInstances.find(ti => ti.id === taskInstanceId)
+  if (!taskInstance) throw new Error('Instância de tarefa não encontrada')
+
+  const stageInstance = db.stageInstances.find(si => si.id === taskInstance.stage_instance_id)
+  const processInstance = db.processInstances.find(pi => pi.id === stageInstance.process_instance_id)
+  const currentTask = taskRepository.findTaskById(taskInstance.task_id)
+
+  taskInstanceRepository.update(taskInstanceId, {
+    status: 'completed',
+    completed_at: new Date().toISOString()
+  })
+
+  await logEvent(processInstance.id, userId, 'task_approved', `Tarefa "${currentTask.name}" aprovada.`)
+
+  return advanceWorkflowAfterCompletion(taskInstance, currentTask, userId)
+}
+
+export async function rejectTask(taskInstanceId, userId, commentText) {
+  const taskInstance = db.taskInstances.find(ti => ti.id === taskInstanceId)
+  if (!taskInstance) throw new Error('Instância de tarefa não encontrada')
+
+  const stageInstance = db.stageInstances.find(si => si.id === taskInstance.stage_instance_id)
+  const processInstance = db.processInstances.find(pi => pi.id === stageInstance.process_instance_id)
+  const currentTask = taskRepository.findTaskById(taskInstance.task_id)
+
+  taskInstanceRepository.update(taskInstanceId, {
+    status: 'rejected',
+    completed_at: null
+  })
+
+  await logEvent(processInstance.id, userId, 'task_rejected', `Tarefa "${currentTask.name}" rejeitada.`)
+
+  if (commentText) {
+    const user = db.users.find(u => u.id === userId)
+    commentRepository.create({
+      task_instance_id: taskInstanceId,
+      user_id: userId,
+      user_name: user?.name || 'Aprovador',
+      content: `Justificativa de rejeição: ${commentText}`
+    })
+  }
+
+  return { status: 'rejected', finished: false }
 }
 
 export async function requestAdjustments(processId, userId) {

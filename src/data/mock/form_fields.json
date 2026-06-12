@@ -28,5 +28,165 @@
     "required": true,
     "placeholder": "Forneça uma descrição técnica detalhada",
     "sort_order": 3
+  },
+  {
+    "id": 4,
+    "form_id": 2,
+    "label": "Grupo Colaborador / Observador",
+    "field_name": "collaborator_group",
+    "field_type": "textarea",
+    "required": true,
+    "placeholder": "Descreva quem fará parte dos grupos colaboradores e observadores...",
+    "sort_order": 1
+  },
+  {
+    "id": 5,
+    "form_id": 3,
+    "label": "Laboratório Líder",
+    "field_name": "lead_laboratory",
+    "field_type": "text",
+    "required": true,
+    "placeholder": "Nome do laboratório líder responsável...",
+    "sort_order": 1
+  },
+  {
+    "id": 6,
+    "form_id": 4,
+    "label": "Laboratórios Participantes",
+    "field_name": "participating_laboratories",
+    "field_type": "textarea",
+    "required": true,
+    "placeholder": "Liste os laboratórios participantes e seus responsáveis...",
+    "sort_order": 1
+  },
+  {
+    "id": 7,
+    "form_id": 5,
+    "label": "Grupo de Seleção de Amostras",
+    "field_name": "sample_selection_group",
+    "field_type": "textarea",
+    "required": true,
+    "placeholder": "Especifique quem compõe o grupo e quais os critérios de seleção...",
+    "sort_order": 1
+  },
+  {
+    "id": 8,
+    "form_id": 6,
+    "label": "Estatístico Responsável",
+    "field_name": "responsible_statistician",
+    "field_type": "text",
+    "required": true,
+    "placeholder": "Nome e registro do estatístico...",
+    "sort_order": 1
+  },
+  {
+    "id": 9,
+    "form_id": 7,
+    "label": "Desenho do Estudo",
+    "field_name": "study_design",
+    "field_type": "textarea",
+    "required": true,
+    "placeholder": "Detalhe o delineamento experimental...",
+    "sort_order": 1
+  },
+  {
+    "id": 10,
+    "form_id": 8,
+    "label": "Desfecho Principal",
+    "field_name": "primary_outcome",
+    "field_type": "textarea",
+    "required": true,
+    "placeholder": "Descreva as principais variáveis de resposta...",
+    "sort_order": 1
+  },
+  {
+    "id": 11,
+    "form_id": 9,
+    "label": "Estratégia de Codificação",
+    "field_name": "sample_coding_strategy",
+    "field_type": "textarea",
+    "required": true,
+    "placeholder": "Explique como será feita a codificação e rastreio cego das amostras...",
+    "sort_order": 1
+  },
+  {
+    "id": 12,
+    "form_id": 10,
+    "label": "Distribuição das Amostras",
+    "field_name": "sample_distribution",
+    "field_type": "textarea",
+    "required": true,
+    "placeholder": "Indique a logística de envio e controle de temperatura...",
+    "sort_order": 1
+  },
+  {
+    "id": 13,
+    "form_id": 11,
+    "label": "Procedimento de Coleta de Dados",
+    "field_name": "data_collection_procedure",
+    "field_type": "textarea",
+    "required": true,
+    "placeholder": "Instruções para a coleta e consolidação dos resultados laboratoriais...",
+    "sort_order": 1
+  },
+  {
+    "id": 14,
+    "form_id": 12,
+    "label": "Critérios de Aceitação",
+    "field_name": "acceptance_criteria",
+    "field_type": "textarea",
+    "required": true,
+    "placeholder": "Limites de reprodutibilidade, exatidão e limites aceitáveis...",
+    "sort_order": 1
+  },
+  {
+    "id": 15,
+    "form_id": 13,
+    "label": "Plano Estatístico",
+    "field_name": "statistical_plan",
+    "field_type": "textarea",
+    "required": true,
+    "placeholder": "Testes de hipóteses, tratamentos de outliers, etc...",
+    "sort_order": 1
+  },
+  {
+    "id": 16,
+    "form_id": 14,
+    "label": "Mapeamento de Possibilidades de Erro",
+    "field_name": "error_possibilities",
+    "field_type": "textarea",
+    "required": true,
+    "placeholder": "Descreva falhas conhecidas, desvios aceitáveis e ações corretivas...",
+    "sort_order": 1
+  },
+  {
+    "id": 15,
+    "form_id": 15,
+    "label": "Cronograma Macro",
+    "field_name": "macro_schedule",
+    "field_type": "textarea",
+    "required": true,
+    "placeholder": "Estime prazos para a preparação de amostras, rodadas experimentais e análise...",
+    "sort_order": 1
+  },
+  {
+    "id": 16,
+    "form_id": 16,
+    "label": "Especialistas Temáticos",
+    "field_name": "thematic_specialists",
+    "field_type": "textarea",
+    "required": true,
+    "placeholder": "Liste nomes e qualificações de possíveis revisores...",
+    "sort_order": 1
+  },
+  {
+    "id": 17,
+    "form_id": 17,
+    "label": "Registrar Confidencialidade",
+    "field_name": "confidentiality_terms",
+    "field_type": "textarea",
+    "required": true,
+    "placeholder": "Termos de propriedade intelectual e confidencialidade assinados...",
+    "sort_order": 1
   }
 ]

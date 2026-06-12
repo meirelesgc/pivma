@@ -135,6 +135,7 @@ export async function getProcessDetails(id) {
     return {
       ...ti,
       name: def?.name || 'Tarefa sem nome',
+      stage_id: def?.stage_id || null,
       task_type: def?.task_type || 'custom',
       sort_order: def?.sort_order || 0,
       viewer_roles: def?.viewer_roles || [],

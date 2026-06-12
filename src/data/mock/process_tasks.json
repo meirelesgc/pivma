@@ -65,7 +65,7 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [1],
     "approver_roles": [4],
-    "requires_approval": true
+    "requires_approval": false
   },
   {
     "id": 7,
@@ -77,7 +77,7 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [1],
     "approver_roles": [4],
-    "requires_approval": true
+    "requires_approval": false
   },
   {
     "id": 8,
@@ -89,7 +89,7 @@
     "viewer_roles": [1, 2, 3, 4],
     "editor_roles": [1],
     "approver_roles": [4],
-    "requires_approval": true
+    "requires_approval": false
   },
   {
     "id": 9,

@@ -51,7 +51,10 @@ export function ProcessDetailsPage() {
     myRoleName = 'Coordenador do Grupo Gestor'
   }
 
-  const visibleTasks = process?.tasks?.filter(t => !t.viewer_roles || t.viewer_roles.includes(myRoleId)) || []
+  const visibleTasks = process?.tasks?.filter(t => 
+    t.stage_id === process.current_stage_id && 
+    (!t.viewer_roles || t.viewer_roles.includes(myRoleId))
+  ) || []
 
   React.useEffect(() => {
     if (process) {

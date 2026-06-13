@@ -130,7 +130,7 @@ export function WorkspacePage() {
         {isLoading ? (
           <Row gutter={[24, 24]}>
             {[1, 2, 3].map(i => (
-              <Col xs={24} sm={12} lg={8} key={i}>
+              <Col span={24} key={i}>
                 <Skeleton active avatar paragraph={{ rows: 3 }} />
               </Col>
             ))}
@@ -138,7 +138,7 @@ export function WorkspacePage() {
         ) : filteredProcesses?.length > 0 ? (
           <Row gutter={[24, 24]}>
             {filteredProcesses.map(p => (
-              <Col xs={24} sm={12} lg={8} key={p.id}>
+              <Col span={24} key={p.id}>
                 <ProcessCard
                   process={p}
                   onClick={handleCardClick}

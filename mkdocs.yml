@@ -1,3 +1,8 @@
-site_name: pivma
+site_name: PI*VMA - Documentação
 theme:
   name: material
+
+nav:
+  - Início: index.md
+  - Estrutura e Domínio: estrutura.md
+  - Catálogo de Tarefas: tarefas.md

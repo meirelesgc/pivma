@@ -9,7 +9,10 @@ import {
   updateProcessInstanceStep,
   getTasks,
   getProcessInstanceTasks,
-  updateProcessInstanceTask
+  updateProcessInstanceTask,
+  getFormFieldsByTaskId,
+  getFormAnswers,
+  saveFormAnswers
 } from '../services/processes'
 
 export function useProcesses() {
@@ -93,6 +96,38 @@ export function useProcesses() {
     createProcessInstance: createInstanceMutation.mutate,
     updateProcessInstanceStep: updateStepMutation.mutate,
     updateProcessInstanceTask: updateTaskMutation.mutate
+  }
+}
+
+export function useFormTask(taskId, instanceTaskId) {
+  const queryClient = useQueryClient()
+
+  const formFieldsQuery = useQuery({
+    queryKey: ['formFields', taskId],
+    queryFn: () => getFormFieldsByTaskId(taskId),
+    enabled: !!taskId
+  })
+
+  const formAnswersQuery = useQuery({
+    queryKey: ['formAnswers', instanceTaskId],
+    queryFn: () => getFormAnswers(instanceTaskId),
+    enabled: !!instanceTaskId
+  })
+
+  const saveAnswersMutation = useMutation({
+    mutationFn: saveFormAnswers,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['formAnswers', instanceTaskId] })
+    }
+  })
+
+  return {
+    fields: formFieldsQuery.data || [],
+    isLoadingFields: formFieldsQuery.isLoading,
+    answers: formAnswersQuery.data || {},
+    isLoadingAnswers: formAnswersQuery.isLoading,
+    saveAnswers: saveAnswersMutation.mutate,
+    isSaving: saveAnswersMutation.isPending
   }
 }
 

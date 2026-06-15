@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "task_id": 1,
+    "name": "Nome do Método",
+    "type": "text",
+    "section": "Identificação"
+  },
+  {
+    "id": 2,
+    "task_id": 1,
+    "name": "Princípio da Redução ou Substituição",
+    "type": "text",
+    "section": "Identificação"
+  },
+  {
+    "id": 3,
+    "task_id": 1,
+    "name": "Número de Replicatas",
+    "type": "int",
+    "section": "Parâmetros do Ensaio"
+  },
+  {
+    "id": 4,
+    "task_id": 1,
+    "name": "Concentração Máxima de Teste",
+    "type": "float",
+    "section": "Parâmetros do Ensaio"
+  },
+  {
+    "id": 5,
+    "task_id": 1,
+    "name": "Procedimento Operacional Padrão (POP)",
+    "type": "upload",
+    "section": "Anexos e Protocolos"
+  }
+]

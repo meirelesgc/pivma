@@ -6,6 +6,7 @@ import initialProcessSteps from '../data/mock/process_steps.json'
 import initialProcessInstanceSteps from '../data/mock/process_instance_steps.json'
 import initialTasks from '../data/mock/tasks.json'
 import initialProcessInstanceTasks from '../data/mock/process_instance_tasks.json'
+import initialFormFields from '../data/mock/form_fields.json'
 
 // Carrega os dados em memória para simular operações em um banco de dados local mutável
 let users = [...initialUsers]
@@ -16,6 +17,8 @@ let processSteps = [...initialProcessSteps]
 let processInstanceSteps = [...initialProcessInstanceSteps]
 let tasks = [...initialTasks]
 let processInstanceTasks = [...initialProcessInstanceTasks]
+let formFields = [...initialFormFields]
+let formAnswers = {} // Chaveada por process_instance_task_id
 
 export const db = {
   // Usuários
@@ -172,6 +175,16 @@ export const db = {
     }
 
     return { ...pit }
+  },
+
+  // Campos de Formulário Dinâmicos
+  getFormFieldsByTaskId: (taskId) => formFields.filter(f => Number(f.task_id) === Number(taskId)).map(f => ({ ...f })),
+  getFormAnswers: (instanceTaskId) => {
+    return formAnswers[instanceTaskId] ? { ...formAnswers[instanceTaskId] } : {}
+  },
+  saveFormAnswers: (instanceTaskId, answers) => {
+    formAnswers[instanceTaskId] = { ...answers }
+    return { ...formAnswers[instanceTaskId] }
   }
 }
 

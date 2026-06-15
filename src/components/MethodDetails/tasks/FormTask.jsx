@@ -1,14 +1,47 @@
- 
-import { Space, Typography } from 'antd'
+import { useState } from 'react'
+import { Spin, Flex } from 'antd'
+import { useFormTask } from '../../../hooks/useProcesses'
+import { FormRenderer } from './FormRenderer'
 
-const { Paragraph } = Typography
+export function FormTask({ task, onToggle }) {
+  const { fields, isLoadingFields, answers, isLoadingAnswers, saveAnswers } = useFormTask(task.task_id, task.id)
+  const [localAnswers, setLocalAnswers] = useState(null)
 
-export function FormTask({ task: _task }) {
+  const currentAnswers = localAnswers || answers || {}
+
+  const handleFieldChange = (fieldId, value) => {
+    const updated = { ...currentAnswers, [fieldId]: value }
+    setLocalAnswers(updated)
+    // Persist answers on every change in database
+    saveAnswers({ instanceTaskId: task.id, answers: updated })
+  }
+
+  const handleSubmit = () => {
+    // Save answers and trigger task completion
+    saveAnswers({ instanceTaskId: task.id, answers: currentAnswers })
+    onToggle()
+  }
+
+  const handleReopen = () => {
+    onToggle() // Marks task as pending (reopens it for editing)
+  }
+
+  if (isLoadingFields || isLoadingAnswers) {
+    return (
+      <Flex justify="center" align="center" style={{ padding: '20px' }}>
+        <Spin tip="Carregando formulário..." />
+      </Flex>
+    )
+  }
+
   return (
-    <Space direction="vertical" style={{ width: '100%' }} size={12}>
-      <Paragraph style={{ fontFamily: 'Lexend, sans-serif', margin: 0 }}>
-        Esta é uma tarefa do tipo <strong>Formulário</strong>. Preencha todos os campos necessários para validação dos dados da etapa.
-      </Paragraph>
-    </Space>
+    <FormRenderer
+      fields={fields}
+      values={currentAnswers}
+      onFieldChange={handleFieldChange}
+      isCompleted={task.is_completed}
+      onSubmit={handleSubmit}
+      onReopen={handleReopen}
+    />
   )
 }

@@ -20,7 +20,7 @@ export function TaskCard({ task, onToggle }) {
   const renderTaskContent = () => {
     switch (task.type) {
       case 'form':
-        return <FormTask task={task} />
+        return <FormTask task={task} onToggle={onToggle} />
       case 'review':
         return <ReviewTask task={task} />
       default:
@@ -87,19 +87,21 @@ export function TaskCard({ task, onToggle }) {
 
         {renderTaskContent()}
 
-        <Button
-          type={isCompleted ? 'default' : 'primary'}
-          onClick={onToggle}
-          style={{
-            fontFamily: 'Lexend, sans-serif',
-            borderRadius: '8px',
-            fontWeight: '600',
-            marginTop: '8px'
-          }}
-          block
-        >
-          {isCompleted ? 'Marcar como Pendente' : 'Concluir Tarefa'}
-        </Button>
+        {task.type !== 'form' && (
+          <Button
+            type={isCompleted ? 'default' : 'primary'}
+            onClick={onToggle}
+            style={{
+              fontFamily: 'Lexend, sans-serif',
+              borderRadius: '8px',
+              fontWeight: '600',
+              marginTop: '8px'
+            }}
+            block
+          >
+            {isCompleted ? 'Marcar como Pendente' : 'Concluir Tarefa'}
+          </Button>
+        )}
       </Space>
     </Card>
   )

@@ -40,3 +40,15 @@ export async function updateProcessInstanceTask({ taskInstanceId, isCompleted })
   return db.toggleProcessInstanceTask(taskInstanceId, isCompleted)
 }
 
+export async function getFormFieldsByTaskId(taskId) {
+  return db.getFormFieldsByTaskId(taskId)
+}
+
+export async function getFormAnswers(instanceTaskId) {
+  return db.getFormAnswers(instanceTaskId)
+}
+
+export async function saveFormAnswers({ instanceTaskId, answers }) {
+  return db.saveFormAnswers(instanceTaskId, answers)
+}
+

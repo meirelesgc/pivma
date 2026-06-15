@@ -45,12 +45,10 @@ Crie o arquivo  src/services/tasks.js  para gerenciar as operações assíncrona
   import { db } from './db'
 
   export async function getTasks() {
-    await new Promise(resolve => setTimeout(resolve, 300))
     return db.getTasks()
   }
 
   export async function createTask(task) {
-    await new Promise(resolve => setTimeout(resolve, 300))
     return db.addTask(task)
   }
 

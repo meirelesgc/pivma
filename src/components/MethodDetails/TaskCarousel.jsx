@@ -5,8 +5,6 @@ import {
   CheckOutlined,
   FormOutlined,
   EyeOutlined,
-  CheckCircleOutlined,
-  CalendarOutlined,
   FileTextOutlined
 } from '@ant-design/icons'
 
@@ -15,8 +13,6 @@ const { Title, Text } = Typography
 const taskTypeColors = {
   form: { color: 'blue', label: 'Formulário', icon: <FormOutlined /> },
   review: { color: 'purple', label: 'Revisão', icon: <EyeOutlined /> },
-  check: { color: 'green', label: 'Checagem', icon: <CheckCircleOutlined /> },
-  calendar: { color: 'orange', label: 'Calendário', icon: <CalendarOutlined /> }
 }
 
 export function TaskCarousel({
@@ -33,9 +29,9 @@ export function TaskCarousel({
   }
 
   return (
-    <Card 
-      style={{ 
-        borderRadius: '16px', 
+    <Card
+      style={{
+        borderRadius: '16px',
         boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
         border: '1px solid #f0f0f0',
         padding: '16px'
@@ -52,14 +48,14 @@ export function TaskCarousel({
         {/* Controles do Carrossel */}
         {enrichedTasks.length > itemsPerPage && (
           <Flex gap={8}>
-            <Button 
-              icon={<LeftOutlined />} 
-              onClick={onPrev} 
+            <Button
+              icon={<LeftOutlined />}
+              onClick={onPrev}
               disabled={currentSlide === 0}
             />
-            <Button 
-              icon={<RightOutlined />} 
-              onClick={onNext} 
+            <Button
+              icon={<RightOutlined />}
+              onClick={onNext}
               disabled={currentSlide === maxSlide}
             />
           </Flex>
@@ -84,14 +80,14 @@ export function TaskCarousel({
                 minWidth: '240px',
                 borderRadius: '12px',
                 transition: 'all 0.3s ease',
-                border: isSelected 
-                  ? '2px solid #1677ff' 
+                border: isSelected
+                  ? '2px solid #1677ff'
                   : (isCompleted ? '1.5px solid #b7eb8f' : '1px solid #f0f0f0'),
                 background: isSelected
                   ? '#e6f4ff'
                   : (isCompleted ? '#f6ffed' : '#ffffff'),
-                boxShadow: isSelected 
-                  ? '0 4px 12px rgba(22, 119, 255, 0.15)' 
+                boxShadow: isSelected
+                  ? '0 4px 12px rgba(22, 119, 255, 0.15)'
                   : 'none',
               }}
               bodyStyle={{ padding: '16px' }}
@@ -111,10 +107,10 @@ export function TaskCarousel({
                 )}
               </Flex>
 
-              <Text 
-                strong 
-                ellipsis 
-                style={{ 
+              <Text
+                strong
+                ellipsis
+                style={{
                   display: 'block',
                   fontSize: '14px',
                   color: isSelected ? '#1677ff' : '#262626',

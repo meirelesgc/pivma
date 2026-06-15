@@ -2,36 +2,27 @@ import { Button, Card, Typography, Space, Tag } from 'antd'
 import {
   FormOutlined,
   EyeOutlined,
-  CheckCircleOutlined,
-  CalendarOutlined,
   FileTextOutlined
 } from '@ant-design/icons'
-import { FormTask, ReviewTask, CheckTask, CalendarTask, DefaultTask } from './tasks'
+import { FormTask, ReviewTask, DefaultTask } from './tasks'
 
 const { Title } = Typography
 
 const taskTypeColors = {
   form: { color: 'blue', label: 'Formulário', icon: <FormOutlined /> },
   review: { color: 'purple', label: 'Revisão', icon: <EyeOutlined /> },
-  check: { color: 'green', label: 'Checagem', icon: <CheckCircleOutlined /> },
-  calendar: { color: 'orange', label: 'Calendário', icon: <CalendarOutlined /> }
 }
 
 export function TaskCard({ task, onToggle }) {
   const typeConfig = taskTypeColors[task.type] || { color: 'default', label: task.type, icon: <FileTextOutlined /> }
   const isCompleted = task.is_completed
 
-  // Match case (switch) para identificar o tipo da tarefa e renderizar apropriadamente
   const renderTaskContent = () => {
     switch (task.type) {
       case 'form':
         return <FormTask task={task} />
       case 'review':
         return <ReviewTask task={task} />
-      case 'check':
-        return <CheckTask task={task} />
-      case 'calendar':
-        return <CalendarTask task={task} />
       default:
         return <DefaultTask task={task} />
     }
@@ -43,11 +34,11 @@ export function TaskCard({ task, onToggle }) {
         width: '100%',
         borderRadius: '16px',
         border: isCompleted ? '2.5px solid #b7eb8f' : '1.5px solid #f0f0f0',
-        background: isCompleted 
-          ? 'linear-gradient(135deg, #f6ffed 0%, #e6ffed 100%)' 
+        background: isCompleted
+          ? 'linear-gradient(135deg, #f6ffed 0%, #e6ffed 100%)'
           : 'linear-gradient(135deg, #ffffff 0%, #fafafa 100%)',
-        boxShadow: isCompleted 
-          ? '0 6px 16px rgba(82, 196, 26, 0.08)' 
+        boxShadow: isCompleted
+          ? '0 6px 16px rgba(82, 196, 26, 0.08)'
           : '0 6px 16px rgba(0, 0, 0, 0.03)',
         transition: 'all 0.3s ease'
       }}
@@ -55,24 +46,24 @@ export function TaskCard({ task, onToggle }) {
     >
       <Space direction="vertical" size={16} style={{ width: '100%' }}>
         <Space justify="space-between" align="center" style={{ width: '100%', display: 'flex' }}>
-          <Tag 
-            color={typeConfig.color} 
-            icon={typeConfig.icon} 
-            style={{ 
-              padding: '4px 12px', 
-              borderRadius: '6px', 
-              fontSize: '12px', 
+          <Tag
+            color={typeConfig.color}
+            icon={typeConfig.icon}
+            style={{
+              padding: '4px 12px',
+              borderRadius: '6px',
+              fontSize: '12px',
               fontWeight: 'bold',
               fontFamily: 'Lexend, sans-serif'
             }}
           >
             {typeConfig.label.toUpperCase()}
           </Tag>
-          <Tag 
+          <Tag
             color={isCompleted ? 'success' : 'warning'}
-            style={{ 
-              borderRadius: '6px', 
-              fontSize: '11px', 
+            style={{
+              borderRadius: '6px',
+              fontSize: '11px',
               fontWeight: 'bold',
               fontFamily: 'Lexend, sans-serif'
             }}
@@ -81,10 +72,10 @@ export function TaskCard({ task, onToggle }) {
           </Tag>
         </Space>
 
-        <Title 
-          level={4} 
-          style={{ 
-            margin: 0, 
+        <Title
+          level={4}
+          style={{
+            margin: 0,
             textDecoration: isCompleted ? 'line-through' : 'none',
             color: isCompleted ? '#8c8c8c' : '#262626',
             fontFamily: 'Barlow, sans-serif',
@@ -99,9 +90,9 @@ export function TaskCard({ task, onToggle }) {
         <Button
           type={isCompleted ? 'default' : 'primary'}
           onClick={onToggle}
-          style={{ 
-            fontFamily: 'Lexend, sans-serif', 
-            borderRadius: '8px', 
+          style={{
+            fontFamily: 'Lexend, sans-serif',
+            borderRadius: '8px',
             fontWeight: '600',
             marginTop: '8px'
           }}

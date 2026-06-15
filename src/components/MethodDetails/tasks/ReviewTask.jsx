@@ -1,9 +1,9 @@
-/* eslint-disable no-unused-vars */
+ 
 import { Space, Typography } from 'antd'
 
 const { Paragraph } = Typography
 
-export function ReviewTask({ task }) {
+export function ReviewTask({ task: _task }) {
   return (
     <Space direction="vertical" style={{ width: '100%' }} size={12}>
       <Paragraph style={{ fontFamily: 'Lexend, sans-serif', margin: 0 }}>

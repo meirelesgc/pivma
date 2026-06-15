@@ -1,0 +1,6 @@
+[
+  { "id": 1, "process_id": 1, "name": "SUBMISSÃO E TRIAGEM", "sequence": 1, "icone": "file-text" },
+  { "id": 2, "process_id": 1, "name": "PLANEJAMENTO E PREPARAÇÃO", "sequence": 2, "icone": "calendar" },
+  { "id": 3, "process_id": 1, "name": "EXECUÇÃO DA VALIDAÇÃO", "sequence": 3, "icone": "check-circle" },
+  { "id": 4, "process_id": 1, "name": "REVISÃO E DECISÃO", "sequence": 4, "icone": "gavel" }
+]

@@ -1,8 +1,7 @@
-import users from '../data/mock/users.json'
+import { db } from './db'
 
 export async function login(userId) {
-  await new Promise(resolve => setTimeout(resolve, 500))
-  const user = users.find(u => u.id === userId)
+  const user = db.getUserById(userId)
   if (user) {
     localStorage.setItem('token', String(userId))
     return { token: String(userId), user }
@@ -11,17 +10,15 @@ export async function login(userId) {
 }
 
 export async function getMe() {
-  await new Promise(resolve => setTimeout(resolve, 500))
   const token = localStorage.getItem('token')
   if (token) {
-    const user = users.find(u => String(u.id) === token)
+    const user = db.getUserById(token)
     if (user) return user
   }
   throw new Error('Error')
 }
 
 export async function logout() {
-  await new Promise(resolve => setTimeout(resolve, 200))
   localStorage.removeItem('token')
   return true
 }

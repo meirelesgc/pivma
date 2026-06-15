@@ -1,0 +1,10 @@
+[
+  { "id": 1, "step_id": 1, "name": "Preencher dados de cadastro", "type": "form" },
+  { "id": 2, "step_id": 1, "name": "Avaliar documentação", "type": "review" },
+  { "id": 3, "step_id": 2, "name": "Definir escopo da validação", "type": "form" },
+  { "id": 4, "step_id": 2, "name": "Montar plano de testes", "type": "form" },
+  { "id": 5, "step_id": 3, "name": "Executar testes unitários", "type": "check" },
+  { "id": 6, "step_id": 3, "name": "Registrar relatório de erros", "type": "review" },
+  { "id": 7, "step_id": 4, "name": "Emitir parecer final", "type": "review" },
+  { "id": 8, "step_id": 4, "name": "Assinar termo de aceite", "type": "form" }
+]

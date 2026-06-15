@@ -2,11 +2,13 @@
   {
     "id": 1,
     "name": "João Silva",
-    "email": "joao@email.com"
+    "email": "joao@email.com",
+    "system_role": "default"
   },
   {
     "id": 2,
-    "name": "Maria Souza",
-    "email": "maria@email.com"
+    "name": "Maria Souza (BRACVAM)",
+    "email": "maria@email.com",
+    "system_role": "admin"
   }
 ]

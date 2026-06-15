@@ -7,7 +7,7 @@ export function ReceptionPage() {
   const navigate = useNavigate()
 
   return (
-    <Flex justify="center" align="center" vertical style={{ minHeight: '100vh', textAlign: 'center' }}>
+    <Flex justify="center" align="center" vertical>
       <Space direction="vertical" size="large">
         <Typography>
           <Title>Bem-vindo ao BraCVAM</Title>

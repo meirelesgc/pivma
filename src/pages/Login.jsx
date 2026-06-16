@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { useUsers } from '../hooks/useUsers'
 import { useProcesses } from '../hooks/useProcesses'
-import { Button, Card, Typography, Space, List, Alert, Flex, Tabs, Form, Input, message } from 'antd'
+import { Button, Card, Typography, Space, List, Alert, Flex, Tabs, Form, Input, message, Collapse } from 'antd'
 import { Navigate } from 'react-router-dom'
 import { UserOutlined, MailOutlined, UserAddOutlined, LoginOutlined } from '@ant-design/icons'
 
@@ -40,6 +40,9 @@ export function LoginPage() {
     }
   }
 
+  const mainUsers = users.filter(u => !u.email.endsWith('@system.com'))
+  const systemPlaceholders = users.filter(u => u.email.endsWith('@system.com'))
+
   const items = [
     {
       key: 'login',
@@ -55,9 +58,9 @@ export function LoginPage() {
           </Text>
           <List
             loading={isLoadingUsers}
-            dataSource={users}
+            dataSource={mainUsers}
             renderItem={user => (
-              <List.Item style={{ padding: '8px 0' }}>
+              <List.Item style={{ padding: '6px 0' }}>
                 <Button
                   block
                   icon={<UserOutlined />}
@@ -75,6 +78,49 @@ export function LoginPage() {
               </List.Item>
             )}
           />
+
+          {systemPlaceholders.length > 0 && (
+            <Collapse
+              ghost
+              size="small"
+              style={{ marginTop: '8px' }}
+              items={[
+                {
+                  key: 'placeholders',
+                  label: (
+                    <span style={{ fontFamily: 'Lexend, sans-serif', fontWeight: '600', color: '#1677ff', cursor: 'pointer' }}>
+                      Perfis por Cargo (Placeholders do Sistema)
+                    </span>
+                  ),
+                  children: (
+                    <div style={{ maxHeight: '220px', overflowY: 'auto', paddingRight: '4px' }}>
+                      <List
+                        dataSource={systemPlaceholders}
+                        renderItem={user => (
+                          <List.Item style={{ padding: '4px 0' }}>
+                            <Button
+                              block
+                              icon={<UserOutlined />}
+                              onClick={() => login(user.id)}
+                              style={{
+                                height: '36px',
+                                borderRadius: '6px',
+                                textAlign: 'left',
+                                fontSize: '13px',
+                                fontFamily: 'Lexend, sans-serif'
+                              }}
+                            >
+                              {user.name}
+                            </Button>
+                          </List.Item>
+                        )}
+                      />
+                    </div>
+                  )
+                }
+              ]}
+            />
+          )}
         </Space>
       )
     },

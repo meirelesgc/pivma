@@ -10,5 +10,71 @@
     "name": "Maria Souza (BRACVAM)",
     "email": "maria@email.com",
     "system_role": "admin"
+  },
+  {
+    "id": 3,
+    "name": "Carlos Proponente",
+    "email": "proponente@system.com",
+    "system_role": "default"
+  },
+  {
+    "id": 4,
+    "name": "Ana BraCVAM",
+    "email": "bracvam@system.com",
+    "system_role": "admin"
+  },
+  {
+    "id": 5,
+    "name": "Roberto Patrocinador",
+    "email": "patrocinador@system.com",
+    "system_role": "default"
+  },
+  {
+    "id": 6,
+    "name": "Juliana Grupo Gestor",
+    "email": "grupogestor@system.com",
+    "system_role": "default"
+  },
+  {
+    "id": 7,
+    "name": "Lucas Coordenador Gestor",
+    "email": "coordenadorgestor@system.com",
+    "system_role": "default"
+  },
+  {
+    "id": 8,
+    "name": "Fernanda Colaboradora/Observadora",
+    "email": "colaborador@system.com",
+    "system_role": "default"
+  },
+  {
+    "id": 9,
+    "name": "Ricardo Seleção de Amostras",
+    "email": "selecaoamostras@system.com",
+    "system_role": "default"
+  },
+  {
+    "id": 10,
+    "name": "Patricia Laboratório Líder",
+    "email": "laboratorio.lider@system.com",
+    "system_role": "default"
+  },
+  {
+    "id": 11,
+    "name": "Thiago Laboratório Participante",
+    "email": "laboratorio.participante@system.com",
+    "system_role": "default"
+  },
+  {
+    "id": 12,
+    "name": "Gabriela Estatística",
+    "email": "estatistico@system.com",
+    "system_role": "default"
+  },
+  {
+    "id": 13,
+    "name": "Marcos Comitê ADHOC",
+    "email": "comiteadhoc@system.com",
+    "system_role": "default"
   }
 ]

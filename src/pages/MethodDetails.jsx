@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { Flex, Spin, Empty, Button, Card, Typography, message, Radio, Select, Divider } from 'antd'
 import { LockOutlined } from '@ant-design/icons'
 import { useProcesses } from '../hooks/useProcesses'
@@ -74,12 +74,24 @@ const TaskContainer = ({ enrichedTasks, currentSlide, maxSlide, itemsPerPage, on
 }
 
 function useMethodDetailsData(instanceId) {
+  const [searchParams] = useSearchParams()
+  const queryStepId = searchParams.get('stepId') ? Number(searchParams.get('stepId')) : null
+  const queryTaskId = searchParams.get('taskId') ? Number(searchParams.get('taskId')) : null
+
   const processes = useProcesses()
   const { user: currentUser } = useAuth()
   const { processInstances, processSteps, processInstanceSteps, tasks, processInstanceTasks, processInstanceRoles } = processes
 
   const [selectedStepId, setSelectedStepId] = useState(null)
   const [currentSlide, setCurrentSlide] = useState(0)
+
+  // Sync step from query param if available
+  useEffect(() => {
+    if (queryStepId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSelectedStepId(queryStepId)
+    }
+  }, [queryStepId])
 
   // Estados dos Filtros
   const [actorFilter, setActorFilter] = useState(false) // true = "Minhas Tarefas"
@@ -186,6 +198,17 @@ function useMethodDetailsData(instanceId) {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentSlide(0)
   }, [actorFilter, statusFilter, typeFilter])
+
+  // Sync task slide from query param if available
+  useEffect(() => {
+    if (queryTaskId && enrichedTasks.length > 0) {
+      const idx = enrichedTasks.findIndex(t => t.id === queryTaskId)
+      if (idx !== -1) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setCurrentSlide(idx)
+      }
+    }
+  }, [queryTaskId, enrichedTasks])
 
   const overallProgress = useMemo(() => {
     const completed = instSteps.filter(s => s.is_completed).length

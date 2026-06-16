@@ -41,5 +41,49 @@
       "enabled": true,
       "strategy": "verify_pdf_structure"
     }
+  },
+  {
+    "id": 6,
+    "task_id": 11,
+    "name": "Desenho do Estudo",
+    "type": "upload",
+    "section": "Planejamento Estatístico",
+    "ai_evaluation": {
+      "enabled": true,
+      "strategy": "verify_desenho_pdf"
+    }
+  },
+  {
+    "id": 7,
+    "task_id": 11,
+    "name": "Critérios de Aceitação",
+    "type": "upload",
+    "section": "Planejamento Estatístico",
+    "ai_evaluation": {
+      "enabled": true,
+      "strategy": "verify_criterios_pdf"
+    }
+  },
+  {
+    "id": 8,
+    "task_id": 11,
+    "name": "Plano Estatístico",
+    "type": "upload",
+    "section": "Planejamento Estatístico",
+    "ai_evaluation": {
+      "enabled": true,
+      "strategy": "verify_plano_pdf"
+    }
+  },
+  {
+    "id": 9,
+    "task_id": 11,
+    "name": "Possibilidade de Erros",
+    "type": "upload",
+    "section": "Planejamento Estatístico",
+    "ai_evaluation": {
+      "enabled": true,
+      "strategy": "verify_erros_pdf"
+    }
   }
 ]

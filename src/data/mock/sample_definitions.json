@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "process_instance_id": 1,
+    "chemical_name": "Substância A",
+    "casrn": "50-00-0",
+    "chemical_class": ["Organofosforado"],
+    "product_class": ["Agrotóxico"],
+    "appearance": "Líquido incolor",
+    "physical_state": "Líquido",
+    "quantity": 100,
+    "unit": "ml",
+    "ph": 7.0,
+    "kow": 1.2,
+    "volatility": "Baixa",
+    "reactivity": "Estável",
+    "test_concentrations": ["10%", "20%", "50%"],
+    "purity_percentage": 99.5,
+    "supplier": "Sigma-Aldrich",
+    "storage_instructions": "Manter sob refrigeração",
+    "handling_instructions": "Usar EPI completo",
+    "disposal_instructions": "Descarte conforme legislação local",
+    "components": [],
+    "sds_file": "1.pdf",
+    "sds_url": "/mock/sds/1.pdf"
+  }
+]

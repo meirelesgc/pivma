@@ -84,7 +84,7 @@ function useMethodDetailsData(instanceId) {
   // Estados dos Filtros
   const [actorFilter, setActorFilter] = useState(false) // true = "Minhas Tarefas"
   const [statusFilter, setStatusFilter] = useState('all') // all, pending, pending_review, completed
-  const [typeFilter, setTypeFilter] = useState('all') // all, form, assignment, approval
+  const [typeFilter, setTypeFilter] = useState('all') // all, form, assignment, approval, sample_definition
 
   const instance = useMemo(() =>
     processInstances?.find(inst => inst.id === instanceId),
@@ -173,6 +173,7 @@ function useMethodDetailsData(instanceId) {
         if (typeFilter === 'form' && task.type !== 'form') return false
         if (typeFilter === 'assignment' && task.type !== 'assignment') return false
         if (typeFilter === 'approval' && (task.type !== 'approval' && task.type !== 'review')) return false
+        if (typeFilter === 'sample_definition' && task.type !== 'sample_definition') return false
       }
 
       return true
@@ -181,6 +182,7 @@ function useMethodDetailsData(instanceId) {
 
   // Reseta o slide para 0 ao alterar qualquer filtro
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentSlide(0)
   }, [actorFilter, statusFilter, typeFilter])
 
@@ -374,7 +376,8 @@ export function MethodDetailsPage() {
                         { value: 'all', label: 'Todos os Tipos' },
                         { value: 'form', label: 'Formulário' },
                         { value: 'assignment', label: 'Atribuição' },
-                        { value: 'approval', label: 'Aprovação' }
+                        { value: 'approval', label: 'Aprovação' },
+                        { value: 'sample_definition', label: 'Amostras' }
                       ]}
                     />
                   </Flex>

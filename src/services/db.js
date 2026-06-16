@@ -9,6 +9,8 @@ import initialProcessInstanceTasks from '../data/mock/process_instance_tasks.jso
 import initialFormFields from '../data/mock/form_fields.json'
 import initialFieldReviews from '../data/mock/field_reviews.json'
 import initialPendingInvites from '../data/mock/pending_invites.json'
+import initialSampleDefinitions from '../data/mock/sample_definitions.json'
+import initialSampleBlindCodes from '../data/mock/sample_blind_codes.json'
 
 // Carrega os dados em memória para simular operações em um banco de dados local mutável
 let users = [...initialUsers]
@@ -22,6 +24,8 @@ let processInstanceTasks = [...initialProcessInstanceTasks]
 let formFields = [...initialFormFields]
 let fieldReviews = [...initialFieldReviews]
 let pendingInvites = [...initialPendingInvites]
+let sampleDefinitions = [...initialSampleDefinitions]
+let sampleBlindCodes = [...initialSampleBlindCodes]
 let formAnswers = {} // Chaveada por process_instance_task_id
 
 const checkAndCompleteStep = (stepInstanceId) => {
@@ -266,6 +270,30 @@ export const db = {
             failed = true
             aiComment = 'O arquivo do Procedimento Operacional Padrão (POP) precisa ser um documento PDF contendo "pop" no nome para validação estrutural.'
           }
+        } else if (strategy === 'verify_desenho_pdf') {
+          const fileName = String(val || '').toLowerCase()
+          if (!fileName || !fileName.endsWith('.pdf') || (!fileName.includes('desenho') && !fileName.includes('estudo'))) {
+            failed = true
+            aiComment = 'O arquivo de Desenho do Estudo precisa ser um documento PDF contendo "desenho" ou "estudo" no nome.'
+          }
+        } else if (strategy === 'verify_criterios_pdf') {
+          const fileName = String(val || '').toLowerCase()
+          if (!fileName || !fileName.endsWith('.pdf') || (!fileName.includes('criterio') && !fileName.includes('aceitacao') && !fileName.includes('aceitac'))) {
+            failed = true
+            aiComment = 'O arquivo de Critérios de Aceitação precisa ser um documento PDF contendo "criterio" ou "aceitacao" no nome.'
+          }
+        } else if (strategy === 'verify_plano_pdf') {
+          const fileName = String(val || '').toLowerCase()
+          if (!fileName || !fileName.endsWith('.pdf') || (!fileName.includes('plano') && !fileName.includes('estatistico') && !fileName.includes('estatistic'))) {
+            failed = true
+            aiComment = 'O arquivo de Plano Estatístico precisa ser um documento PDF contendo "plano" ou "estatistico" no nome.'
+          }
+        } else if (strategy === 'verify_erros_pdf') {
+          const fileName = String(val || '').toLowerCase()
+          if (!fileName || !fileName.endsWith('.pdf') || (!fileName.includes('erro') && !fileName.includes('possibilidade'))) {
+            failed = true
+            aiComment = 'O arquivo de Possibilidade de Erros precisa ser um documento PDF contendo "erro" ou "possibilidade" no nome.'
+          }
         }
 
         if (failed) {
@@ -441,7 +469,99 @@ export const db = {
     checkAndCompleteStep(pit.process_instance_step_id)
 
     return { ...pit }
+  },
+
+  // Amostras (Sample Definitions & Blind Codes)
+  getSampleDefinitions: (instanceId) => {
+    return sampleDefinitions.filter(s => Number(s.process_instance_id) === Number(instanceId)).map(s => ({ ...s }))
+  },
+
+  getSampleBlindCodes: (instanceId) => {
+    return sampleBlindCodes.filter(bc => Number(bc.process_instance_id) === Number(instanceId)).map(bc => ({ ...bc }))
+  },
+
+  saveSampleDefinitions: (instanceId, samples) => {
+    const otherSamples = sampleDefinitions.filter(s => Number(s.process_instance_id) !== Number(instanceId))
+    let nextId = sampleDefinitions.length > 0 ? Math.max(...sampleDefinitions.map(s => s.id)) + 1 : 1
+    
+    const processedSamples = samples.map(s => {
+      const id = s.id ? Number(s.id) : nextId++
+      return {
+        ...s,
+        id,
+        process_instance_id: Number(instanceId)
+      }
+    })
+    
+    sampleDefinitions = [...otherSamples, ...processedSamples]
+    
+    const labRoles = processInstanceRoles.filter(
+      r => Number(r.instance_id) === Number(instanceId) && r.role === 'Laboratórios Participantes'
+    )
+    
+    const activeSampleIds = processedSamples.map(s => s.id)
+    const activeLabRoleIds = labRoles.map(l => l.id)
+    
+    // Clean up old blind codes for deleted samples or unassigned/deleted lab roles
+    sampleBlindCodes = sampleBlindCodes.filter(bc => {
+      if (Number(bc.process_instance_id) !== Number(instanceId)) return true
+      return activeSampleIds.includes(bc.sample_id) && activeLabRoleIds.includes(bc.laboratory_role_id)
+    })
+    
+    // Ensure blind codes exist for all active samples & laboratory roles
+    const currentBatchCodes = []
+    processedSamples.forEach(sample => {
+      labRoles.forEach(lab => {
+        const existingCodeObj = sampleBlindCodes.find(
+          bc => Number(bc.sample_id) === Number(sample.id) && Number(bc.laboratory_role_id) === Number(lab.id)
+        )
+        if (!existingCodeObj) {
+          const blind_code = getUniqueBlindCodeForInstance(Number(instanceId), currentBatchCodes)
+          currentBatchCodes.push(blind_code)
+          const newCodeId = sampleBlindCodes.length > 0 ? Math.max(...sampleBlindCodes.map(bc => bc.id)) + 1 : 1
+          sampleBlindCodes.push({
+            id: newCodeId,
+            process_instance_id: Number(instanceId),
+            sample_id: sample.id,
+            laboratory_role_id: lab.id,
+            blind_code
+          })
+        }
+      })
+    })
+    
+    return processedSamples.map(s => ({ ...s }))
   }
+}
+
+const generateRandomCode = () => {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  const digits = '0123456789'
+  const randChar = (set) => set[Math.floor(Math.random() * set.length)]
+  const randStr = (set, len) => Array.from({ length: len }, () => randChar(set)).join('')
+  const formats = [
+    () => `${randStr(letters, 2)}-${randStr(digits, 4)}-${randStr(letters, 1)}`,
+    () => `${randStr(digits, 3)}-${randStr(letters, 2)}-${randStr(digits, 3)}`,
+    () => `${randStr(letters, 1)}${randStr(digits, 3)}${randStr(letters, 1)}${randStr(digits, 3)}`
+  ]
+  const formatIndex = Math.floor(Math.random() * formats.length)
+  return formats[formatIndex]()
+}
+
+const getUniqueBlindCodeForInstance = (instanceId, currentBatchCodes = []) => {
+  const existingCodes = [
+    ...sampleBlindCodes.filter(bc => Number(bc.process_instance_id) === Number(instanceId)).map(bc => bc.blind_code),
+    ...currentBatchCodes
+  ]
+  let attempts = 0
+  while (attempts < 1000) {
+    const candidate = generateRandomCode()
+    if (!existingCodes.includes(candidate)) {
+      return candidate
+    }
+    attempts++
+  }
+  throw new Error("Could not generate a unique blind code")
 }
 
 

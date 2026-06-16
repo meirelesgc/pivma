@@ -88,3 +88,15 @@ export async function getPendingInvites() {
   return db.getPendingInvites()
 }
 
+export async function getSampleDefinitions(instanceId) {
+  return db.getSampleDefinitions(instanceId)
+}
+
+export async function getSampleBlindCodes(instanceId) {
+  return db.getSampleBlindCodes(instanceId)
+}
+
+export async function saveSampleDefinitions({ instanceId, samples }) {
+  return db.saveSampleDefinitions(instanceId, samples)
+}
+

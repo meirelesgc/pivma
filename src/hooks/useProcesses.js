@@ -21,7 +21,10 @@ import {
   rejectReview,
   registerUser,
   completeAssignmentTask,
-  getPendingInvites
+  getPendingInvites,
+  getSampleDefinitions,
+  getSampleBlindCodes,
+  saveSampleDefinitions
 } from '../services/processes'
 
 export function useProcesses() {
@@ -219,6 +222,40 @@ export function useFormTask(taskId, instanceTaskId) {
     isLoadingAnswers: formAnswersQuery.isLoading,
     saveAnswers: saveAnswersMutation.mutate,
     isSaving: saveAnswersMutation.isPending
+  }
+}
+
+export function useSampleDefinitions(instanceId) {
+  const queryClient = useQueryClient()
+
+  const sampleDefinitionsQuery = useQuery({
+    queryKey: ['sampleDefinitions', instanceId],
+    queryFn: () => getSampleDefinitions(instanceId),
+    enabled: !!instanceId
+  })
+
+  const sampleBlindCodesQuery = useQuery({
+    queryKey: ['sampleBlindCodes', instanceId],
+    queryFn: () => getSampleBlindCodes(instanceId),
+    enabled: !!instanceId
+  })
+
+  const saveSamplesMutation = useMutation({
+    mutationFn: saveSampleDefinitions,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['sampleDefinitions', instanceId] })
+      queryClient.invalidateQueries({ queryKey: ['sampleBlindCodes', instanceId] })
+    }
+  })
+
+  return {
+    samples: sampleDefinitionsQuery.data || [],
+    isLoadingSamples: sampleDefinitionsQuery.isLoading,
+    blindCodes: sampleBlindCodesQuery.data || [],
+    isLoadingBlindCodes: sampleBlindCodesQuery.isLoading,
+    saveSamples: saveSamplesMutation.mutate,
+    saveSamplesAsync: saveSamplesMutation.mutateAsync,
+    isSavingSamples: saveSamplesMutation.isPending
   }
 }
 

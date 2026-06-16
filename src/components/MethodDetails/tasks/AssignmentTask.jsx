@@ -132,7 +132,7 @@ export function AssignmentTask({ task, onToggle }) {
           style={{ borderRadius: '12px', marginBottom: '16px' }}
         />
         <Title level={5} style={{ fontFamily: 'Barlow, sans-serif', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#8c8c8c' }}>
-          Pessoas Atribuídas ao Cargo de "{task.target_role}":
+          Pessoas Atribuídas ao Cargo de &quot;{task.target_role}&quot;:
         </Title>
         <List
           size="small"
@@ -261,8 +261,9 @@ export function AssignmentTask({ task, onToggle }) {
             dataSource={tempAssignments}
             renderItem={(item, index) => (
               <List.Item
+                key={item.userId || item.email || index}
                 actions={[
-                  <Button type="text" danger icon={<DeleteOutlined />} onClick={() => handleRemoveTemp(index)} />
+                  <Button key="delete" type="text" danger icon={<DeleteOutlined />} onClick={() => handleRemoveTemp(index)} />
                 ]}
               >
                 <Space>

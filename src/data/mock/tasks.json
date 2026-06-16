@@ -76,6 +76,23 @@
   {
     "id": 10,
     "step_id": 2,
+    "name": "Definição e Preparação das Amostras",
+    "type": "sample_definition",
+    "role": "Grupo de Seleção de Amostras"
+  },
+  {
+    "id": 11,
+    "step_id": 2,
+    "name": "Análise Estatística e Planejamento",
+    "type": "form",
+    "required_reviewers": [
+      "Grupo Gestor"
+    ],
+    "role": "Estatístico"
+  },
+  {
+    "id": 12,
+    "step_id": 2,
     "name": "Aprovar formalmente a estrutura montada",
     "type": "approval",
     "role": "BraCVAM"

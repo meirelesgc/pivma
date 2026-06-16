@@ -4,9 +4,10 @@ import {
   EyeOutlined,
   FileTextOutlined,
   TeamOutlined,
-  SafetyCertificateOutlined
+  SafetyCertificateOutlined,
+  ExperimentOutlined
 } from '@ant-design/icons'
-import { FormTask, ReviewTask, DefaultTask, AssignmentTask, ApprovalTask } from './tasks'
+import { FormTask, ReviewTask, DefaultTask, AssignmentTask, ApprovalTask, SampleDefinitionTask } from './tasks'
 
 const { Title } = Typography
 
@@ -14,7 +15,8 @@ const taskTypeColors = {
   form: { color: 'blue', label: 'Formulário', icon: <FormOutlined /> },
   review: { color: 'purple', label: 'Revisão', icon: <EyeOutlined /> },
   assignment: { color: 'orange', label: 'Atribuição de Cargo', icon: <TeamOutlined /> },
-  approval: { color: 'cyan', label: 'Aprovação Formal', icon: <SafetyCertificateOutlined /> }
+  approval: { color: 'cyan', label: 'Aprovação Formal', icon: <SafetyCertificateOutlined /> },
+  sample_definition: { color: 'magenta', label: 'Definição de Amostras', icon: <ExperimentOutlined /> }
 }
 
 export function TaskCard({ task, onToggle }) {
@@ -31,6 +33,8 @@ export function TaskCard({ task, onToggle }) {
         return <AssignmentTask task={task} onToggle={onToggle} />
       case 'approval':
         return <ApprovalTask task={task} onToggle={onToggle} />
+      case 'sample_definition':
+        return <SampleDefinitionTask task={task} onToggle={onToggle} />
       default:
         return <DefaultTask task={task} />
     }
@@ -95,7 +99,7 @@ export function TaskCard({ task, onToggle }) {
 
         {renderTaskContent()}
 
-        {task.type !== 'form' && task.type !== 'assignment' && task.type !== 'approval' && (
+        {task.type !== 'form' && task.type !== 'assignment' && task.type !== 'approval' && task.type !== 'sample_definition' && (
           <Button
             type={isCompleted ? 'default' : 'primary'}
             onClick={onToggle}

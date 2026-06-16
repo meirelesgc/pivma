@@ -59,8 +59,10 @@ export function WorkspacePage() {
     }
   })
 
-  // Filtra os dados com base no texto de busca
+  // Filtra os dados com base no texto de busca e exibe apenas onde o usuário logado está presente (possui papel)
   const filteredData = cardData.filter((item) => {
+    if (!item.myRole) return false
+
     const searchLower = searchText.toLowerCase()
     return (
       item.processName.toLowerCase().includes(searchLower) ||

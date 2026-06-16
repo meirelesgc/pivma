@@ -46,14 +46,25 @@ export const db = {
     processInstances.push(newInstance)
 
     // Quem cria sempre ganha automaticamente o cargo de "Proponente"
-    const newRoleId = processInstanceRoles.length > 0 ? Math.max(...processInstanceRoles.map(r => r.id)) + 1 : 1
+    let currentRoleId = processInstanceRoles.length > 0 ? Math.max(...processInstanceRoles.map(r => r.id)) + 1 : 1
     const newRole = {
-      id: newRoleId,
+      id: currentRoleId++,
       instance_id: newId,
       user_id: instance.created_by,
       role: 'Proponente'
     }
     processInstanceRoles.push(newRole)
+
+    // Os administradores são adicionados como "BraCVAM"
+    const adminUsers = users.filter(u => u.system_role === 'admin')
+    adminUsers.forEach(admin => {
+      processInstanceRoles.push({
+        id: currentRoleId++,
+        instance_id: newId,
+        user_id: admin.id,
+        role: 'BraCVAM'
+      })
+    })
 
     // Inicializa automaticamente as etapas da instância
     const stepsForProcess = processSteps.filter(step => step.process_id === Number(instance.process_id))

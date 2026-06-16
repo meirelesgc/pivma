@@ -103,5 +103,12 @@
     "name": "Aprovar formalmente a estrutura montada",
     "type": "approval",
     "role": "BraCVAM"
+  },
+  {
+    "id": 14,
+    "step_id": 3,
+    "name": "Execução da Validação - Placeholder",
+    "type": "default",
+    "role": "Proponente"
   }
 ]

@@ -193,11 +193,14 @@ export function LoginPage() {
         bodyStyle={{ padding: '32px' }}
       >
         <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-          <Title level={3} style={{ margin: 0, fontFamily: 'Barlow, sans-serif', fontWeight: '700' }}>
-            BraCVAM Portal
+          <Title level={3} style={{ margin: 0, fontFamily: 'Barlow, sans-serif', fontWeight: '700', color: 'var(--color-02)' }}>
+            PI*VMA Portal
           </Title>
-          <Text type="secondary" style={{ fontFamily: 'Lexend, sans-serif' }}>
-            Validação Integrada de Métodos Alternativos
+          <Text strong style={{ fontFamily: 'Lexend, sans-serif', display: 'block', fontSize: '13px', color: '#595959', marginTop: '4px' }}>
+            Plataforma Inteligente de Validação de Métodos Alternativos
+          </Text>
+          <Text type="secondary" style={{ fontFamily: 'Lexend, sans-serif', fontSize: '11px', display: 'block', marginTop: '2px' }}>
+            BraCVAM FIOCRUZ
           </Text>
         </div>
         <Tabs defaultActiveKey="login" items={items} />

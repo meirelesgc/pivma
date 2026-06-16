@@ -6,9 +6,10 @@ import {
   TeamOutlined,
   SafetyCertificateOutlined,
   ExperimentOutlined,
-  TableOutlined
+  TableOutlined,
+  AuditOutlined
 } from '@ant-design/icons'
-import { FormTask, ReviewTask, DefaultTask, AssignmentTask, ApprovalTask, SampleDefinitionTask, DataTemplateDefinitionTask } from './tasks'
+import { FormTask, ReviewTask, DefaultTask, AssignmentTask, ApprovalTask, SampleDefinitionTask, DataTemplateDefinitionTask, ReviewDecisionTask } from './tasks'
 
 const { Title } = Typography
 
@@ -18,7 +19,8 @@ const taskTypeColors = {
   assignment: { color: 'orange', label: 'Atribuição de Cargo', icon: <TeamOutlined /> },
   approval: { color: 'cyan', label: 'Aprovação Formal', icon: <SafetyCertificateOutlined /> },
   sample_definition: { color: 'magenta', label: 'Definição de Amostras', icon: <ExperimentOutlined /> },
-  data_template_definition: { color: 'green', label: 'Template de Coleta', icon: <TableOutlined /> }
+  data_template_definition: { color: 'green', label: 'Template de Coleta', icon: <TableOutlined /> },
+  review_decision: { color: 'red', label: 'Revisão e Decisão', icon: <AuditOutlined /> }
 }
 
 export function TaskCard({ task, onToggle }) {
@@ -39,6 +41,8 @@ export function TaskCard({ task, onToggle }) {
         return <SampleDefinitionTask task={task} onToggle={onToggle} />
       case 'data_template_definition':
         return <DataTemplateDefinitionTask task={task} onToggle={onToggle} />
+      case 'review_decision':
+        return <ReviewDecisionTask task={task} onToggle={onToggle} />
       default:
         return <DefaultTask task={task} />
     }
@@ -101,9 +105,15 @@ export function TaskCard({ task, onToggle }) {
           {task.name}
         </Title>
 
+        {task.stepName && (
+          <Typography.Text type="secondary" style={{ fontSize: '13px', display: 'block', marginTop: '-8px' }}>
+            Etapa: <strong style={{ color: '#595959' }}>{task.stepName}</strong>
+          </Typography.Text>
+        )}
+
         {renderTaskContent()}
 
-        {task.type !== 'form' && task.type !== 'assignment' && task.type !== 'approval' && task.type !== 'sample_definition' && task.type !== 'data_template_definition' && (
+        {task.type !== 'form' && task.type !== 'assignment' && task.type !== 'approval' && task.type !== 'sample_definition' && task.type !== 'data_template_definition' && task.type !== 'review_decision' && (
           <Button
             type={isCompleted ? 'default' : 'primary'}
             onClick={onToggle}

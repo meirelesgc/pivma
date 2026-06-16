@@ -16,7 +16,8 @@ const taskTypeTags = {
   assignment: { color: 'orange', label: 'Atribuição' },
   approval: { color: 'cyan', label: 'Aprovação' },
   sample_definition: { color: 'magenta', label: 'Amostras' },
-  data_template_definition: { color: 'green', label: 'Template de Coleta' }
+  data_template_definition: { color: 'green', label: 'Template de Coleta' },
+  review_decision: { color: 'red', label: 'Revisão e Decisão' }
 }
 
 const statusTags = {
@@ -35,18 +36,25 @@ export function TasksPage() {
   const [actorFilter, setActorFilter] = useState(true) // true = "Minhas Tarefas" (default), false = "Todas as Tarefas"
   const [statusFilter, setStatusFilter] = useState('all') // all, pending, pending_review, completed
   const [typeFilter, setTypeFilter] = useState('all') // all, form, etc.
+  const [stepFilter, setStepFilter] = useState('current') // current = "Etapa Ativa" (default), all = "Todas as Etapas"
 
   const handleResetFilters = () => {
     setActorFilter(true)
     setStatusFilter('all')
     setTypeFilter('all')
+    setStepFilter('current')
   }
 
-  const hasActiveFilters = !actorFilter || statusFilter !== 'all' || typeFilter !== 'all'
+  const hasActiveFilters = !actorFilter || statusFilter !== 'all' || typeFilter !== 'all' || stepFilter !== 'current'
 
   // Lista Filtrada de tarefas
   const filteredTasks = useMemo(() => {
     return tasks.filter((task) => {
+      // 0. Filtro: Etapas (Etapa Ativa)
+      if (stepFilter === 'current') {
+        if (!task.isActiveStep) return false
+      }
+
       // 1. Filtro: Minhas Tarefas (Actor)
       if (actorFilter) {
         if (!task.isMyTask) return false
@@ -70,11 +78,12 @@ export function TasksPage() {
         if (typeFilter === 'approval' && (task.type !== 'approval' && task.type !== 'review')) return false
         if (typeFilter === 'sample_definition' && task.type !== 'sample_definition') return false
         if (typeFilter === 'data_template_definition' && task.type !== 'data_template_definition') return false
+        if (typeFilter === 'review_decision' && task.type !== 'review_decision') return false
       }
 
       return true
     })
-  }, [tasks, actorFilter, statusFilter, typeFilter])
+  }, [tasks, actorFilter, statusFilter, typeFilter, stepFilter])
 
   // Columns classification
   const todoTasks = filteredTasks.filter(t => t.kanbanColumn === 'todo')
@@ -227,66 +236,83 @@ export function TasksPage() {
             }}
             bodyStyle={{ padding: '16px 24px' }}
           >
-            <Flex wrap="wrap" gap={16} align="center" justify="space-between">
-              <Flex gap={16} wrap="wrap" align="center">
-                <Radio.Group
-                  value={actorFilter ? 'my' : 'all'}
-                  onChange={(e) => setActorFilter(e.target.value === 'my')}
-                  size="middle"
-                >
-                  <Radio.Button value="all" style={{ borderRadius: '8px 0 0 8px', fontFamily: 'Lexend, sans-serif' }}>
-                    Todas as Tarefas
-                  </Radio.Button>
-                  <Radio.Button value="my" style={{ borderRadius: '0 8px 8px 0', fontFamily: 'Lexend, sans-serif' }}>
-                    Minhas Tarefas
-                  </Radio.Button>
-                </Radio.Group>
+            <Row gutter={[16, 16]} align="middle" justify="space-between" style={{ width: '100%' }}>
+              <Col xs={24} lg={20}>
+                <Flex gap={16} wrap="wrap" align="center">
+                  <Radio.Group
+                    value={actorFilter ? 'my' : 'all'}
+                    onChange={(e) => setActorFilter(e.target.value === 'my')}
+                    size="middle"
+                  >
+                    <Radio.Button value="all" style={{ borderRadius: '8px 0 0 8px', fontFamily: 'Lexend, sans-serif' }}>
+                      Todas as Tarefas
+                    </Radio.Button>
+                    <Radio.Button value="my" style={{ borderRadius: '0 8px 8px 0', fontFamily: 'Lexend, sans-serif' }}>
+                      Minhas Tarefas
+                    </Radio.Button>
+                  </Radio.Group>
 
-                <Divider type="vertical" style={{ height: '24px', margin: 0 }} />
+                  <Divider type="vertical" style={{ height: '24px', margin: 0 }} />
 
-                <Flex align="center" gap={8}>
-                  <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Status:</span>
-                  <Select
-                    value={statusFilter}
-                    onChange={setStatusFilter}
-                    style={{ width: 180, fontFamily: 'Lexend, sans-serif' }}
-                    options={[
-                      { value: 'all', label: 'Todos' },
-                      { value: 'pending', label: 'Pendente' },
-                      { value: 'pending_review', label: 'Em Revisão' },
-                      { value: 'completed', label: 'Concluída' }
-                    ]}
-                  />
+                  <Flex align="center" gap={8}>
+                    <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Etapas:</span>
+                    <Select
+                      value={stepFilter}
+                      onChange={setStepFilter}
+                      style={{ width: 180, fontFamily: 'Lexend, sans-serif' }}
+                      options={[
+                        { value: 'current', label: 'Etapa Ativa' },
+                        { value: 'all', label: 'Todas as Etapas' }
+                      ]}
+                    />
+                  </Flex>
+
+                  <Flex align="center" gap={8}>
+                    <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Status:</span>
+                    <Select
+                      value={statusFilter}
+                      onChange={setStatusFilter}
+                      style={{ width: 180, fontFamily: 'Lexend, sans-serif' }}
+                      options={[
+                        { value: 'all', label: 'Todos' },
+                        { value: 'pending', label: 'Pendente' },
+                        { value: 'pending_review', label: 'Em Revisão' },
+                        { value: 'completed', label: 'Concluída' }
+                      ]}
+                    />
+                  </Flex>
+
+                  <Flex align="center" gap={8}>
+                    <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Tipo:</span>
+                    <Select
+                      value={typeFilter}
+                      onChange={setTypeFilter}
+                      style={{ width: 180, fontFamily: 'Lexend, sans-serif' }}
+                      options={[
+                        { value: 'all', label: 'Todos os Tipos' },
+                        { value: 'form', label: 'Formulário' },
+                        { value: 'assignment', label: 'Atribuição' },
+                        { value: 'approval', label: 'Aprovação' },
+                        { value: 'sample_definition', label: 'Amostras' },
+                        { value: 'data_template_definition', label: 'Templates de Coleta' },
+                        { value: 'review_decision', label: 'Revisão e Decisão' }
+                      ]}
+                    />
+                  </Flex>
                 </Flex>
-
-                <Flex align="center" gap={8}>
-                  <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Tipo:</span>
-                  <Select
-                    value={typeFilter}
-                    onChange={setTypeFilter}
-                    style={{ width: 180, fontFamily: 'Lexend, sans-serif' }}
-                    options={[
-                      { value: 'all', label: 'Todos os Tipos' },
-                      { value: 'form', label: 'Formulário' },
-                      { value: 'assignment', label: 'Atribuição' },
-                      { value: 'approval', label: 'Aprovação' },
-                      { value: 'sample_definition', label: 'Amostras' },
-                      { value: 'data_template_definition', label: 'Templates de Coleta' }
-                    ]}
-                  />
-                </Flex>
-              </Flex>
-
-              {hasActiveFilters && (
-                <Button
-                  type="link"
-                  onClick={handleResetFilters}
-                  style={{ fontFamily: 'Lexend, sans-serif', color: '#ff4d4f', padding: 0 }}
-                >
-                  Limpar Filtros
-                </Button>
-              )}
-            </Flex>
+              </Col>
+              <Col xs={24} lg={4} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                {hasActiveFilters && (
+                  <Button
+                    type="link"
+                    onClick={handleResetFilters}
+                    style={{ fontFamily: 'Lexend, sans-serif', color: '#ff4d4f', padding: 0 }}
+                  >
+                    Limpar Filtros
+                  </Button>
+                )}
+              </Col>
+            </Row>
           </Card>
 
           {filteredTasks.length === 0 ? (

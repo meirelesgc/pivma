@@ -28,6 +28,25 @@ export function useMyTasks() {
       }
     })
 
+    // Map of instanceId -> activeStepId
+    const activeStepByInstance = {}
+    processInstances.forEach(instance => {
+      const steps = processSteps
+        .filter(s => s.process_id === instance.process_id)
+        .sort((a, b) => a.sequence - b.sequence)
+      const instSteps = processInstanceSteps.filter(s => s.process_instance_id === instance.id)
+      
+      const activeStep = steps.find((step, index) => {
+        const instStep = instSteps.find(s => s.step_id === step.id)
+        const isCompleted = instStep?.is_completed ?? false
+        const isFirst = index === 0
+        const prevCompleted = isFirst || (instSteps.find(s => s.step_id === steps[index - 1].id)?.is_completed ?? false)
+        return !isCompleted && prevCompleted
+      })
+      
+      activeStepByInstance[instance.id] = activeStep?.id || (steps.length > 0 ? steps[0].id : null)
+    })
+
     // 2. Filter and enrich tasks
     const enriched = []
 
@@ -100,6 +119,8 @@ export function useMyTasks() {
         kanbanColumn = 'todo'
       }
 
+      const isActiveStep = stepDef.id === activeStepByInstance[pit.process_instance_id]
+
       enriched.push({
         ...pit,
         ...taskDef,
@@ -112,7 +133,8 @@ export function useMyTasks() {
         stepId: stepDef.id,
         instanceCreatedAt: instance.createdAt || '',
         kanbanColumn,
-        isMyTask
+        isMyTask,
+        isActiveStep
       })
     })
 

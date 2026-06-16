@@ -1,3 +1,8 @@
+:root {
+  --font-family-title: 'Barlow', sans-serif;
+  --font-family-body: 'Lexend', sans-serif;
+}
+
 body {
   margin: 0;
 }
@@ -21,7 +26,7 @@ h6,
 .ant-card-head-title,
 .ant-modal-title,
 .ant-drawer-title {
-  font-family: 'Barlow', sans-serif !important;
+  font-family: var(--font-family-title) !important;
 }
 
 /* Corpo, parágrafos e elementos web em geral: Lexend Font Family */
@@ -35,7 +40,7 @@ input,
 button,
 textarea,
 select {
-  font-family: 'Lexend', sans-serif;
+  font-family: var(--font-family-body);
 }
 
 /* Sidebar process step interactive styles */

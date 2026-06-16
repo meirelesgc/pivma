@@ -123,6 +123,11 @@ export function TaskCarousel({
               >
                 {task.name}
               </Text>
+              {task.stepName && (
+                <Text type="secondary" style={{ display: 'block', fontSize: '11px', marginTop: '4px' }} ellipsis>
+                  Etapa: {task.stepName}
+                </Text>
+              )}
             </Card>
           )
         })}

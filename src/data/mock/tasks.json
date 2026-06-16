@@ -110,5 +110,12 @@
     "name": "Execução da Validação - Placeholder",
     "type": "default",
     "role": "Proponente"
+  },
+  {
+    "id": 15,
+    "step_id": 4,
+    "name": "Revisão Final e Emissão de Parecer",
+    "type": "review_decision",
+    "role": "Estatístico"
   }
 ]

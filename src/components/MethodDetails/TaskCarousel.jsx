@@ -5,7 +5,9 @@ import {
   CheckOutlined,
   FormOutlined,
   EyeOutlined,
-  FileTextOutlined
+  FileTextOutlined,
+  TeamOutlined,
+  SafetyCertificateOutlined
 } from '@ant-design/icons'
 
 const { Title, Text } = Typography
@@ -13,6 +15,8 @@ const { Title, Text } = Typography
 const taskTypeColors = {
   form: { color: 'blue', label: 'Formulário', icon: <FormOutlined /> },
   review: { color: 'purple', label: 'Revisão', icon: <EyeOutlined /> },
+  assignment: { color: 'orange', label: 'Atribuição', icon: <TeamOutlined /> },
+  approval: { color: 'cyan', label: 'Aprovação', icon: <SafetyCertificateOutlined /> }
 }
 
 export function TaskCarousel({

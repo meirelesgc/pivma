@@ -1,8 +1,9 @@
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Flex, Spin, Empty, Button, Card, Typography, message } from 'antd'
+import { Flex, Spin, Empty, Button, Card, Typography, message, Radio, Select, Divider } from 'antd'
 import { LockOutlined } from '@ant-design/icons'
 import { useProcesses } from '../hooks/useProcesses'
+import { useAuth } from '../hooks/useAuth'
 import { ProcessInstanceHeader } from '../components/MethodDetails/ProcessInstanceHeader'
 import { TaskCarousel } from '../components/MethodDetails/TaskCarousel'
 import { TaskCard } from '../components/MethodDetails/TaskCard'
@@ -74,10 +75,16 @@ const TaskContainer = ({ enrichedTasks, currentSlide, maxSlide, itemsPerPage, on
 
 function useMethodDetailsData(instanceId) {
   const processes = useProcesses()
-  const { processInstances, processSteps, processInstanceSteps, tasks, processInstanceTasks } = processes
+  const { user: currentUser } = useAuth()
+  const { processInstances, processSteps, processInstanceSteps, tasks, processInstanceTasks, processInstanceRoles } = processes
 
   const [selectedStepId, setSelectedStepId] = useState(null)
   const [currentSlide, setCurrentSlide] = useState(0)
+
+  // Estados dos Filtros
+  const [actorFilter, setActorFilter] = useState(false) // true = "Minhas Tarefas"
+  const [statusFilter, setStatusFilter] = useState('all') // all, pending, pending_review, completed
+  const [typeFilter, setTypeFilter] = useState('all') // all, form, assignment, approval
 
   const instance = useMemo(() =>
     processInstances?.find(inst => inst.id === instanceId),
@@ -105,6 +112,13 @@ function useMethodDetailsData(instanceId) {
   const currentSelectedStepId = selectedStepId || activeStep?.id || steps[0]?.id
   const selectedInstStep = instSteps.find(s => s.step_id === currentSelectedStepId)
 
+  // Obter cargos do usuário atual na instância
+  const userRoles = useMemo(() =>
+    processInstanceRoles
+      .filter(r => r.instance_id === instanceId && r.user_id === currentUser?.id)
+      .map(r => r.role.toLowerCase()),
+    [processInstanceRoles, instanceId, currentUser])
+
   const tasksForSelectedStep = useMemo(() =>
     selectedInstStep ? processInstanceTasks?.filter(
       pit => Number(pit.process_instance_id) === Number(instanceId) &&
@@ -112,7 +126,8 @@ function useMethodDetailsData(instanceId) {
     ) : [],
     [selectedInstStep, processInstanceTasks, instanceId])
 
-  const enrichedTasks = useMemo(() =>
+  // Lista Bruta de tarefas enriquecidas
+  const allEnrichedTasks = useMemo(() =>
     tasksForSelectedStep.map(pit => {
       const taskDef = tasks?.find(t => t.id === pit.task_id)
       return {
@@ -124,6 +139,50 @@ function useMethodDetailsData(instanceId) {
       }
     }),
     [tasksForSelectedStep, tasks])
+
+  // Lista Filtrada de tarefas
+  const enrichedTasks = useMemo(() => {
+    return allEnrichedTasks.filter(task => {
+      // 1. Filtro: Minhas Tarefas (Apenas o que eu tenho que executar)
+      if (actorFilter) {
+        if (task.is_completed) return false
+
+        const hasExecutorRole = task.role && userRoles.includes(task.role.toLowerCase())
+        const hasCurrentRevisorRole = task.current_reviewer_role && userRoles.includes(task.current_reviewer_role.toLowerCase())
+        const hasRequiredReviewerRole = task.required_reviewers && task.required_reviewers.some(r => userRoles.includes(r.toLowerCase()))
+
+        if (!hasExecutorRole && !hasCurrentRevisorRole && !hasRequiredReviewerRole) {
+          return false
+        }
+      }
+
+      // 2. Filtro: Status
+      if (statusFilter !== 'all') {
+        if (statusFilter === 'completed') {
+          if (!task.is_completed) return false
+        } else if (statusFilter === 'pending_review') {
+          if (task.status !== 'pending_review') return false
+        } else if (statusFilter === 'pending') {
+          // Pendente comum (não concluída e não em revisão)
+          if (task.is_completed || task.status === 'pending_review') return false
+        }
+      }
+
+      // 3. Filtro: Natureza (Tipo)
+      if (typeFilter !== 'all') {
+        if (typeFilter === 'form' && task.type !== 'form') return false
+        if (typeFilter === 'assignment' && task.type !== 'assignment') return false
+        if (typeFilter === 'approval' && (task.type !== 'approval' && task.type !== 'review')) return false
+      }
+
+      return true
+    })
+  }, [allEnrichedTasks, actorFilter, statusFilter, typeFilter, userRoles])
+
+  // Reseta o slide para 0 ao alterar qualquer filtro
+  useEffect(() => {
+    setCurrentSlide(0)
+  }, [actorFilter, statusFilter, typeFilter])
 
   const overallProgress = useMemo(() => {
     const completed = instSteps.filter(s => s.is_completed).length
@@ -178,9 +237,16 @@ function useMethodDetailsData(instanceId) {
     })
   }, [processes, tasksForSelectedStep, enrichedTasks, steps, currentSelectedStepId])
 
+  const handleResetFilters = () => {
+    setActorFilter(false)
+    setStatusFilter('all')
+    setTypeFilter('all')
+  }
+
   return {
     ...processes,
     instance,
+    allEnrichedTasks,
     enrichedTasks,
     overallProgress,
     isStepLocked,
@@ -191,7 +257,14 @@ function useMethodDetailsData(instanceId) {
     itemsPerPage,
     handleNextSlide,
     handlePrevSlide,
-    handleToggleTask
+    handleToggleTask,
+    actorFilter,
+    setActorFilter,
+    statusFilter,
+    setStatusFilter,
+    typeFilter,
+    setTypeFilter,
+    handleResetFilters
   }
 }
 
@@ -207,6 +280,7 @@ export function MethodDetailsPage() {
     isLoadingTasks,
     isLoadingInstanceTasks,
     instance,
+    allEnrichedTasks,
     enrichedTasks,
     overallProgress,
     isStepLocked,
@@ -217,13 +291,22 @@ export function MethodDetailsPage() {
     itemsPerPage,
     handleNextSlide,
     handlePrevSlide,
-    handleToggleTask
+    handleToggleTask,
+    actorFilter,
+    setActorFilter,
+    statusFilter,
+    setStatusFilter,
+    typeFilter,
+    setTypeFilter,
+    handleResetFilters
   } = useMethodDetailsData(instanceId)
 
   const isLoading = isLoadingInstances || isLoadingSteps || isLoadingInstanceSteps || isLoadingTasks || isLoadingInstanceTasks
 
   if (isLoading) return <LoadingView />
   if (!instance) return <NotFoundView onBack={() => navigate('/workspace')} />
+
+  const hasActiveFilters = actorFilter || statusFilter !== 'all' || typeFilter !== 'all'
 
   return (
     <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
@@ -235,19 +318,107 @@ export function MethodDetailsPage() {
 
       {isStepLocked ? (
         <LockedStepView />
-      ) : enrichedTasks.length === 0 ? (
-        <EmptyStepView isCompleted={selectedInstStep?.is_completed} />
       ) : (
-        <TaskContainer
-          enrichedTasks={enrichedTasks}
-          currentSlide={currentSlide}
-          maxSlide={maxSlide}
-          itemsPerPage={itemsPerPage}
-          onNext={handleNextSlide}
-          onPrev={handlePrevSlide}
-          onSetSlide={setCurrentSlide}
-          onToggleTask={handleToggleTask}
-        />
+        <>
+          {/* Barra de Filtros (Apenas se a etapa possuir tarefas originalmente) */}
+          {allEnrichedTasks.length > 0 && (
+            <Card
+              style={{
+                borderRadius: '16px',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
+                border: '1px solid #f0f0f0',
+                marginBottom: '24px',
+                background: 'linear-gradient(135deg, #ffffff 0%, #fafafa 100%)'
+              }}
+              bodyStyle={{ padding: '16px 24px' }}
+            >
+              <Flex wrap="wrap" gap={16} align="center" justify="space-between">
+                <Flex gap={16} wrap="wrap" align="center">
+                  <Radio.Group
+                    value={actorFilter ? 'my' : 'all'}
+                    onChange={(e) => setActorFilter(e.target.value === 'my')}
+                    size="middle"
+                  >
+                    <Radio.Button value="all" style={{ borderRadius: '8px 0 0 8px', fontFamily: 'Lexend, sans-serif' }}>
+                      Todas as Tarefas
+                    </Radio.Button>
+                    <Radio.Button value="my" style={{ borderRadius: '0 8px 8px 0', fontFamily: 'Lexend, sans-serif' }}>
+                      Minhas Tarefas
+                    </Radio.Button>
+                  </Radio.Group>
+
+                  <Divider type="vertical" style={{ height: '24px', margin: 0 }} />
+
+                  <Flex align="center" gap={8}>
+                    <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Status:</span>
+                    <Select
+                      value={statusFilter}
+                      onChange={setStatusFilter}
+                      style={{ width: 180, fontFamily: 'Lexend, sans-serif' }}
+                      options={[
+                        { value: 'all', label: 'Todos' },
+                        { value: 'pending', label: 'Pendente' },
+                        { value: 'pending_review', label: 'Em Revisão' },
+                        { value: 'completed', label: 'Concluída' }
+                      ]}
+                    />
+                  </Flex>
+
+                  <Flex align="center" gap={8}>
+                    <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Tipo:</span>
+                    <Select
+                      value={typeFilter}
+                      onChange={setTypeFilter}
+                      style={{ width: 180, fontFamily: 'Lexend, sans-serif' }}
+                      options={[
+                        { value: 'all', label: 'Todos os Tipos' },
+                        { value: 'form', label: 'Formulário' },
+                        { value: 'assignment', label: 'Atribuição' },
+                        { value: 'approval', label: 'Aprovação' }
+                      ]}
+                    />
+                  </Flex>
+                </Flex>
+
+                {hasActiveFilters && (
+                  <Button
+                    type="link"
+                    onClick={handleResetFilters}
+                    style={{ fontFamily: 'Lexend, sans-serif', color: '#ff4d4f', padding: 0 }}
+                  >
+                    Limpar Filtros
+                  </Button>
+                )}
+              </Flex>
+            </Card>
+          )}
+
+          {allEnrichedTasks.length === 0 ? (
+            <EmptyStepView isCompleted={selectedInstStep?.is_completed} />
+          ) : enrichedTasks.length === 0 ? (
+            <Card style={{ borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f0f0f0', padding: '24px' }}>
+              <Empty
+                description="Nenhuma tarefa corresponde aos filtros selecionados."
+                style={{ padding: '32px 0' }}
+              >
+                <Button type="primary" onClick={handleResetFilters} style={{ fontFamily: 'Lexend, sans-serif', borderRadius: '8px' }}>
+                  Limpar Filtros
+                </Button>
+              </Empty>
+            </Card>
+          ) : (
+            <TaskContainer
+              enrichedTasks={enrichedTasks}
+              currentSlide={currentSlide}
+              maxSlide={maxSlide}
+              itemsPerPage={itemsPerPage}
+              onNext={handleNextSlide}
+              onPrev={handlePrevSlide}
+              onSetSlide={setCurrentSlide}
+              onToggleTask={handleToggleTask}
+            />
+          )}
+        </>
       )}
     </div>
   )

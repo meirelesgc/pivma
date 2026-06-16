@@ -7,6 +7,7 @@ import initialProcessInstanceSteps from '../data/mock/process_instance_steps.jso
 import initialTasks from '../data/mock/tasks.json'
 import initialProcessInstanceTasks from '../data/mock/process_instance_tasks.json'
 import initialFormFields from '../data/mock/form_fields.json'
+import initialFieldReviews from '../data/mock/field_reviews.json'
 
 // Carrega os dados em memória para simular operações em um banco de dados local mutável
 let users = [...initialUsers]
@@ -18,7 +19,53 @@ let processInstanceSteps = [...initialProcessInstanceSteps]
 let tasks = [...initialTasks]
 let processInstanceTasks = [...initialProcessInstanceTasks]
 let formFields = [...initialFormFields]
+let fieldReviews = [...initialFieldReviews]
 let formAnswers = {} // Chaveada por process_instance_task_id
+
+const checkAndCompleteStep = (stepInstanceId) => {
+  const totalTasksForStep = processInstanceTasks.filter(t => t.process_instance_step_id === stepInstanceId)
+  const completedTasksForStep = totalTasksForStep.filter(t => t.is_completed === true)
+
+  if (totalTasksForStep.length > 0 && totalTasksForStep.length === completedTasksForStep.length) {
+    const stepInstance = processInstanceSteps.find(s => s.id === stepInstanceId)
+    if (stepInstance) {
+      stepInstance.is_completed = true
+
+      const currentStepDef = processSteps.find(s => s.id === stepInstance.step_id)
+      if (currentStepDef) {
+        const nextStepDef = processSteps.find(
+          s => s.process_id === currentStepDef.process_id && s.sequence === currentStepDef.sequence + 1
+        )
+
+        if (nextStepDef) {
+          const nextStepInstance = processInstanceSteps.find(
+            s => s.process_instance_id === stepInstance.process_instance_id && s.step_id === nextStepDef.id
+          )
+          if (nextStepInstance) {
+            const existingNextTasks = processInstanceTasks.filter(t => t.process_instance_step_id === nextStepInstance.id)
+            if (existingNextTasks.length === 0) {
+              const tasksForNextStep = tasks.filter(t => t.step_id === nextStepDef.id)
+              tasksForNextStep.forEach(task => {
+                const newInstanceTaskId = processInstanceTasks.length > 0 ? Math.max(...processInstanceTasks.map(pit => pit.id)) + 1 : 1
+                processInstanceTasks.push({
+                  id: newInstanceTaskId,
+                  process_instance_id: stepInstance.process_instance_id,
+                  process_instance_step_id: nextStepInstance.id,
+                  task_id: task.id,
+                  is_completed: false,
+                  status: task.type === 'form' ? 'pending_submission' : 'pending',
+                  current_reviewer_role: null,
+                  current_review_round_id: task.type === 'form' ? 1 : null,
+                  editable: task.type === 'form' ? true : false
+                })
+              })
+            }
+          }
+        }
+      }
+    }
+  }
+}
 
 export const db = {
   // Usuários
@@ -96,7 +143,11 @@ export const db = {
             process_instance_id: newId,
             process_instance_step_id: stepInstanceSequence1.id,
             task_id: task.id,
-            is_completed: false
+            is_completed: false,
+            status: task.type === 'form' ? 'pending_submission' : 'pending',
+            current_reviewer_role: null,
+            current_review_round_id: task.type === 'form' ? 1 : null,
+            editable: task.type === 'form' ? true : false
           })
         })
       }
@@ -132,57 +183,151 @@ export const db = {
 
     pit.is_completed = isCompleted
 
-    // Consultar a quantidade total de registros em process_instance_tasks com o identificador em process_instance_step_id
     const stepInstanceId = pit.process_instance_step_id
-    const totalTasksForStep = processInstanceTasks.filter(t => t.process_instance_step_id === stepInstanceId)
-
-    // Consultar a quantidade de registros do passo atual que possuem is_completed: true
-    const completedTasksForStep = totalTasksForStep.filter(t => t.is_completed === true)
-
-    // Se as quantidades forem iguais, alterar is_completed para true no registro em process_instance_steps
-    if (totalTasksForStep.length > 0 && totalTasksForStep.length === completedTasksForStep.length) {
-      const stepInstance = processInstanceSteps.find(s => s.id === stepInstanceId)
-      if (stepInstance) {
-        stepInstance.is_completed = true
-
-        // Buscar registro em process_steps com o valor de sequence equivalente a sequence + 1
-        const currentStepDef = processSteps.find(s => s.id === stepInstance.step_id)
-        if (currentStepDef) {
-          const nextStepDef = processSteps.find(
-            s => s.process_id === currentStepDef.process_id && s.sequence === currentStepDef.sequence + 1
-          )
-
-          // Se o registro existir, repetir os passos 3 e 4 da seção "Lógica de Instanciação" utilizando o valor do id da etapa de sequence + 1
-          if (nextStepDef) {
-            const nextStepInstance = processInstanceSteps.find(
-              s => s.process_instance_id === stepInstance.process_instance_id && s.step_id === nextStepDef.id
-            )
-            if (nextStepInstance) {
-              // Verificar se as tarefas já foram instanciadas para evitar duplicidade
-              const existingNextTasks = processInstanceTasks.filter(t => t.process_instance_step_id === nextStepInstance.id)
-              if (existingNextTasks.length === 0) {
-                const tasksForNextStep = tasks.filter(t => t.step_id === nextStepDef.id)
-                tasksForNextStep.forEach(task => {
-                  const newInstanceTaskId = processInstanceTasks.length > 0 ? Math.max(...processInstanceTasks.map(pit => pit.id)) + 1 : 1
-                  processInstanceTasks.push({
-                    id: newInstanceTaskId,
-                    process_instance_id: stepInstance.process_instance_id,
-                    process_instance_step_id: nextStepInstance.id,
-                    task_id: task.id,
-                    is_completed: false
-                  })
-                })
-              }
-            }
-          }
-        }
-      }
+    if (isCompleted) {
+      checkAndCompleteStep(stepInstanceId)
     } else {
-      // Se desmarcou uma tarefa, a etapa deixa de estar completa
       const stepInstance = processInstanceSteps.find(s => s.id === stepInstanceId)
       if (stepInstance) {
         stepInstance.is_completed = false
       }
+    }
+
+    return { ...pit }
+  },
+
+  // Revisões de Campos
+  getFieldReviews: () => fieldReviews.map(r => ({ ...r })),
+  addFieldReview: (review) => {
+    const newId = fieldReviews.length > 0 ? Math.max(...fieldReviews.map(r => r.id)) + 1 : 1
+    const newReview = {
+      id: newId,
+      status: 'active',
+      ...review
+    }
+    fieldReviews.push(newReview)
+    return { ...newReview }
+  },
+
+  // Ciclo de Submissão de Formulário e Revisão
+  submitFormTask: (instanceTaskId, answers) => {
+    const pit = processInstanceTasks.find(t => t.id === Number(instanceTaskId))
+    if (!pit) return null
+
+    // Salva as respostas
+    formAnswers[instanceTaskId] = { ...answers }
+
+    // Marca todos os apontamentos da rodada anterior como resolvidos
+    fieldReviews.forEach(r => {
+      if (r.process_instance_id === pit.process_instance_id && r.status === 'active') {
+        r.status = 'resolved'
+      }
+    })
+
+    // Atualiza status e trava edição
+    pit.status = 'analyzing_ai'
+    pit.editable = false
+
+    return { ...pit }
+  },
+
+  runAIEvaluation: (instanceTaskId) => {
+    const pit = processInstanceTasks.find(t => t.id === Number(instanceTaskId))
+    if (!pit) return null
+
+    const taskDef = tasks.find(t => t.id === pit.task_id)
+    const answers = formAnswers[instanceTaskId] || {}
+    const fieldsForTask = formFields.filter(f => f.task_id === pit.task_id)
+
+    // Avalia campos conforme estratégia
+    fieldsForTask.forEach(field => {
+      if (field.ai_evaluation?.enabled) {
+        const val = answers[field.id]
+        const strategy = field.ai_evaluation.strategy
+
+        let failed = false
+        let aiComment = ''
+
+        if (strategy === 'match_regulatory_keywords') {
+          const keywords = ['redução', 'reducao', 'substituição', 'substituicao', '3rs', 'regulação', 'regulacao', 'diretrizes']
+          const valStr = String(val || '').toLowerCase()
+          const hasKeywords = keywords.some(kw => valStr.includes(kw))
+          if (!valStr || valStr.length < 15 || !hasKeywords) {
+            failed = true
+            aiComment = 'A descrição do princípio regulatório de Redução ou Substituição precisa conter termos regulatórios explícitos (ex: redução, substituição, 3Rs) e ser detalhada.'
+          }
+        } else if (strategy === 'verify_pdf_structure') {
+          const fileName = String(val || '').toLowerCase()
+          if (!fileName || !fileName.endsWith('.pdf') || !fileName.includes('pop')) {
+            failed = true
+            aiComment = 'O arquivo do Procedimento Operacional Padrão (POP) precisa ser um documento PDF contendo "pop" no nome para validação estrutural.'
+          }
+        }
+
+        if (failed) {
+          const newReviewId = fieldReviews.length > 0 ? Math.max(...fieldReviews.map(r => r.id)) + 1 : 1
+          fieldReviews.push({
+            id: newReviewId,
+            process_instance_id: pit.process_instance_id,
+            review_round_id: pit.current_review_round_id || 1,
+            field_id: field.id,
+            reviewer_role: 'ia',
+            comment: aiComment,
+            status: 'active'
+          })
+        }
+      }
+    })
+
+    const reviewers = taskDef.required_reviewers || []
+    if (reviewers.length > 0) {
+      pit.status = 'pending_review'
+      pit.current_reviewer_role = reviewers[0]
+    } else {
+      pit.status = 'completed'
+      pit.is_completed = true
+      pit.editable = false
+      pit.current_reviewer_role = null
+      checkAndCompleteStep(pit.process_instance_step_id)
+    }
+
+    return { ...pit }
+  },
+
+  acceptReview: (instanceTaskId) => {
+    const pit = processInstanceTasks.find(t => t.id === Number(instanceTaskId))
+    if (!pit) return null
+
+    const taskDef = tasks.find(t => t.id === pit.task_id)
+    const reviewers = taskDef.required_reviewers || []
+    const currentIndex = reviewers.indexOf(pit.current_reviewer_role)
+
+    if (currentIndex !== -1 && currentIndex < reviewers.length - 1) {
+      pit.current_reviewer_role = reviewers[currentIndex + 1]
+      pit.status = 'pending_review'
+    } else {
+      pit.status = 'completed'
+      pit.is_completed = true
+      pit.editable = false
+      pit.current_reviewer_role = null
+      checkAndCompleteStep(pit.process_instance_step_id)
+    }
+
+    return { ...pit }
+  },
+
+  rejectReview: (instanceTaskId) => {
+    const pit = processInstanceTasks.find(t => t.id === Number(instanceTaskId))
+    if (!pit) return null
+
+    pit.status = 'pending_submission'
+    pit.editable = true
+    pit.current_reviewer_role = null
+    
+    if (pit.current_review_round_id) {
+      pit.current_review_round_id += 1
+    } else {
+      pit.current_review_round_id = 1
     }
 
     return { ...pit }

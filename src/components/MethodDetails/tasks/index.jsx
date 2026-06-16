@@ -1,3 +1,6 @@
 export { FormTask } from './FormTask'
 export { ReviewTask } from './ReviewTask'
 export { DefaultTask } from './DefaultTask'
+export { FieldReviewWrapper } from './FieldReviewWrapper'
+export { ReviewHistoryDrawer } from './ReviewHistoryDrawer'
+export { ReviewActionToolbar } from './ReviewActionToolbar'

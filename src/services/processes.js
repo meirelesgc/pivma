@@ -52,3 +52,27 @@ export async function saveFormAnswers({ instanceTaskId, answers }) {
   return db.saveFormAnswers(instanceTaskId, answers)
 }
 
+export async function getFieldReviews() {
+  return db.getFieldReviews()
+}
+
+export async function createFieldReview(review) {
+  return db.addFieldReview(review)
+}
+
+export async function submitFormTask({ instanceTaskId, answers }) {
+  return db.submitFormTask(instanceTaskId, answers)
+}
+
+export async function runAIEvaluation(instanceTaskId) {
+  return db.runAIEvaluation(instanceTaskId)
+}
+
+export async function acceptReview(instanceTaskId) {
+  return db.acceptReview(instanceTaskId)
+}
+
+export async function rejectReview(instanceTaskId) {
+  return db.rejectReview(instanceTaskId)
+}
+

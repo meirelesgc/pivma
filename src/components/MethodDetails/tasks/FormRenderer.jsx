@@ -3,7 +3,19 @@ import { Steps, Button, Space, message, Flex, Alert } from 'antd'
 import { FormSection } from './FormSection'
 import { LeftOutlined, RightOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons'
 
-export function FormRenderer({ fields, values, onFieldChange, isCompleted, onSubmit, onReopen }) {
+export function FormRenderer({
+  fields,
+  values,
+  onFieldChange,
+  isCompleted,
+  disabled,
+  roleMode,
+  activeReviews = [],
+  allReviews = [],
+  onAddReviewComment,
+  onSubmit,
+  onReopen
+}) {
   const [currentStep, setCurrentStep] = useState(0)
 
   // Group fields by section
@@ -101,7 +113,11 @@ export function FormRenderer({ fields, values, onFieldChange, isCompleted, onSub
         fields={activeFields}
         values={values}
         onFieldChange={onFieldChange}
-        disabled={isCompleted}
+        disabled={disabled || isCompleted}
+        roleMode={roleMode}
+        activeReviews={activeReviews}
+        allReviews={allReviews}
+        onAddReviewComment={onAddReviewComment}
       />
 
       <Flex justify="space-between" style={{ marginTop: '20px' }}>
@@ -124,7 +140,7 @@ export function FormRenderer({ fields, values, onFieldChange, isCompleted, onSub
               Próximo <RightOutlined />
             </Button>
           ) : (
-            !isCompleted && (
+            !(disabled || isCompleted) && (
               <Button
                 type="primary"
                 icon={<CheckOutlined />}

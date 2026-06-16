@@ -2,25 +2,10 @@
   {
     "id": 1,
     "step_id": 1,
-    "name": "Preencher dados de cadastro",
-    "type": "form"
-  },
-  {
-    "id": 2,
-    "step_id": 1,
-    "name": "Avaliar documentação (Proponente)",
-    "type": "review"
-  },
-  {
-    "id": 3,
-    "step_id": 1,
-    "name": "Avaliar documentação (IA)",
-    "type": "review"
-  },
-  {
-    "id": 4,
-    "step_id": 1,
-    "name": "Avaliar documentação (BraCVAM)",
-    "type": "review"
+    "name": "Submissão e Triagem de Métodos",
+    "type": "form",
+    "required_reviewers": [
+      "bracvam"
+    ]
   }
 ]

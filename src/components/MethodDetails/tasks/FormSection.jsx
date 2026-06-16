@@ -2,11 +2,22 @@ import { TextInput } from './TextInput'
 import { IntegerInput } from './IntegerInput'
 import { FloatInput } from './FloatInput'
 import { UploadInput } from './UploadInput'
+import { FieldReviewWrapper } from './FieldReviewWrapper'
 import { Typography, Card } from 'antd'
 
 const { Title } = Typography
 
-export function FormSection({ title, fields, values, onFieldChange, disabled }) {
+export function FormSection({
+  title,
+  fields,
+  values,
+  onFieldChange,
+  disabled,
+  roleMode,
+  activeReviews = [],
+  allReviews = [],
+  onAddReviewComment
+}) {
   const renderFieldInput = (field) => {
     const props = {
       key: field.id,
@@ -16,18 +27,36 @@ export function FormSection({ title, fields, values, onFieldChange, disabled }) 
       disabled
     }
 
-    switch (field.type) {
-      case 'text':
-        return <TextInput {...props} />
-      case 'int':
-        return <IntegerInput {...props} />
-      case 'float':
-        return <FloatInput {...props} />
-      case 'upload':
-        return <UploadInput {...props} />
-      default:
-        return null
+    const getInputComponent = () => {
+      switch (field.type) {
+        case 'text':
+          return <TextInput {...props} />
+        case 'int':
+          return <IntegerInput {...props} />
+        case 'float':
+          return <FloatInput {...props} />
+        case 'upload':
+          return <UploadInput {...props} />
+        default:
+          return null
+      }
     }
+
+    const inputComponent = getInputComponent()
+    if (!inputComponent) return null
+
+    return (
+      <FieldReviewWrapper
+        key={field.id}
+        field={field}
+        roleMode={roleMode}
+        activeReviews={activeReviews.filter(r => r.field_id === field.id)}
+        allReviews={allReviews.filter(r => r.field_id === field.id)}
+        onAddReviewComment={(comment) => onAddReviewComment(field.id, comment)}
+      >
+        {inputComponent}
+      </FieldReviewWrapper>
+    )
   }
 
   return (

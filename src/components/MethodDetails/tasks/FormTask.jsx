@@ -48,8 +48,12 @@ export function FormTask({ task, onToggle }) {
     if (task.status === 'analyzing_ai') {
       const timer = setTimeout(() => {
         runAIEvaluation(task.id, {
-          onSuccess: () => {
-            message.success('Análise de IA concluída! O formulário foi encaminhado para revisão.')
+          onSuccess: (updatedTask) => {
+            if (updatedTask && updatedTask.status === 'pending_submission') {
+              message.warning('A IA encontrou inconsistências nos dados! O formulário foi devolvido para correção.')
+            } else {
+              message.success('Análise de IA concluída! O formulário foi encaminhado para revisão.')
+            }
           },
           onError: () => {
             message.error('Erro ao executar a validação de IA.')

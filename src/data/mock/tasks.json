@@ -6,6 +6,7 @@
     "type": "form",
     "required_reviewers": [
       "bracvam"
-    ]
+    ],
+    "role": "Proponente"
   }
 ]

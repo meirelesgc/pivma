@@ -239,6 +239,8 @@ export const db = {
     const answers = formAnswers[instanceTaskId] || {}
     const fieldsForTask = formFields.filter(f => f.task_id === pit.task_id)
 
+    let hasAIFailures = false
+
     // Avalia campos conforme estratégia
     fieldsForTask.forEach(field => {
       if (field.ai_evaluation?.enabled) {
@@ -265,6 +267,7 @@ export const db = {
         }
 
         if (failed) {
+          hasAIFailures = true
           const newReviewId = fieldReviews.length > 0 ? Math.max(...fieldReviews.map(r => r.id)) + 1 : 1
           fieldReviews.push({
             id: newReviewId,
@@ -279,16 +282,29 @@ export const db = {
       }
     })
 
-    const reviewers = taskDef.required_reviewers || []
-    if (reviewers.length > 0) {
-      pit.status = 'pending_review'
-      pit.current_reviewer_role = reviewers[0]
-    } else {
-      pit.status = 'completed'
-      pit.is_completed = true
-      pit.editable = false
+    if (hasAIFailures) {
+      // Se a IA encontrar algum problema, o formulário retorna ao proponente
+      pit.status = 'pending_submission'
+      pit.editable = true
       pit.current_reviewer_role = null
-      checkAndCompleteStep(pit.process_instance_step_id)
+      
+      if (pit.current_review_round_id) {
+        pit.current_review_round_id += 1
+      } else {
+        pit.current_review_round_id = 1
+      }
+    } else {
+      const reviewers = taskDef.required_reviewers || []
+      if (reviewers.length > 0) {
+        pit.status = 'pending_review'
+        pit.current_reviewer_role = reviewers[0]
+      } else {
+        pit.status = 'completed'
+        pit.is_completed = true
+        pit.editable = false
+        pit.current_reviewer_role = null
+        checkAndCompleteStep(pit.process_instance_step_id)
+      }
     }
 
     return { ...pit }

@@ -1,1 +1,6 @@
-[]
+[
+  { "id": 1, "process_instance_id": 1, "step_id": 1, "is_completed": true },
+  { "id": 2, "process_instance_id": 1, "step_id": 2, "is_completed": true },
+  { "id": 3, "process_instance_id": 1, "step_id": 3, "is_completed": false },
+  { "id": 4, "process_instance_id": 1, "step_id": 4, "is_completed": false }
+]

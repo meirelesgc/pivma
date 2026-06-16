@@ -5,9 +5,10 @@ import {
   FileTextOutlined,
   TeamOutlined,
   SafetyCertificateOutlined,
-  ExperimentOutlined
+  ExperimentOutlined,
+  TableOutlined
 } from '@ant-design/icons'
-import { FormTask, ReviewTask, DefaultTask, AssignmentTask, ApprovalTask, SampleDefinitionTask } from './tasks'
+import { FormTask, ReviewTask, DefaultTask, AssignmentTask, ApprovalTask, SampleDefinitionTask, DataTemplateDefinitionTask } from './tasks'
 
 const { Title } = Typography
 
@@ -16,7 +17,8 @@ const taskTypeColors = {
   review: { color: 'purple', label: 'Revisão', icon: <EyeOutlined /> },
   assignment: { color: 'orange', label: 'Atribuição de Cargo', icon: <TeamOutlined /> },
   approval: { color: 'cyan', label: 'Aprovação Formal', icon: <SafetyCertificateOutlined /> },
-  sample_definition: { color: 'magenta', label: 'Definição de Amostras', icon: <ExperimentOutlined /> }
+  sample_definition: { color: 'magenta', label: 'Definição de Amostras', icon: <ExperimentOutlined /> },
+  data_template_definition: { color: 'green', label: 'Template de Coleta', icon: <TableOutlined /> }
 }
 
 export function TaskCard({ task, onToggle }) {
@@ -35,6 +37,8 @@ export function TaskCard({ task, onToggle }) {
         return <ApprovalTask task={task} onToggle={onToggle} />
       case 'sample_definition':
         return <SampleDefinitionTask task={task} onToggle={onToggle} />
+      case 'data_template_definition':
+        return <DataTemplateDefinitionTask task={task} onToggle={onToggle} />
       default:
         return <DefaultTask task={task} />
     }
@@ -99,7 +103,7 @@ export function TaskCard({ task, onToggle }) {
 
         {renderTaskContent()}
 
-        {task.type !== 'form' && task.type !== 'assignment' && task.type !== 'approval' && task.type !== 'sample_definition' && (
+        {task.type !== 'form' && task.type !== 'assignment' && task.type !== 'approval' && task.type !== 'sample_definition' && task.type !== 'data_template_definition' && (
           <Button
             type={isCompleted ? 'default' : 'primary'}
             onClick={onToggle}

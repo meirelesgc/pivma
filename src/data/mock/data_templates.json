@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "process_instance_id": 1,
+    "name": "Avaliação Primária",
+    "description": "Template principal de coleta",
+    "allow_failed_runs": true,
+    "replicate_configuration": {
+      "experiments_per_lab": 3,
+      "replicates_per_experiment": 5
+    }
+  }
+]

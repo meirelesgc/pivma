@@ -84,7 +84,7 @@ function useMethodDetailsData(instanceId) {
   // Estados dos Filtros
   const [actorFilter, setActorFilter] = useState(false) // true = "Minhas Tarefas"
   const [statusFilter, setStatusFilter] = useState('all') // all, pending, pending_review, completed
-  const [typeFilter, setTypeFilter] = useState('all') // all, form, assignment, approval, sample_definition
+  const [typeFilter, setTypeFilter] = useState('all') // all, form, assignment, approval, sample_definition, data_template_definition
 
   const instance = useMemo(() =>
     processInstances?.find(inst => inst.id === instanceId),
@@ -174,6 +174,7 @@ function useMethodDetailsData(instanceId) {
         if (typeFilter === 'assignment' && task.type !== 'assignment') return false
         if (typeFilter === 'approval' && (task.type !== 'approval' && task.type !== 'review')) return false
         if (typeFilter === 'sample_definition' && task.type !== 'sample_definition') return false
+        if (typeFilter === 'data_template_definition' && task.type !== 'data_template_definition') return false
       }
 
       return true
@@ -377,7 +378,8 @@ export function MethodDetailsPage() {
                         { value: 'form', label: 'Formulário' },
                         { value: 'assignment', label: 'Atribuição' },
                         { value: 'approval', label: 'Aprovação' },
-                        { value: 'sample_definition', label: 'Amostras' }
+                        { value: 'sample_definition', label: 'Amostras' },
+                        { value: 'data_template_definition', label: 'Templates de Coleta' }
                       ]}
                     />
                   </Flex>

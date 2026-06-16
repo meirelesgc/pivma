@@ -11,6 +11,8 @@ import initialFieldReviews from '../data/mock/field_reviews.json'
 import initialPendingInvites from '../data/mock/pending_invites.json'
 import initialSampleDefinitions from '../data/mock/sample_definitions.json'
 import initialSampleBlindCodes from '../data/mock/sample_blind_codes.json'
+import initialDataTemplates from '../data/mock/data_templates.json'
+import initialDataTemplateColumns from '../data/mock/data_template_columns.json'
 
 // Carrega os dados em memória para simular operações em um banco de dados local mutável
 let users = [...initialUsers]
@@ -26,6 +28,8 @@ let fieldReviews = [...initialFieldReviews]
 let pendingInvites = [...initialPendingInvites]
 let sampleDefinitions = [...initialSampleDefinitions]
 let sampleBlindCodes = [...initialSampleBlindCodes]
+let dataTemplates = [...initialDataTemplates]
+let dataTemplateColumns = [...initialDataTemplateColumns]
 let formAnswers = {} // Chaveada por process_instance_task_id
 
 const checkAndCompleteStep = (stepInstanceId) => {
@@ -531,7 +535,133 @@ export const db = {
     })
     
     return processedSamples.map(s => ({ ...s }))
+  },
+
+  // Templates de Coleta de Dados
+  getDataTemplates: (instanceId) => {
+    return dataTemplates.filter(t => Number(t.process_instance_id) === Number(instanceId)).map(t => ({ ...t }))
+  },
+
+  getDataTemplateColumns: (templateId) => {
+    const template = dataTemplates.find(t => t.id === Number(templateId))
+    if (!template) return []
+    const userCols = dataTemplateColumns.filter(c => Number(c.template_id) === Number(templateId)).map(c => ({ ...c }))
+    const systemCols = getSystemColumnsForTemplate(template).map(sc => ({
+      id: `sys-${templateId}-${sc.name}`,
+      template_id: Number(templateId),
+      ...sc
+    }))
+    return [...userCols, ...systemCols].sort((a, b) => a.position - b.position)
+  },
+
+  deleteDataTemplate: (templateId) => {
+    dataTemplates = dataTemplates.filter(t => t.id !== Number(templateId))
+    dataTemplateColumns = dataTemplateColumns.filter(c => Number(c.template_id) !== Number(templateId))
+    return true
+  },
+
+  saveDataTemplate: (instanceId, template, columns) => {
+    let templateId = template.id ? Number(template.id) : null
+    if (!templateId) {
+      templateId = dataTemplates.length > 0 ? Math.max(...dataTemplates.map(t => t.id)) + 1 : 1
+      dataTemplates.push({
+        ...template,
+        id: templateId,
+        process_instance_id: Number(instanceId)
+      })
+    } else {
+      const index = dataTemplates.findIndex(t => t.id === templateId)
+      if (index !== -1) {
+        dataTemplates[index] = {
+          ...dataTemplates[index],
+          ...template,
+          process_instance_id: Number(instanceId)
+        }
+      }
+    }
+
+    const userCols = columns.filter(c => !c.is_system && !String(c.id).startsWith('sys-'))
+
+    // Validations
+    const names = userCols.map(c => c.name.trim().toLowerCase())
+    const hasDuplicatedNames = names.some((val, i) => names.indexOf(val) !== i)
+    if (hasDuplicatedNames) {
+      throw new Error("Nomes de colunas não podem ser duplicados.")
+    }
+
+    const systemNames = ["laboratory_id", "operator_name", "data_entry_user", "experiment_date", "data_entry_date", "execution_status"]
+    const conflictsWithSystem = names.some(n => systemNames.includes(n))
+    if (conflictsWithSystem) {
+      throw new Error("Colunas customizadas não podem usar nomes reservados do sistema.")
+    }
+
+    const hasEmptyNames = userCols.some(c => !c.name || !c.name.trim())
+    if (hasEmptyNames) {
+      throw new Error("Todas as colunas devem possuir um identificador válido (nome).")
+    }
+
+    const positions = userCols.map(c => Number(c.position))
+    const hasDuplicatedPositions = positions.some((val, i) => positions.indexOf(val) !== i)
+    if (hasDuplicatedPositions) {
+      throw new Error("Posições de colunas não podem ser duplicadas.")
+    }
+
+    // Derived data validation
+    const allAvailableColumnNames = [...names, ...systemNames]
+    userCols.forEach(c => {
+      if (c.is_derived_data) {
+        if (!c.source_columns || c.source_columns.length === 0) {
+          throw new Error(`A coluna derivada "${c.name}" precisa de pelo menos uma coluna de origem.`)
+        }
+        c.source_columns.forEach(sc => {
+          if (!allAvailableColumnNames.includes(sc.trim().toLowerCase())) {
+            throw new Error(`A coluna de origem "${sc}" definida em "${c.name}" não existe.`)
+          }
+        })
+      }
+    })
+
+    // Save columns
+    dataTemplateColumns = dataTemplateColumns.filter(c => Number(c.template_id) !== templateId)
+    let nextColId = dataTemplateColumns.length > 0 ? Math.max(...dataTemplateColumns.map(c => c.id)) + 1 : 1
+    const processedCols = userCols.map(c => {
+      const id = (c.id && !String(c.id).startsWith('temp-') && !String(c.id).startsWith('sys-')) ? Number(c.id) : nextColId++
+      return {
+        ...c,
+        id,
+        template_id: templateId
+      }
+    })
+
+    dataTemplateColumns = [...dataTemplateColumns, ...processedCols]
+
+    return {
+      template: dataTemplates.find(t => t.id === templateId),
+      columns: processedCols
+    }
   }
+}
+
+const getSystemColumnsForTemplate = (template) => {
+  const cols = [
+    { name: "laboratory_id", label: "ID do Laboratório", type: "integer", required: true, is_system: true, position: 1000 },
+    { name: "operator_name", label: "Nome do Operador", type: "text", required: true, is_system: true, position: 1001 },
+    { name: "data_entry_user", label: "Digitador dos Dados", type: "text", required: true, is_system: true, position: 1002 },
+    { name: "experiment_date", label: "Data do Experimento", type: "date", required: true, is_system: true, position: 1003 },
+    { name: "data_entry_date", label: "Data da Digitação", type: "datetime", required: true, is_system: true, position: 1004 }
+  ]
+  if (template.allow_failed_runs) {
+    cols.push({
+      name: "execution_status",
+      label: "Status de Execução",
+      type: "select",
+      required: true,
+      options: ["completed", "failed", "aborted"],
+      is_system: true,
+      position: 1005
+    })
+  }
+  return cols
 }
 
 const generateRandomCode = () => {

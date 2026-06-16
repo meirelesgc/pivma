@@ -24,7 +24,11 @@ import {
   getPendingInvites,
   getSampleDefinitions,
   getSampleBlindCodes,
-  saveSampleDefinitions
+  saveSampleDefinitions,
+  getDataTemplates,
+  getDataTemplateColumns,
+  deleteDataTemplate,
+  saveDataTemplate
 } from '../services/processes'
 
 export function useProcesses() {
@@ -256,6 +260,57 @@ export function useSampleDefinitions(instanceId) {
     saveSamples: saveSamplesMutation.mutate,
     saveSamplesAsync: saveSamplesMutation.mutateAsync,
     isSavingSamples: saveSamplesMutation.isPending
+  }
+}
+
+export function useDataTemplates(instanceId) {
+  const queryClient = useQueryClient()
+
+  const templatesQuery = useQuery({
+    queryKey: ['dataTemplates', instanceId],
+    queryFn: () => getDataTemplates(instanceId),
+    enabled: !!instanceId
+  })
+
+  const saveTemplateMutation = useMutation({
+    mutationFn: saveDataTemplate,
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['dataTemplates', instanceId] })
+      if (variables.template?.id) {
+        queryClient.invalidateQueries({ queryKey: ['dataTemplateColumns', variables.template.id] })
+      }
+    }
+  })
+
+  const deleteTemplateMutation = useMutation({
+    mutationFn: deleteDataTemplate,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['dataTemplates', instanceId] })
+    }
+  })
+
+  return {
+    templates: templatesQuery.data || [],
+    isLoadingTemplates: templatesQuery.isLoading,
+    saveTemplate: saveTemplateMutation.mutate,
+    saveTemplateAsync: saveTemplateMutation.mutateAsync,
+    isSavingTemplate: saveTemplateMutation.isPending,
+    deleteTemplate: deleteTemplateMutation.mutate,
+    deleteTemplateAsync: deleteTemplateMutation.mutateAsync,
+    isDeletingTemplate: deleteTemplateMutation.isPending
+  }
+}
+
+export function useDataTemplateColumns(templateId) {
+  const columnsQuery = useQuery({
+    queryKey: ['dataTemplateColumns', templateId],
+    queryFn: () => getDataTemplateColumns(templateId),
+    enabled: !!templateId
+  })
+
+  return {
+    columns: columnsQuery.data || [],
+    isLoadingColumns: columnsQuery.isLoading
   }
 }
 

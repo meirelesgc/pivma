@@ -100,3 +100,19 @@ export async function saveSampleDefinitions({ instanceId, samples }) {
   return db.saveSampleDefinitions(instanceId, samples)
 }
 
+export async function getDataTemplates(instanceId) {
+  return db.getDataTemplates(instanceId)
+}
+
+export async function getDataTemplateColumns(templateId) {
+  return db.getDataTemplateColumns(templateId)
+}
+
+export async function deleteDataTemplate(templateId) {
+  return db.deleteDataTemplate(templateId)
+}
+
+export async function saveDataTemplate({ instanceId, template, columns }) {
+  return db.saveDataTemplate(instanceId, template, columns)
+}
+

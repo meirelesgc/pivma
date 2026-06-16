@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "template_id": 1,
+    "name": "sample_code",
+    "label": "Código da Amostra",
+    "type": "text",
+    "required": true,
+    "position": 1,
+    "is_raw_data": true,
+    "is_derived_data": false,
+    "source_columns": []
+  }
+]

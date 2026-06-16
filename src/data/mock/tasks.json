@@ -93,6 +93,13 @@
   {
     "id": 12,
     "step_id": 2,
+    "name": "Definição do Template de Coleta de Dados",
+    "type": "data_template_definition",
+    "role": "Estatístico"
+  },
+  {
+    "id": 13,
+    "step_id": 2,
     "name": "Aprovar formalmente a estrutura montada",
     "type": "approval",
     "role": "BraCVAM"

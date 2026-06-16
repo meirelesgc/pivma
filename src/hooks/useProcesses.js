@@ -18,7 +18,10 @@ import {
   submitFormTask,
   runAIEvaluation,
   acceptReview,
-  rejectReview
+  rejectReview,
+  registerUser,
+  completeAssignmentTask,
+  getPendingInvites
 } from '../services/processes'
 
 export function useProcesses() {
@@ -129,6 +132,30 @@ export function useProcesses() {
     }
   })
 
+  const pendingInvitesQuery = useQuery({
+    queryKey: ['pendingInvites'],
+    queryFn: getPendingInvites
+  })
+
+  const registerUserMutation = useMutation({
+    mutationFn: registerUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+      queryClient.invalidateQueries({ queryKey: ['processInstanceRoles'] })
+      queryClient.invalidateQueries({ queryKey: ['pendingInvites'] })
+    }
+  })
+
+  const completeAssignmentTaskMutation = useMutation({
+    mutationFn: completeAssignmentTask,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['processInstanceTasks'] })
+      queryClient.invalidateQueries({ queryKey: ['processInstanceSteps'] })
+      queryClient.invalidateQueries({ queryKey: ['processInstanceRoles'] })
+      queryClient.invalidateQueries({ queryKey: ['pendingInvites'] })
+    }
+  })
+
   return {
     availableProcesses: availableProcessesQuery.data || [],
     isLoadingAvailable: availableProcessesQuery.isLoading,
@@ -153,7 +180,13 @@ export function useProcesses() {
     submitFormTask: submitFormTaskMutation.mutate,
     runAIEvaluation: runAIEvaluationMutation.mutate,
     acceptReview: acceptReviewMutation.mutate,
-    rejectReview: rejectReviewMutation.mutate
+    rejectReview: rejectReviewMutation.mutate,
+    pendingInvites: pendingInvitesQuery.data || [],
+    isLoadingPendingInvites: pendingInvitesQuery.isLoading,
+    registerUser: registerUserMutation.mutate,
+    registerUserAsync: registerUserMutation.mutateAsync,
+    completeAssignmentTask: completeAssignmentTaskMutation.mutate,
+    completeAssignmentTaskAsync: completeAssignmentTaskMutation.mutateAsync
   }
 }
 

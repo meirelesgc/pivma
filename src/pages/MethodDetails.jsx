@@ -117,6 +117,8 @@ function useMethodDetailsData(instanceId) {
       const taskDef = tasks?.find(t => t.id === pit.task_id)
       return {
         ...pit,
+        ...taskDef,
+        id: pit.id,
         name: taskDef?.name || `Tarefa #${pit.task_id}`,
         type: taskDef?.type || 'unknown'
       }

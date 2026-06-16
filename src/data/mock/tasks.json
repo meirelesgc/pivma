@@ -8,5 +8,76 @@
       "bracvam"
     ],
     "role": "Proponente"
+  },
+  {
+    "id": 2,
+    "step_id": 2,
+    "name": "Definir o Patrocinador",
+    "type": "assignment",
+    "role": "Proponente",
+    "target_role": "Patrocinador"
+  },
+  {
+    "id": 3,
+    "step_id": 2,
+    "name": "Definir os integrantes do Grupo Gestor",
+    "type": "assignment",
+    "role": "Patrocinador",
+    "target_role": "Grupo Gestor"
+  },
+  {
+    "id": 4,
+    "step_id": 2,
+    "name": "Definir o grupo de seleção de amostras",
+    "type": "assignment",
+    "role": "Grupo Gestor",
+    "target_role": "Grupo de Seleção de Amostras"
+  },
+  {
+    "id": 5,
+    "step_id": 2,
+    "name": "Definir o laboratório líder",
+    "type": "assignment",
+    "role": "Grupo Gestor",
+    "target_role": "Laboratório Líder"
+  },
+  {
+    "id": 6,
+    "step_id": 2,
+    "name": "Definir os laboratórios participantes",
+    "type": "assignment",
+    "role": "Grupo Gestor",
+    "target_role": "Laboratórios Participantes"
+  },
+  {
+    "id": 7,
+    "step_id": 2,
+    "name": "Definir o estatístico",
+    "type": "assignment",
+    "role": "Grupo Gestor",
+    "target_role": "Estatístico"
+  },
+  {
+    "id": 8,
+    "step_id": 2,
+    "name": "Definir colaboradores e observadores",
+    "type": "assignment",
+    "role": "BraCVAM",
+    "target_role": "Colaboradores e Observadores"
+  },
+  {
+    "id": 9,
+    "step_id": 2,
+    "name": "Definir especialistas temáticos (Comitê ADHOC)",
+    "type": "assignment",
+    "role": "BraCVAM",
+    "target_role": "Especialistas Temáticos (Comitê ADHOC)"
+  },
+  {
+    "id": 10,
+    "step_id": 2,
+    "name": "Aprovar formalmente a estrutura montada",
+    "type": "approval",
+    "role": "BraCVAM"
   }
 ]

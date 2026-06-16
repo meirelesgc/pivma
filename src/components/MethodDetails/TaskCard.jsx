@@ -2,15 +2,19 @@ import { Button, Card, Typography, Space, Tag } from 'antd'
 import {
   FormOutlined,
   EyeOutlined,
-  FileTextOutlined
+  FileTextOutlined,
+  TeamOutlined,
+  SafetyCertificateOutlined
 } from '@ant-design/icons'
-import { FormTask, ReviewTask, DefaultTask } from './tasks'
+import { FormTask, ReviewTask, DefaultTask, AssignmentTask, ApprovalTask } from './tasks'
 
 const { Title } = Typography
 
 const taskTypeColors = {
   form: { color: 'blue', label: 'Formulário', icon: <FormOutlined /> },
   review: { color: 'purple', label: 'Revisão', icon: <EyeOutlined /> },
+  assignment: { color: 'orange', label: 'Atribuição de Cargo', icon: <TeamOutlined /> },
+  approval: { color: 'cyan', label: 'Aprovação Formal', icon: <SafetyCertificateOutlined /> }
 }
 
 export function TaskCard({ task, onToggle }) {
@@ -23,6 +27,10 @@ export function TaskCard({ task, onToggle }) {
         return <FormTask task={task} onToggle={onToggle} />
       case 'review':
         return <ReviewTask task={task} />
+      case 'assignment':
+        return <AssignmentTask task={task} onToggle={onToggle} />
+      case 'approval':
+        return <ApprovalTask task={task} onToggle={onToggle} />
       default:
         return <DefaultTask task={task} />
     }
@@ -87,7 +95,7 @@ export function TaskCard({ task, onToggle }) {
 
         {renderTaskContent()}
 
-        {task.type !== 'form' && (
+        {task.type !== 'form' && task.type !== 'assignment' && task.type !== 'approval' && (
           <Button
             type={isCompleted ? 'default' : 'primary'}
             onClick={onToggle}

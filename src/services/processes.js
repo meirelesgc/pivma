@@ -76,3 +76,15 @@ export async function rejectReview(instanceTaskId) {
   return db.rejectReview(instanceTaskId)
 }
 
+export async function registerUser(userData) {
+  return db.registerUser(userData)
+}
+
+export async function completeAssignmentTask({ taskInstanceId, assignments }) {
+  return db.completeAssignmentTask(taskInstanceId, assignments)
+}
+
+export async function getPendingInvites() {
+  return db.getPendingInvites()
+}
+

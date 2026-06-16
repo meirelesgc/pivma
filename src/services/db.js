@@ -8,6 +8,7 @@ import initialTasks from '../data/mock/tasks.json'
 import initialProcessInstanceTasks from '../data/mock/process_instance_tasks.json'
 import initialFormFields from '../data/mock/form_fields.json'
 import initialFieldReviews from '../data/mock/field_reviews.json'
+import initialPendingInvites from '../data/mock/pending_invites.json'
 
 // Carrega os dados em memória para simular operações em um banco de dados local mutável
 let users = [...initialUsers]
@@ -20,6 +21,7 @@ let tasks = [...initialTasks]
 let processInstanceTasks = [...initialProcessInstanceTasks]
 let formFields = [...initialFormFields]
 let fieldReviews = [...initialFieldReviews]
+let pendingInvites = [...initialPendingInvites]
 let formAnswers = {} // Chaveada por process_instance_task_id
 
 const checkAndCompleteStep = (stepInstanceId) => {
@@ -357,6 +359,88 @@ export const db = {
   saveFormAnswers: (instanceTaskId, answers) => {
     formAnswers[instanceTaskId] = { ...answers }
     return { ...formAnswers[instanceTaskId] }
+  },
+
+  // Convites Pendentes
+  getPendingInvites: () => pendingInvites.map(i => ({ ...i })),
+
+  registerUser: (userData) => {
+    const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1
+    const newUser = {
+      id: newId,
+      name: userData.name,
+      email: userData.email,
+      system_role: 'default'
+    }
+    users.push(newUser)
+
+    // Converte convites pendentes associados
+    pendingInvites.forEach(invite => {
+      if (invite.email.toLowerCase() === userData.email.toLowerCase() && invite.status === 'sent') {
+        let currentRoleId = processInstanceRoles.length > 0 ? Math.max(...processInstanceRoles.map(r => r.id)) + 1 : 1
+        processInstanceRoles.push({
+          id: currentRoleId,
+          instance_id: invite.process_instance_id,
+          user_id: newId,
+          role: invite.target_role
+        })
+        invite.status = 'accepted'
+      }
+    })
+
+    return { ...newUser }
+  },
+
+  completeAssignmentTask: (taskInstanceId, assignments) => {
+    const pit = processInstanceTasks.find(t => t.id === Number(taskInstanceId))
+    if (!pit) return null
+
+    const taskDef = tasks.find(t => t.id === pit.task_id)
+    if (!taskDef) return null
+
+    const targetRole = taskDef.target_role
+
+    assignments.forEach(assign => {
+      if (assign.userId) {
+        // Usuário existente
+        let currentRoleId = processInstanceRoles.length > 0 ? Math.max(...processInstanceRoles.map(r => r.id)) + 1 : 1
+        processInstanceRoles.push({
+          id: currentRoleId,
+          instance_id: pit.process_instance_id,
+          user_id: Number(assign.userId),
+          role: targetRole
+        })
+      } else if (assign.email) {
+        // Verificar se o email é de um usuário existente
+        const existingUser = users.find(u => u.email.toLowerCase() === assign.email.toLowerCase())
+        if (existingUser) {
+          let currentRoleId = processInstanceRoles.length > 0 ? Math.max(...processInstanceRoles.map(r => r.id)) + 1 : 1
+          processInstanceRoles.push({
+            id: currentRoleId,
+            instance_id: pit.process_instance_id,
+            user_id: existingUser.id,
+            role: targetRole
+          })
+        } else {
+          // Criar convite pendente
+          let currentInviteId = pendingInvites.length > 0 ? Math.max(...pendingInvites.map(i => i.id)) + 1 : 1
+          pendingInvites.push({
+            id: currentInviteId,
+            process_instance_id: pit.process_instance_id,
+            email: assign.email,
+            target_role: targetRole,
+            status: 'sent'
+          })
+        }
+      }
+    })
+
+    pit.is_completed = true
+    pit.status = 'completed'
+
+    checkAndCompleteStep(pit.process_instance_step_id)
+
+    return { ...pit }
   }
 }
 

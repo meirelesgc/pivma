@@ -259,9 +259,9 @@ export function Sidebar() {
   const isTimelineLoading = isLoadingSteps || isLoadingInstanceSteps || isLoadingInstances
 
   return (
-    <Sider width={220} theme="light" style={{ borderRight: '1px solid #f0f0f0' }}>
+    <Sider width={220} theme="light" style={{ backgroundColor: '#efefef', borderRight: '1px solid #d9d9d9' }}>
       <Flex vertical justify="space-between" style={{ height: '100%', padding: '24px 16px' }}>
-        <Flex vertical gap={24}>
+        <Flex vertical gap={24} style={{ overflowY: 'auto', flex: 1, paddingRight: '4px', marginBottom: '16px' }}>
           <Text strong style={{ fontSize: '16px', paddingLeft: '8px' }}>Área de trabalho</Text>
 
           <NavigationMenu

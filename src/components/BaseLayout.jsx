@@ -10,11 +10,11 @@ export function BaseLayout() {
   const { user } = useAuth()
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout style={{ height: '100vh', overflow: 'hidden' }}>
       <Header />
-      <Layout>
+      <Layout style={{ overflow: 'hidden' }}>
         {user && <Sidebar />}
-        <Content>
+        <Content style={{ overflowY: 'auto', height: '100%' }}>
           <Outlet />
         </Content>
       </Layout>

@@ -12,7 +12,7 @@ export function ReceptionPage() {
       vertical
       style={{
         minHeight: '100%',
-        backgroundImage: "url('/arco.svg')",
+        backgroundImage: `url('${import.meta.env.BASE_URL}arco.svg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',

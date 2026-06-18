@@ -18,19 +18,19 @@ export function Header() {
       {/* Lado Esquerdo - Logotipos e Divisores */}
       <Flex align="center" gap={16}>
         <img 
-          src="/marca-colorido.svg" 
+          src={`${import.meta.env.BASE_URL}marca-colorido.svg`} 
           alt="Marca PI*VMA" 
           style={{ height: '32px', display: 'block' }} 
         />
         <Divider type="vertical" style={{ height: '24px', borderColor: '#d9d9d9', margin: 0 }} />
         <img 
-          src="/marca-bracvam-colorido.svg" 
+          src={`${import.meta.env.BASE_URL}marca-bracvam-colorido.svg`} 
           alt="Marca BraCVAM" 
           style={{ height: '39px', display: 'block' }} 
         />
         <Divider type="vertical" style={{ height: '24px', borderColor: '#d9d9d9', margin: 0 }} />
         <img 
-          src="/marca-fiocruz-preto.svg" 
+          src={`${import.meta.env.BASE_URL}marca-fiocruz-preto.svg`} 
           alt="Marca FIOCRUZ" 
           style={{ height: '34px', display: 'block' }} 
         />

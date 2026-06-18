@@ -253,12 +253,12 @@ export function Sidebar() {
 
   const menuItems = [
     { label: 'Meus métodos', path: '/workspace', icon: <FileTextOutlined /> },
-    { label: 'Minhas tarefas', path: '/tasks', icon: <ProjectOutlined /> },
+    { label: 'Kanban', path: '/tasks', icon: <ProjectOutlined /> },
   ]
 
   const methodMenuItems = instanceId ? [
     { label: 'Tarefas do Método', path: `/workspace/method/${instanceId}`, icon: <ProjectOutlined /> },
-    { label: 'Auditoria (5W)', path: `/workspace/method/${instanceId}/audit-log`, icon: <AuditOutlined /> },
+    { label: 'Auditoria', path: `/workspace/method/${instanceId}/audit-log`, icon: <AuditOutlined /> },
   ] : []
 
   const isTimelineLoading = isLoadingSteps || isLoadingInstanceSteps || isLoadingInstances

@@ -98,7 +98,7 @@ export function TasksPage() {
   const renderTaskCard = (t) => {
     const typeConf = taskTypeTags[t.type] || { color: 'default', label: t.type }
     const statusConf = statusTags[t.status] || { color: 'default', label: t.status }
-    
+
     return (
       <Card
         key={t.id}
@@ -198,7 +198,7 @@ export function TasksPage() {
     <div style={{ padding: '24px' }}>
       <Flex justify="space-between" align="center" style={{ marginBottom: '24px' }}>
         <div>
-          <Title level={2} style={{ margin: 0 }}>Minhas Tarefas</Title>
+          <Title level={2} style={{ margin: 0 }}>Kanban</Title>
           <Text type="secondary">Quadro Kanban de acompanhamento de pendências do estudo</Text>
         </div>
         <Button type="default" onClick={() => navigate('/workspace')} style={{ borderRadius: '8px' }}>

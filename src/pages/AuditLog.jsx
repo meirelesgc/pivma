@@ -219,7 +219,7 @@ export function AuditLogPage() {
         <Flex gap={12} align="center" style={{ marginBottom: '16px' }}>
           <AuditOutlined style={{ fontSize: '20px', color: '#1677ff' }} />
           <Title level={4} style={{ margin: 0, fontFamily: 'Barlow, sans-serif' }}>
-            Histórico de Auditoria (5W)
+            Histórico de Auditoria
           </Title>
         </Flex>
 

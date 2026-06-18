@@ -164,7 +164,6 @@ function useMethodDetailsData(instanceId) {
   // Lista Filtrada de tarefas
   const enrichedTasks = useMemo(() => {
     return allEnrichedTasks.filter(task => {
-      // 1. Filtro: Minhas Tarefas (Apenas o que eu tenho que executar)
       if (actorFilter) {
         if (task.is_completed) return false
 
@@ -391,7 +390,7 @@ export function MethodDetailsPage() {
                         Todas as Tarefas
                       </Radio.Button>
                       <Radio.Button value="my" style={{ borderRadius: '0 8px 8px 0', fontFamily: 'Lexend, sans-serif' }}>
-                        Minhas Tarefas
+                        Kanban
                       </Radio.Button>
                     </Radio.Group>
 

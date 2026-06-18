@@ -7,7 +7,18 @@ export function ReceptionPage() {
   const navigate = useNavigate()
 
   return (
-    <Flex justify="center" align="center" vertical style={{ minHeight: '80vh', padding: '24px' }}>
+    <Flex
+      justify="center"
+      align="center"
+      vertical
+      style={{
+        minHeight: '100vh',
+        backgroundImage: "url('/arco.svg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
       <Space direction="vertical" size="large" style={{ textAlign: 'center' }}>
         <Typography>
           <Title style={{ color: 'var(--color-02)', fontFamily: 'var(--font-family-title)', fontWeight: '800' }}>

@@ -60,3 +60,11 @@ select {
 .sidebar-step-item:active {
   background-color: rgba(0, 0, 0, 0.04);
 }
+
+/* Força a cor de fundo #efefef para todas as páginas e layouts do sistema */
+html,
+body,
+.ant-layout,
+.ant-layout-content {
+  background-color: #efefef !important;
+}

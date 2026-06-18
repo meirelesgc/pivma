@@ -1,5 +1,5 @@
 ---
-name: update-db
+name: db-update
 description: Adicionar uma nova "tabela" (entidade).
 ---
 

@@ -78,7 +78,7 @@ export function AuditLogPage() {
   // Filter logs
   const filteredLogs = useMemo(() => {
     if (!auditLogs) return []
-    
+
     // Sort logs descending (most recent first)
     const sorted = [...auditLogs].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
 
@@ -118,7 +118,7 @@ export function AuditLogPage() {
 
   const columns = [
     {
-      title: 'Quem (Who)',
+      title: 'Quem',
       key: 'user',
       width: '22%',
       render: (_, record) => {
@@ -141,7 +141,7 @@ export function AuditLogPage() {
       }
     },
     {
-      title: 'O quê (What)',
+      title: 'O quê',
       dataIndex: 'action',
       key: 'action',
       width: '18%',
@@ -152,7 +152,7 @@ export function AuditLogPage() {
       )
     },
     {
-      title: 'Onde (Where)',
+      title: 'Que etapa',
       dataIndex: 'where_context',
       key: 'where',
       width: '18%',
@@ -164,7 +164,7 @@ export function AuditLogPage() {
       )
     },
     {
-      title: 'Por quê / Descrição (Why)',
+      title: 'Descrição',
       dataIndex: 'description',
       key: 'description',
       width: '27%',
@@ -177,7 +177,7 @@ export function AuditLogPage() {
       )
     },
     {
-      title: 'Quando (When)',
+      title: 'Quando',
       dataIndex: 'timestamp',
       key: 'timestamp',
       width: '15%',
@@ -222,7 +222,7 @@ export function AuditLogPage() {
             Histórico de Auditoria (5W)
           </Title>
         </Flex>
-        
+
         <Paragraph type="secondary" style={{ fontFamily: 'Lexend, sans-serif', fontSize: '14px', marginBottom: '24px' }}>
           Rastreabilidade completa de todas as tarefas executadas nesta instância de validação de método alternativo. Veja quem executou, o que foi feito, onde, quando e por quê.
         </Paragraph>

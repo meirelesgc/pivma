@@ -114,8 +114,8 @@
   {
     "id": 15,
     "step_id": 4,
-    "name": "Revisão Final e Emissão de Parecer",
-    "type": "review_decision",
-    "role": "Estatístico"
+    "name": "Revisão e Decisão - Placeholder",
+    "type": "default",
+    "role": "BraCVAM"
   }
 ]

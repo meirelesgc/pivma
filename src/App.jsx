@@ -8,7 +8,7 @@ import { PrivateRoute } from './components/PrivateRoute'
 import { BaseLayout } from './components/BaseLayout'
 
 function App() {
-  return <BrowserRouter>
+  return <BrowserRouter basename={import.meta.env.BASE_URL}>
     <Routes>
       <Route element={<BaseLayout />}>
         {/* Rotas Públicas */}

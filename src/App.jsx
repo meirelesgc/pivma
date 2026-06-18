@@ -4,6 +4,7 @@ import { LoginPage } from './pages/Login'
 import { WorkspacePage } from './pages/Workspace'
 import { MethodDetailsPage } from './pages/MethodDetails'
 import { TasksPage } from './pages/Tasks'
+import { AuditLogPage } from './pages/AuditLog'
 import { PrivateRoute } from './components/PrivateRoute'
 import { BaseLayout } from './components/BaseLayout'
 
@@ -19,6 +20,7 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/workspace" element={<WorkspacePage />} />
           <Route path="/workspace/method/:id" element={<MethodDetailsPage />} />
+          <Route path="/workspace/method/:id/audit-log" element={<AuditLogPage />} />
           <Route path="/tasks" element={<TasksPage />} />
         </Route>
       </Route>

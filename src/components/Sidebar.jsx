@@ -256,6 +256,11 @@ export function Sidebar() {
     { label: 'Minhas tarefas', path: '/tasks', icon: <ProjectOutlined /> },
   ]
 
+  const methodMenuItems = instanceId ? [
+    { label: 'Tarefas do Método', path: `/workspace/method/${instanceId}`, icon: <ProjectOutlined /> },
+    { label: 'Auditoria (5W)', path: `/workspace/method/${instanceId}/audit-log`, icon: <AuditOutlined /> },
+  ] : []
+
   const isTimelineLoading = isLoadingSteps || isLoadingInstanceSteps || isLoadingInstances
 
   return (
@@ -269,6 +274,20 @@ export function Sidebar() {
             currentPath={location.pathname}
             onNavigate={navigate}
           />
+
+          {instanceId && (
+            <Flex vertical gap={4}>
+              <Divider style={{ margin: '8px 0' }} />
+              <Text strong type="secondary" style={{ fontSize: '11px', paddingLeft: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Opções do Método
+              </Text>
+              <NavigationMenu
+                menuItems={methodMenuItems}
+                currentPath={location.pathname}
+                onNavigate={navigate}
+              />
+            </Flex>
+          )}
 
           <ProcessTimeline
             instanceId={instanceId}

@@ -116,3 +116,11 @@ export async function saveDataTemplate({ instanceId, template, columns }) {
   return db.saveDataTemplate(instanceId, template, columns)
 }
 
+export async function getAuditLogs() {
+  return db.getAuditLogs()
+}
+
+export async function getAuditLogsByInstanceId(instanceId) {
+  return db.getAuditLogsByInstanceId(instanceId)
+}
+

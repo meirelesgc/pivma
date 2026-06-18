@@ -13,6 +13,7 @@ import initialSampleDefinitions from '../data/mock/sample_definitions.json'
 import initialSampleBlindCodes from '../data/mock/sample_blind_codes.json'
 import initialDataTemplates from '../data/mock/data_templates.json'
 import initialDataTemplateColumns from '../data/mock/data_template_columns.json'
+import initialAuditLogs from '../data/mock/audit_logs.json'
 
 // Carrega os dados em memória para simular operações em um banco de dados local mutável
 let users = [...initialUsers]
@@ -30,7 +31,36 @@ let sampleDefinitions = [...initialSampleDefinitions]
 let sampleBlindCodes = [...initialSampleBlindCodes]
 let dataTemplates = [...initialDataTemplates]
 let dataTemplateColumns = [...initialDataTemplateColumns]
+let auditLogs = [...initialAuditLogs]
 let formAnswers = {} // Chaveada por process_instance_task_id
+
+const getCurrentUser = () => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    return users.find(u => u.id === Number(token))
+  }
+  return null
+}
+
+const addAuditLog = (instanceId, actionType, description, whereContext = "Geral") => {
+  const currentUser = getCurrentUser() || { id: 0, name: 'Sistema', email: 'sistema@bracvam.gov.br' }
+  const newId = auditLogs.length > 0 ? Math.max(...auditLogs.map(l => l.id)) + 1 : 1
+  
+  const logEntry = {
+    id: newId,
+    process_instance_id: Number(instanceId),
+    user_id: currentUser.id,
+    user_name: currentUser.name,
+    user_email: currentUser.email,
+    action: actionType,
+    description: description,
+    where_context: whereContext,
+    timestamp: new Date().toISOString()
+  }
+  auditLogs.push(logEntry)
+  return logEntry
+}
+
 
 const checkAndCompleteStep = (stepInstanceId) => {
   const totalTasksForStep = processInstanceTasks.filter(t => t.process_instance_step_id === stepInstanceId)
@@ -101,6 +131,9 @@ export const db = {
       ...instance 
     }
     processInstances.push(newInstance)
+
+    const creatorUser = users.find(u => u.id === Number(instance.created_by))
+    addAuditLog(newId, "Criar Método", `Instância do método de validação criada e inicializada por ${creatorUser?.name || 'usuário'}.`, "Inicialização")
 
     // Quem cria sempre ganha automaticamente o cargo de "Proponente"
     let currentRoleId = processInstanceRoles.length > 0 ? Math.max(...processInstanceRoles.map(r => r.id)) + 1 : 1
@@ -193,6 +226,12 @@ export const db = {
 
     pit.is_completed = isCompleted
 
+    const taskDef = tasks.find(t => t.id === pit.task_id)
+    const stepInstance = processInstanceSteps.find(s => s.id === pit.process_instance_step_id)
+    const stepDef = processSteps.find(s => s.id === stepInstance?.step_id)
+    const statusText = isCompleted ? "concluída" : "reaberta"
+    addAuditLog(pit.process_instance_id, isCompleted ? "Concluir Tarefa" : "Reabrir Tarefa", `Tarefa '${taskDef?.name}' foi ${statusText}.`, stepDef?.name || "Geral")
+
     const stepInstanceId = pit.process_instance_step_id
     if (isCompleted) {
       checkAndCompleteStep(stepInstanceId)
@@ -237,6 +276,11 @@ export const db = {
     // Atualiza status e trava edição
     pit.status = 'analyzing_ai'
     pit.editable = false
+
+    const taskDef = tasks.find(t => t.id === pit.task_id)
+    const stepInstance = processInstanceSteps.find(s => s.id === pit.process_instance_step_id)
+    const stepDef = processSteps.find(s => s.id === stepInstance?.step_id)
+    addAuditLog(pit.process_instance_id, "Submeter Formulário", `Formulário da tarefa '${taskDef?.name}' preenchido e submetido para avaliação.`, stepDef?.name || "Geral")
 
     return { ...pit }
   },
@@ -316,6 +360,23 @@ export const db = {
       }
     })
 
+    const stepInstance = processInstanceSteps.find(s => s.id === pit.process_instance_step_id)
+    const stepDef = processSteps.find(s => s.id === stepInstance?.step_id)
+    const newId = auditLogs.length > 0 ? Math.max(...auditLogs.map(l => l.id)) + 1 : 1
+    auditLogs.push({
+      id: newId,
+      process_instance_id: pit.process_instance_id,
+      user_id: 0,
+      user_name: "Inteligência Artificial (Validador)",
+      user_email: "ia@bracvam.gov.br",
+      action: "Avaliação de IA",
+      description: hasAIFailures 
+        ? `Avaliação automática da tarefa '${taskDef?.name}' identificou não-conformidades.`
+        : `Avaliação automática da tarefa '${taskDef?.name}' realizada com sucesso sem inconformidades.`,
+      where_context: stepDef?.name || "Geral",
+      timestamp: new Date().toISOString()
+    })
+
     if (hasAIFailures) {
       // Se a IA encontrar algum problema, o formulário retorna ao proponente
       pit.status = 'pending_submission'
@@ -352,6 +413,10 @@ export const db = {
     const reviewers = taskDef.required_reviewers || []
     const currentIndex = reviewers.indexOf(pit.current_reviewer_role)
 
+    const stepInstance = processInstanceSteps.find(s => s.id === pit.process_instance_step_id)
+    const stepDef = processSteps.find(s => s.id === stepInstance?.step_id)
+    addAuditLog(pit.process_instance_id, "Aprovar Revisão", `Revisão da tarefa '${taskDef?.name}' aceita e aprovada.`, stepDef?.name || "Geral")
+
     if (currentIndex !== -1 && currentIndex < reviewers.length - 1) {
       pit.current_reviewer_role = reviewers[currentIndex + 1]
       pit.status = 'pending_review'
@@ -369,6 +434,11 @@ export const db = {
   rejectReview: (instanceTaskId) => {
     const pit = processInstanceTasks.find(t => t.id === Number(instanceTaskId))
     if (!pit) return null
+
+    const taskDef = tasks.find(t => t.id === pit.task_id)
+    const stepInstance = processInstanceSteps.find(s => s.id === pit.process_instance_step_id)
+    const stepDef = processSteps.find(s => s.id === stepInstance?.step_id)
+    addAuditLog(pit.process_instance_id, "Rejeitar Revisão", `Revisão da tarefa '${taskDef?.name}' rejeitada. Retornada para correção.`, stepDef?.name || "Geral")
 
     pit.status = 'pending_submission'
     pit.editable = true
@@ -472,6 +542,11 @@ export const db = {
 
     checkAndCompleteStep(pit.process_instance_step_id)
 
+    const stepInstance = processInstanceSteps.find(s => s.id === pit.process_instance_step_id)
+    const stepDef = processSteps.find(s => s.id === stepInstance?.step_id)
+    const targetsText = assignments.map(a => a.email || users.find(u => u.id === Number(a.userId))?.name || "Usuário").join(', ')
+    addAuditLog(pit.process_instance_id, "Atribuir Cargo", `Cargo '${taskDef?.target_role}' atribuído a: ${targetsText}.`, stepDef?.name || "Geral")
+
     return { ...pit }
   },
 
@@ -534,6 +609,8 @@ export const db = {
       })
     })
     
+    addAuditLog(Number(instanceId), "Definir Amostras", "Cadastro de substâncias químicas de teste e códigos cegos atualizado.", "Definição de Amostras")
+
     return processedSamples.map(s => ({ ...s }))
   },
 
@@ -555,6 +632,10 @@ export const db = {
   },
 
   deleteDataTemplate: (templateId) => {
+    const template = dataTemplates.find(t => t.id === Number(templateId))
+    if (template) {
+      addAuditLog(Number(template.process_instance_id), "Remover Template de Coleta", `Template de coleta de dados estatísticos '${template.name}' excluído.`, "Modelagem de Dados")
+    }
     dataTemplates = dataTemplates.filter(t => t.id !== Number(templateId))
     dataTemplateColumns = dataTemplateColumns.filter(c => Number(c.template_id) !== Number(templateId))
     return true
@@ -635,12 +716,20 @@ export const db = {
 
     dataTemplateColumns = [...dataTemplateColumns, ...processedCols]
 
+    addAuditLog(Number(instanceId), "Definir Template de Coleta", `Template de coleta de dados estatísticos '${template.name}' configurado e salvo.`, "Modelagem de Dados")
+
     return {
       template: dataTemplates.find(t => t.id === templateId),
       columns: processedCols
     }
-  }
+  },
+
+  // Audit Logs
+  getAuditLogs: () => auditLogs.map(l => ({ ...l })),
+  getAuditLogsByInstanceId: (instanceId) =>
+    auditLogs.filter(l => Number(l.process_instance_id) === Number(instanceId)).map(l => ({ ...l })),
 }
+
 
 const getSystemColumnsForTemplate = (template) => {
   const cols = [

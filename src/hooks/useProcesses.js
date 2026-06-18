@@ -28,7 +28,8 @@ import {
   getDataTemplates,
   getDataTemplateColumns,
   deleteDataTemplate,
-  saveDataTemplate
+  saveDataTemplate,
+  getAuditLogsByInstanceId
 } from '../services/processes'
 
 export function useProcesses() {
@@ -311,6 +312,19 @@ export function useDataTemplateColumns(templateId) {
   return {
     columns: columnsQuery.data || [],
     isLoadingColumns: columnsQuery.isLoading
+  }
+}
+
+export function useAuditLogs(instanceId) {
+  const auditLogsQuery = useQuery({
+    queryKey: ['auditLogs', instanceId],
+    queryFn: () => getAuditLogsByInstanceId(instanceId),
+    enabled: !!instanceId
+  })
+
+  return {
+    auditLogs: auditLogsQuery.data || [],
+    isLoadingAuditLogs: auditLogsQuery.isLoading
   }
 }
 

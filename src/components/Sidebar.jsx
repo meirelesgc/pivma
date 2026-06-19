@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Layout, Button, Typography, Divider, Avatar, Flex, Spin } from 'antd'
 import {
   UserOutlined,
@@ -24,8 +25,30 @@ const iconMap = {
   'gavel': <AuditOutlined />,
 }
 
-const UserProfile = ({ user, logout }) => {
+const UserProfile = ({ user, logout, collapsed }) => {
   if (!user) return null
+
+  if (collapsed) {
+    return (
+      <Flex vertical align="center" gap={12}>
+        <Divider style={{ margin: '8px 0' }} />
+        <Avatar
+          icon={<UserOutlined />}
+          style={{ backgroundColor: '#1677ff' }}
+          title={`${user.name} (${user.email})`}
+        />
+        <Button
+          type="primary"
+          danger
+          ghost
+          icon={<LogoutOutlined />}
+          onClick={logout}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', padding: 0 }}
+          title="Sair da conta"
+        />
+      </Flex>
+    )
+  }
 
   return (
     <Flex vertical gap={12}>
@@ -56,7 +79,7 @@ const UserProfile = ({ user, logout }) => {
   )
 }
 
-const NavigationMenu = ({ menuItems, currentPath, onNavigate }) => (
+const NavigationMenu = ({ menuItems, currentPath, onNavigate, collapsed }) => (
   <Flex vertical gap={4}>
     {menuItems.map((item) => {
       const isActive = currentPath === item.path
@@ -69,19 +92,21 @@ const NavigationMenu = ({ menuItems, currentPath, onNavigate }) => (
           style={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'flex-start',
+            justifyContent: collapsed ? 'center' : 'flex-start',
             width: '100%',
             textAlign: 'left',
+            padding: collapsed ? '0' : undefined
           }}
+          title={collapsed ? item.label : undefined}
         >
-          {item.label}
+          {!collapsed && item.label}
         </Button>
       )
     })}
   </Flex>
 )
 
-const StepItem = ({ step, isCompleted, isActive, prevCompleted }) => {
+const StepItem = ({ step, isCompleted, isActive, prevCompleted, collapsed }) => {
   let iconComponent = iconMap[step.icone] || <FileTextOutlined />
 
   if (isCompleted) {
@@ -116,7 +141,9 @@ const StepItem = ({ step, isCompleted, isActive, prevCompleted }) => {
       style={{
         zIndex: 1,
         transition: 'all 0.2s',
+        justifyContent: collapsed ? 'center' : 'flex-start'
       }}
+      title={collapsed ? step.name : undefined}
     >
       <div
         style={{
@@ -137,24 +164,26 @@ const StepItem = ({ step, isCompleted, isActive, prevCompleted }) => {
         {iconComponent}
       </div>
 
-      <Flex vertical style={{ flex: 1 }}>
-        <Text
-          style={{
-            fontSize: '11px',
-            color: textColor,
-            fontWeight: fontWeight,
-            transition: 'all 0.2s',
-            lineHeight: '1.2',
-          }}
-        >
-          {step.name}
-        </Text>
-      </Flex>
+      {!collapsed && (
+        <Flex vertical style={{ flex: 1 }}>
+          <Text
+            style={{
+              fontSize: '11px',
+              color: textColor,
+              fontWeight: fontWeight,
+              transition: 'all 0.2s',
+              lineHeight: '1.2',
+            }}
+          >
+            {step.name}
+          </Text>
+        </Flex>
+      )}
     </Flex>
   )
 }
 
-const TimelineSteps = ({ instanceId, processInstances, processSteps, processInstanceSteps }) => {
+const TimelineSteps = ({ instanceId, processInstances, processSteps, processInstanceSteps, collapsed }) => {
   const instance = processInstances.find(inst => inst.id === instanceId)
   if (!instance) return null
 
@@ -169,16 +198,17 @@ const TimelineSteps = ({ instanceId, processInstances, processSteps, processInst
   )
 
   return (
-    <Flex vertical gap={14} style={{ paddingLeft: '8px', position: 'relative' }}>
+    <Flex vertical gap={14} style={{ paddingLeft: collapsed ? '0' : '8px', position: 'relative' }}>
       <div
         style={{
           position: 'absolute',
-          left: '21px',
+          left: collapsed ? '13px' : '21px',
           top: '12px',
           bottom: '12px',
           width: '2px',
           backgroundColor: '#f0f0f0',
           zIndex: 0,
+          transition: 'all 0.3s ease'
         }}
       />
 
@@ -201,6 +231,7 @@ const TimelineSteps = ({ instanceId, processInstances, processSteps, processInst
             isCompleted={isCompleted}
             isActive={isActive}
             prevCompleted={prevCompleted}
+            collapsed={collapsed}
           />
         )
       })}
@@ -208,15 +239,17 @@ const TimelineSteps = ({ instanceId, processInstances, processSteps, processInst
   )
 }
 
-const ProcessTimeline = ({ instanceId, processInstances, processSteps, processInstanceSteps, isLoading }) => {
+const ProcessTimeline = ({ instanceId, processInstances, processSteps, processInstanceSteps, isLoading, collapsed }) => {
   if (!instanceId) return null
 
   return (
     <Flex vertical gap={12} style={{ marginTop: '8px' }}>
       <Divider style={{ margin: '8px 0' }} />
-      <Text strong type="secondary" style={{ fontSize: '11px', paddingLeft: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-        Fluxo do processo
-      </Text>
+      {!collapsed && (
+        <Text strong type="secondary" style={{ fontSize: '11px', paddingLeft: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          Fluxo do processo
+        </Text>
+      )}
 
       {isLoading ? (
         <Flex justify="center" align="center" style={{ padding: '16px 0' }}>
@@ -228,6 +261,7 @@ const ProcessTimeline = ({ instanceId, processInstances, processSteps, processIn
           processInstances={processInstances}
           processSteps={processSteps}
           processInstanceSteps={processInstanceSteps}
+          collapsed={collapsed}
         />
       )}
     </Flex>
@@ -238,6 +272,7 @@ export function Sidebar() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+  const [collapsed, setCollapsed] = useState(false)
 
   const {
     processInstances = [],
@@ -264,25 +299,37 @@ export function Sidebar() {
   const isTimelineLoading = isLoadingSteps || isLoadingInstanceSteps || isLoadingInstances
 
   return (
-    <Sider width={220} theme="light" style={{ backgroundColor: '#efefef', borderRight: '1px solid #d9d9d9' }}>
-      <Flex vertical justify="space-between" style={{ height: '100%', padding: '24px 16px' }}>
+    <Sider
+      collapsible
+      collapsed={collapsed}
+      onCollapse={(value) => setCollapsed(value)}
+      width={220}
+      collapsedWidth={70}
+      theme="light"
+      style={{ backgroundColor: '#efefef', borderRight: '1px solid #d9d9d9' }}
+    >
+      <Flex vertical justify="space-between" style={{ height: '100%', padding: collapsed ? '24px 8px' : '24px 16px' }}>
         <Flex vertical gap={6} style={{ overflowY: 'auto', flex: 1, paddingRight: '4px', marginBottom: '16px' }}>
           <NavigationMenu
             menuItems={menuItems}
             currentPath={location.pathname}
             onNavigate={navigate}
+            collapsed={collapsed}
           />
 
           {instanceId && (
             <Flex vertical gap={4}>
               <Divider style={{ margin: '8px 0' }} />
-              <Text strong type="secondary" style={{ fontSize: '11px', paddingLeft: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                Opções do Método
-              </Text>
+              {!collapsed && (
+                <Text strong type="secondary" style={{ fontSize: '11px', paddingLeft: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Opções do Método
+                </Text>
+              )}
               <NavigationMenu
                 menuItems={methodMenuItems}
                 currentPath={location.pathname}
                 onNavigate={navigate}
+                collapsed={collapsed}
               />
             </Flex>
           )}
@@ -293,10 +340,11 @@ export function Sidebar() {
             processSteps={processSteps}
             processInstanceSteps={processInstanceSteps}
             isLoading={isTimelineLoading}
+            collapsed={collapsed}
           />
         </Flex>
 
-        <UserProfile user={user} logout={logout} />
+        <UserProfile user={user} logout={logout} collapsed={collapsed} />
       </Flex>
     </Sider>
   )

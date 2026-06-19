@@ -390,73 +390,21 @@ export function TasksPage() {
   const isLoading = isLoadingAvailable || isLoadingInstances || isLoadingInstanceSteps || isLoadingInstanceTasks || isLoadingSteps || isLoadingLogs
 
   return (
-    <div style={{ padding: '24px' }}>
-      {/* Top Header */}
-      <Flex justify="space-between" align="center" style={{ marginBottom: '24px' }}>
-        <div>
-          <Title level={2} style={{ margin: 0, fontFamily: 'Lexend, sans-serif' }}>Kanban</Title>
-          <Text type="secondary">Visualização integrada dos métodos em validação no estudo</Text>
-        </div>
-        <Button type="default" onClick={() => navigate('/workspace')} style={{ borderRadius: '8px', fontFamily: 'Lexend, sans-serif' }}>
-          Ir para Meus Métodos
-        </Button>
+    <Flex vertical gap={24} style={{ padding: '24px' }}>
+      <Flex vertical gap={8}>
+        <Title level={2} style={{ margin: 0, fontFamily: 'Lexend, sans-serif' }}>Kanban</Title>
+        <Text type="secondary">Visualização integrada dos métodos em validação no estudo</Text>
       </Flex>
 
       {isLoading ? (
         <Card loading style={{ borderRadius: '12px' }} />
       ) : (
         <>
-          {/* Indicadores Consolidados */}
-          <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
-            <Col xs={12} sm={6}>
-              <Card style={{ borderRadius: '12px', border: '1px solid #e6f7ff', background: 'linear-gradient(135deg, #e6f7ff 0%, #ffffff 100%)', boxShadow: '0 4px 12px rgba(24, 144, 255, 0.03)' }} bodyStyle={{ padding: '16px' }}>
-                <Statistic
-                  title={<span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Processos Ativos</span>}
-                  value={activeCount}
-                  valueStyle={{ color: '#1890ff', fontWeight: '800', fontFamily: 'Lexend, sans-serif' }}
-                  prefix={<ProjectOutlined />}
-                />
-              </Card>
-            </Col>
-            <Col xs={12} sm={6}>
-              <Card style={{ borderRadius: '12px', border: '1px solid #f6ffed', background: 'linear-gradient(135deg, #f6ffed 0%, #ffffff 100%)', boxShadow: '0 4px 12px rgba(82, 196, 26, 0.03)' }} bodyStyle={{ padding: '16px' }}>
-                <Statistic
-                  title={<span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Processos Concluídos</span>}
-                  value={completedCount}
-                  valueStyle={{ color: '#52c41a', fontWeight: '800', fontFamily: 'Lexend, sans-serif' }}
-                  prefix={<CheckCircleOutlined />}
-                />
-              </Card>
-            </Col>
-            <Col xs={12} sm={6}>
-              <Card style={{ borderRadius: '12px', border: '1px solid #fff1f0', background: 'linear-gradient(135deg, #fff1f0 0%, #ffffff 100%)', boxShadow: '0 4px 12px rgba(255, 77, 79, 0.03)' }} bodyStyle={{ padding: '16px' }}>
-                <Statistic
-                  title={<span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Minhas Pendências</span>}
-                  value={myPendingCount}
-                  valueStyle={{ color: '#ff4d4f', fontWeight: '800', fontFamily: 'Lexend, sans-serif' }}
-                  prefix={<AlertOutlined />}
-                />
-              </Card>
-            </Col>
-            <Col xs={12} sm={6}>
-              <Card style={{ borderRadius: '12px', border: '1px solid #fffbe6', background: 'linear-gradient(135deg, #fffbe6 0%, #ffffff 100%)', boxShadow: '0 4px 12px rgba(250, 140, 22, 0.03)' }} bodyStyle={{ padding: '16px' }}>
-                <Statistic
-                  title={<span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Sem Movimento ({inactivityDays}d+)</span>}
-                  value={delayedCount}
-                  valueStyle={{ color: '#fa8c16', fontWeight: '800', fontFamily: 'Lexend, sans-serif' }}
-                  prefix={<ClockCircleOutlined />}
-                />
-              </Card>
-            </Col>
-          </Row>
-
-          {/* Filtros */}
           <Card
             style={{
               borderRadius: '16px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
               border: '1px solid #f0f0f0',
-              marginBottom: '24px',
               background: '#fafafa'
             }}
             bodyStyle={{ padding: '16px 24px' }}
@@ -529,7 +477,6 @@ export function TasksPage() {
             </Row>
           </Card>
 
-          {/* Quadro Kanban */}
           {filteredProcesses.length === 0 ? (
             <Card style={{ borderRadius: '12px', padding: '48px 0', border: '1.5px solid #f0f0f0' }}>
               <Empty description="Nenhum método ou processo corresponde aos filtros ativos." style={{ padding: '32px 0' }}>
@@ -548,6 +495,6 @@ export function TasksPage() {
           )}
         </>
       )}
-    </div>
+    </Flex>
   )
 }

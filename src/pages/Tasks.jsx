@@ -12,17 +12,14 @@ import {
   Space,
   Select,
   Divider,
-  Statistic,
   Switch
 } from 'antd'
 import {
   ClockCircleOutlined,
   CheckCircleOutlined,
   SlidersOutlined,
-  ProjectOutlined,
   InfoCircleOutlined,
-  CalendarOutlined,
-  AlertOutlined
+  CalendarOutlined
 } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
@@ -235,10 +232,10 @@ export function TasksPage() {
   const colCompleted = filteredProcesses.filter(p => p.column === 'completed')
 
   // --- STATS / METRICS ---
-  const activeCount = kanbanProcesses.filter(p => p.column !== 'completed').length
-  const completedCount = kanbanProcesses.filter(p => p.column === 'completed').length
-  const myPendingCount = kanbanProcesses.filter(p => p.requiresMyAction && p.column !== 'completed').length
-  const delayedCount = kanbanProcesses.filter(p => p.column === 'delayed').length
+  const _activeCount = kanbanProcesses.filter(p => p.column !== 'completed').length
+  const _completedCount = kanbanProcesses.filter(p => p.column === 'completed').length
+  const _myPendingCount = kanbanProcesses.filter(p => p.requiresMyAction && p.column !== 'completed').length
+  const _delayedCount = kanbanProcesses.filter(p => p.column === 'delayed').length
 
   // --- CARD & COLUMN RENDERERS ---
   const renderKanbanCard = (p) => {

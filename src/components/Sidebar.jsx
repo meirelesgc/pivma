@@ -9,7 +9,8 @@ import {
   CheckCircleOutlined,
   AuditOutlined,
   LockOutlined,
-  CheckOutlined
+  CheckOutlined,
+  SettingOutlined
 } from '@ant-design/icons'
 import { useAuth } from '../hooks/useAuth'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -286,10 +287,20 @@ export function Sidebar() {
   const match = location.pathname.match(/\/workspace\/method\/(\d+)/)
   const instanceId = match ? Number(match[1]) : null
 
+  const isAdmin = user?.system_role === 'admin'
+
   const menuItems = [
     { label: 'Meus métodos', path: '/workspace', icon: <FileTextOutlined /> },
     { label: 'Kanban', path: '/tasks', icon: <ProjectOutlined /> },
   ]
+
+  if (isAdmin) {
+    menuItems.push({
+      label: 'Configurar processos',
+      path: '/workspace/configure-processes',
+      icon: <SettingOutlined />
+    })
+  }
 
   const methodMenuItems = instanceId ? [
     { label: 'Tarefas do Método', path: `/workspace/method/${instanceId}`, icon: <ProjectOutlined /> },

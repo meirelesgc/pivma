@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Card, Table, Typography, Tag, Input, Select, Space, Avatar, Button, Flex, Spin, Empty, Divider, Tooltip } from 'antd'
-import { SearchOutlined, AuditOutlined, UserOutlined, CalendarOutlined, EnvironmentOutlined, InfoCircleOutlined, FilterOutlined } from '@ant-design/icons'
+import { Card, Table, Typography, Tag, Input, Select, Space, Avatar, Button, Flex, Spin, Empty, Tooltip } from 'antd'
+import { SearchOutlined, AuditOutlined, UserOutlined, CalendarOutlined, EnvironmentOutlined } from '@ant-design/icons'
 import { useProcesses, useAuditLogs } from '../hooks/useProcesses'
 import { ProcessInstanceHeader } from '../components/MethodDetails/ProcessInstanceHeader'
 

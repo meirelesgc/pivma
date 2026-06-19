@@ -390,7 +390,7 @@ export function MethodDetailsPage() {
                         Todas as Tarefas
                       </Radio.Button>
                       <Radio.Button value="my" style={{ borderRadius: '0 8px 8px 0', fontFamily: 'Lexend, sans-serif' }}>
-                        Kanban
+                        Minhas Tarefas
                       </Radio.Button>
                     </Radio.Group>
 

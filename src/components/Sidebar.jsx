@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Layout, Button, Typography, Divider, Avatar, Flex, Spin } from 'antd'
 import {
   UserOutlined,
@@ -269,11 +268,10 @@ const ProcessTimeline = ({ instanceId, processInstances, processSteps, processIn
   )
 }
 
-export function Sidebar() {
+export function Sidebar({ collapsed }) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const [collapsed, setCollapsed] = useState(false)
 
   const {
     processInstances = [],
@@ -294,14 +292,6 @@ export function Sidebar() {
     { label: 'Kanban', path: '/tasks', icon: <ProjectOutlined /> },
   ]
 
-  if (isAdmin) {
-    menuItems.push({
-      label: 'Configurar processos',
-      path: '/workspace/configure-processes',
-      icon: <SettingOutlined />
-    })
-  }
-
   const methodMenuItems = instanceId ? [
     { label: 'Tarefas do Método', path: `/workspace/method/${instanceId}`, icon: <ProjectOutlined /> },
     { label: 'Auditoria', path: `/workspace/method/${instanceId}/audit-log`, icon: <AuditOutlined /> },
@@ -312,8 +302,8 @@ export function Sidebar() {
   return (
     <Sider
       collapsible
+      trigger={null}
       collapsed={collapsed}
-      onCollapse={(value) => setCollapsed(value)}
       width={220}
       collapsedWidth={70}
       theme="light"

@@ -1,4 +1,4 @@
-import { Typography, Card, Flex, Button, Tag, Progress, Breadcrumb } from 'antd'
+import { Typography, Card, Flex, Button, Tag, Progress } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
 const { Title, Text } = Typography
@@ -8,26 +8,9 @@ export function ProcessInstanceHeader({ instance, overallProgress, onBack }) {
 
   return (
     <>
-      {/* Botão de voltar e Breadcrumb */}
-      <Flex align="center" gap={12} style={{ marginBottom: '16px' }}>
-        <Button 
-          type="text" 
-          icon={<ArrowLeftOutlined />} 
-          onClick={onBack} 
-          style={{ fontSize: '16px' }}
-        />
-        <Breadcrumb 
-          items={[
-            { title: 'Workspace', href: '/workspace', onClick: (e) => { e.preventDefault(); onBack(); } },
-            { title: `BRA-2026-${instance.id}` }
-          ]} 
-          style={{ fontFamily: 'Lexend, sans-serif' }}
-        />
-      </Flex>
-
-      <Card 
-        style={{ 
-          marginBottom: '24px', 
+      <Card
+        style={{
+          marginBottom: '24px',
           borderRadius: '16px',
           boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
           background: 'linear-gradient(135deg, #ffffff 0%, #fafafa 100%)'
@@ -51,9 +34,9 @@ export function ProcessInstanceHeader({ instance, overallProgress, onBack }) {
               <Text strong>Progresso Geral</Text>
               <Text strong style={{ color: '#52c41a' }}>{overallProgress}%</Text>
             </Flex>
-            <Progress 
-              percent={overallProgress} 
-              status="active" 
+            <Progress
+              percent={overallProgress}
+              status="active"
               strokeColor={{
                 '0%': '#1677ff',
                 '100%': '#52c41a',

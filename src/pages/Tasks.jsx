@@ -1,113 +1,259 @@
 import { useState, useMemo } from 'react'
-import { Typography, Row, Col, Card, Tag, Button, Empty, Flex, Badge, Space, Radio, Select, Divider } from 'antd'
+import {
+  Typography,
+  Row,
+  Col,
+  Card,
+  Tag,
+  Button,
+  Empty,
+  Flex,
+  Badge,
+  Space,
+  Select,
+  Divider,
+  Statistic,
+  Switch
+} from 'antd'
 import {
   ClockCircleOutlined,
-  LockOutlined,
   CheckCircleOutlined,
-  SlidersOutlined
+  SlidersOutlined,
+  ProjectOutlined,
+  InfoCircleOutlined,
+  CalendarOutlined,
+  AlertOutlined
 } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
-import { useMyTasks } from '../hooks/useMyTasks'
+import { useQuery } from '@tanstack/react-query'
+import { useProcesses } from '../hooks/useProcesses'
+import { useAuth } from '../hooks/useAuth'
+import { getAuditLogs } from '../services/processes'
 
 const { Title, Text } = Typography
 
-const taskTypeTags = {
-  form: { color: 'blue', label: 'Formulário' },
-  assignment: { color: 'orange', label: 'Atribuição' },
-  approval: { color: 'cyan', label: 'Aprovação' },
-  sample_definition: { color: 'magenta', label: 'Amostras' },
-  data_template_definition: { color: 'green', label: 'Template de Coleta' },
-  review_decision: { color: 'red', label: 'Revisão e Decisão' }
-}
-
-const statusTags = {
-  pending: { color: 'warning', label: 'Pendente' },
-  pending_submission: { color: 'warning', label: 'Aguardando Envio' },
-  pending_review: { color: 'processing', label: 'Em Revisão' },
-  analyzing_ai: { color: 'purple', label: 'Análise de IA' },
-  completed: { color: 'success', label: 'Concluído' }
-}
-
 export function TasksPage() {
-  const { tasks, isLoading } = useMyTasks()
+  const { user } = useAuth()
+  const isAdmin = user?.system_role === 'admin'
   const navigate = useNavigate()
 
-  // Estados dos Filtros
-  const [actorFilter, setActorFilter] = useState(true) // true = "Minhas Tarefas" (default), false = "Todas as Tarefas"
-  const [statusFilter, setStatusFilter] = useState('all') // all, pending, pending_review, completed
-  const [typeFilter, setTypeFilter] = useState('all') // all, form, etc.
-  const [stepFilter, setStepFilter] = useState('current') // current = "Etapa Ativa" (default), all = "Todas as Etapas"
+  // --- HOOKS DATA ---
+  const {
+    availableProcesses,
+    processInstances,
+    processInstanceSteps,
+    processInstanceTasks,
+    tasks: taskDefinitions,
+    processSteps,
+    processInstanceRoles,
+    isLoadingAvailable,
+    isLoadingInstances,
+    isLoadingInstanceSteps,
+    isLoadingInstanceTasks,
+    isLoadingSteps
+  } = useProcesses()
+
+  const { data: allAuditLogs = [], isLoading: isLoadingLogs } = useQuery({
+    queryKey: ['allAuditLogs'],
+    queryFn: getAuditLogs
+  })
+
+  // --- FILTERS STATE ---
+  const [processFilter, setProcessFilter] = useState('all')
+  const [stepFilter, setStepFilter] = useState('all')
+  const [stateFilter, setStateFilter] = useState('all')
+  const [inactivityDays, setInactivityDays] = useState(7)
+  const [onlyMyPending, setOnlyMyPending] = useState(false)
 
   const handleResetFilters = () => {
-    setActorFilter(true)
-    setStatusFilter('all')
-    setTypeFilter('all')
-    setStepFilter('current')
+    setProcessFilter('all')
+    setStepFilter('all')
+    setStateFilter('all')
+    setInactivityDays(7)
+    setOnlyMyPending(false)
   }
 
-  const hasActiveFilters = !actorFilter || statusFilter !== 'all' || typeFilter !== 'all' || stepFilter !== 'current'
+  const hasActiveFilters = processFilter !== 'all' || stepFilter !== 'all' || stateFilter !== 'all' || onlyMyPending || inactivityDays !== 7
 
-  // Lista Filtrada de tarefas
-  const filteredTasks = useMemo(() => {
-    return tasks.filter((task) => {
-      // 0. Filtro: Etapas (Etapa Ativa)
-      if (stepFilter === 'current') {
-        if (!task.isActiveStep) return false
+  // Step Options for Filter
+  const stepOptions = useMemo(() => {
+    const names = Array.from(new Set(processSteps.map(s => s.name)))
+    return [
+      { value: 'all', label: 'Todas as Etapas' },
+      ...names.map(name => ({ value: name, label: name }))
+    ]
+  }, [processSteps])
+
+  // --- VISIBILITY & ROLES MAP ---
+  const userRolesMap = useMemo(() => {
+    if (!user) return {}
+    const map = {}
+    processInstanceRoles.forEach(r => {
+      if (r.user_id === user.id) {
+        if (!map[r.instance_id]) map[r.instance_id] = []
+        map[r.instance_id].push(r.role.toLowerCase())
+      }
+    })
+    return map
+  }, [processInstanceRoles, user])
+
+  const visibleInstances = useMemo(() => {
+    if (isAdmin) return processInstances
+    return processInstances.filter(inst => {
+      const roles = userRolesMap[inst.id] || []
+      return roles.length > 0
+    })
+  }, [processInstances, isAdmin, userRolesMap])
+
+  // Opções de Instâncias Ativas (Processos) para o Filtro
+  const processOptions = useMemo(() => {
+    return [
+      { value: 'all', label: 'Todos os Processos' },
+      ...visibleInstances.map(inst => {
+        const template = availableProcesses.find(p => p.id === inst.process_id)
+        const name = template ? template.name : 'Processo Desconhecido'
+        const label = `BRA-2026-${String(inst.id).padStart(3, '0')} - ${name}`
+        return { value: String(inst.id), label }
+      })
+    ]
+  }, [visibleInstances, availableProcesses])
+
+  // --- PROCESS KANBAN CALCULATION ---
+  const kanbanProcesses = useMemo(() => {
+    if (!visibleInstances.length) return []
+    return visibleInstances.map(instance => {
+      const processTemplate = availableProcesses.find(p => p.id === instance.process_id)
+      const processName = processTemplate ? processTemplate.name : 'Processo Desconhecido'
+
+      const steps = processSteps
+        .filter(s => s.process_id === instance.process_id)
+        .sort((a, b) => a.sequence - b.sequence)
+
+      const instSteps = processInstanceSteps.filter(is => is.process_instance_id === instance.id)
+
+      const activeStep = steps.find(s => {
+        const instS = instSteps.find(is => is.step_id === s.id)
+        return !instS || !instS.is_completed
+      })
+
+      const isCompleted = steps.length > 0 && steps.every(s => {
+        const instS = instSteps.find(is => is.step_id === s.id)
+        return instS && instS.is_completed
+      })
+
+      const activeStepInstance = activeStep ? instSteps.find(is => is.step_id === activeStep.id) : null
+
+      const pendingTasks = activeStepInstance
+        ? processInstanceTasks.filter(pit => pit.process_instance_step_id === activeStepInstance.id && !pit.is_completed)
+        : []
+
+      const responsibleRoles = Array.from(new Set(
+        pendingTasks.map(pit => {
+          const taskDef = taskDefinitions.find(t => t.id === pit.task_id)
+          if (!taskDef) return null
+
+          if (pit.status === 'pending_review' || pit.status === 'analyzing_ai') {
+            return pit.current_reviewer_role || (taskDef.required_reviewers && taskDef.required_reviewers[0]) || 'Revisor'
+          }
+          return taskDef.role
+        }).filter(Boolean)
+      ))
+
+      const instanceLogs = allAuditLogs
+        .filter(log => log.process_instance_id === instance.id)
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+
+      const lastLog = instanceLogs[0]
+      const lastActivityTimestamp = lastLog ? lastLog.timestamp : instance.createdAt
+      const lastAction = lastLog ? lastLog.action : 'Método Criado'
+      const lastDescription = lastLog ? lastLog.description : 'Instância do método de validação criada.'
+
+      const daysSinceLastActivity = Math.floor(
+        (new Date() - new Date(lastActivityTimestamp)) / (1000 * 60 * 60 * 24)
+      )
+
+      const instanceTasks = processInstanceTasks.filter(pit => pit.process_instance_id === instance.id)
+      const completedTasksCount = instanceTasks.filter(t => t.is_completed).length
+
+      let column = 'in_progress'
+      if (isCompleted) {
+        column = 'completed'
+      } else if (completedTasksCount === 0) {
+        column = 'not_started'
+      } else if (daysSinceLastActivity > inactivityDays) {
+        column = 'delayed'
       }
 
-      // 1. Filtro: Minhas Tarefas (Actor)
-      if (actorFilter) {
-        if (!task.isMyTask) return false
-      }
+      // Verifica se o usuário logado possui ação/responsabilidade na etapa corrente
+      const userRolesForInstance = userRolesMap[instance.id] || []
+      const requiresMyAction = responsibleRoles.some(role => userRolesForInstance.includes(role.toLowerCase()))
 
-      // 2. Filtro: Status
-      if (statusFilter !== 'all') {
-        if (statusFilter === 'completed') {
-          if (task.kanbanColumn !== 'completed') return false
-        } else if (statusFilter === 'pending_review') {
-          if (task.kanbanColumn !== 'review') return false
-        } else if (statusFilter === 'pending') {
-          if (task.kanbanColumn !== 'todo' && task.kanbanColumn !== 'blocked') return false
-        }
+      return {
+        ...instance,
+        processName,
+        activeStepName: isCompleted ? 'Concluído' : (activeStep ? activeStep.name : 'Nenhuma'),
+        activeStepSequence: activeStep ? activeStep.sequence : 4,
+        responsibleRoles,
+        lastActivityTimestamp,
+        lastAction,
+        lastDescription,
+        daysSinceLastActivity,
+        column,
+        requiresMyAction,
+        formattedId: `BRA-2026-${String(instance.id).padStart(3, '0')}`
       }
+    })
+  }, [visibleInstances, availableProcesses, processSteps, processInstanceSteps, processInstanceTasks, taskDefinitions, allAuditLogs, inactivityDays, userRolesMap])
 
-      // 3. Filtro: Tipo
-      if (typeFilter !== 'all') {
-        if (typeFilter === 'form' && task.type !== 'form') return false
-        if (typeFilter === 'assignment' && task.type !== 'assignment') return false
-        if (typeFilter === 'approval' && (task.type !== 'approval' && task.type !== 'review')) return false
-        if (typeFilter === 'sample_definition' && task.type !== 'sample_definition') return false
-        if (typeFilter === 'data_template_definition' && task.type !== 'data_template_definition') return false
-        if (typeFilter === 'review_decision' && task.type !== 'review_decision') return false
+  // --- FILTERED KANBAN PROCESSES ---
+  const filteredProcesses = useMemo(() => {
+    return kanbanProcesses.filter(p => {
+      // 1. Filtro de Instância de Processo (Método)
+      if (processFilter !== 'all' && p.id !== Number(processFilter)) {
+        return false
       }
-
+      // 2. Filtro de Etapa
+      if (stepFilter !== 'all' && p.activeStepName !== stepFilter) {
+        return false
+      }
+      // 3. Filtro de Estado/Coluna
+      if (stateFilter !== 'all' && p.column !== stateFilter) {
+        return false
+      }
+      // 4. Filtro de Minhas Pendências
+      if (onlyMyPending && !p.requiresMyAction) {
+        return false
+      }
       return true
     })
-  }, [tasks, actorFilter, statusFilter, typeFilter, stepFilter])
+  }, [kanbanProcesses, processFilter, stepFilter, stateFilter, onlyMyPending])
 
-  // Columns classification
-  const todoTasks = filteredTasks.filter(t => t.kanbanColumn === 'todo')
-  const reviewTasks = filteredTasks.filter(t => t.kanbanColumn === 'review')
-  const blockedTasks = filteredTasks.filter(t => t.kanbanColumn === 'blocked')
-  const completedTasks = filteredTasks.filter(t => t.kanbanColumn === 'completed')
+  // Divisão em Colunas
+  const colNotStarted = filteredProcesses.filter(p => p.column === 'not_started')
+  const colInProgress = filteredProcesses.filter(p => p.column === 'in_progress')
+  const colDelayed = filteredProcesses.filter(p => p.column === 'delayed')
+  const colCompleted = filteredProcesses.filter(p => p.column === 'completed')
 
-  const handleCardClick = (task) => {
-    navigate(`/workspace/method/${task.instanceId}?stepId=${task.stepId}&taskId=${task.id}`)
-  }
+  // --- STATS / METRICS ---
+  const activeCount = kanbanProcesses.filter(p => p.column !== 'completed').length
+  const completedCount = kanbanProcesses.filter(p => p.column === 'completed').length
+  const myPendingCount = kanbanProcesses.filter(p => p.requiresMyAction && p.column !== 'completed').length
+  const delayedCount = kanbanProcesses.filter(p => p.column === 'delayed').length
 
-  const renderTaskCard = (t) => {
-    const typeConf = taskTypeTags[t.type] || { color: 'default', label: t.type }
-    const statusConf = statusTags[t.status] || { color: 'default', label: t.status }
+  // --- CARD & COLUMN RENDERERS ---
+  const renderKanbanCard = (p) => {
+    const isDelayed = p.column === 'delayed'
+    const daysText = p.daysSinceLastActivity === 0 ? 'Hoje' : (p.daysSinceLastActivity === 1 ? 'Ontem' : `Há ${p.daysSinceLastActivity} dias`)
 
     return (
       <Card
-        key={t.id}
+        key={p.id}
         hoverable
-        onClick={() => handleCardClick(t)}
+        onClick={() => navigate(`/workspace/method/${p.id}`)}
         style={{
-          borderRadius: '10px',
-          border: '1px solid #f0f0f0',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.015)',
+          borderRadius: '12px',
+          border: isDelayed ? '1.5px solid #ffccc7' : '1px solid #e8e8e8',
+          boxShadow: isDelayed ? '0 6px 16px rgba(255, 77, 79, 0.06)' : '0 4px 12px rgba(0,0,0,0.01)',
           marginBottom: '12px',
           transition: 'all 0.2s ease',
           backgroundColor: '#fff'
@@ -116,192 +262,260 @@ export function TasksPage() {
       >
         <Flex vertical gap={10}>
           <Flex justify="space-between" align="center">
-            <Tag color={typeConf.color} style={{ borderRadius: '4px', fontWeight: '500', fontSize: '11px' }}>
-              {typeConf.label.toUpperCase()}
+            <Tag color="blue" style={{ borderRadius: '4px', fontWeight: '600', fontSize: '11px', margin: 0 }}>
+              {p.formattedId}
             </Tag>
-            {t.kanbanColumn !== 'blocked' && t.kanbanColumn !== 'completed' && (
-              <Tag color={statusConf.color} style={{ borderRadius: '4px', fontSize: '10px' }}>
-                {statusConf.label.toUpperCase()}
+            {p.requiresMyAction && (
+              <Tag color="red" style={{ borderRadius: '4px', fontWeight: '700', fontSize: '10px', margin: 0 }}>
+                MINHA AÇÃO
               </Tag>
             )}
-            {t.kanbanColumn === 'blocked' && (
-              <Tag color="error" icon={<LockOutlined />} style={{ borderRadius: '4px', fontSize: '10px' }}>
-                BLOQUEADA
-              </Tag>
-            )}
-            {t.kanbanColumn === 'completed' && (
-              <Tag color="success" icon={<CheckCircleOutlined />} style={{ borderRadius: '4px', fontSize: '10px' }}>
-                CONCLUÍDA
+            {isDelayed && !p.requiresMyAction && (
+              <Tag color="orange" style={{ borderRadius: '4px', fontWeight: '600', fontSize: '10px', margin: 0 }}>
+                SEM ATIVIDADE
               </Tag>
             )}
           </Flex>
 
-          <Title level={5} style={{ margin: 0, fontSize: '15px', color: '#262626', fontFamily: 'Barlow, sans-serif', fontWeight: '600' }}>
-            {t.name}
+          <Title level={5} style={{ margin: 0, fontSize: '14px', color: '#262626', fontFamily: 'Barlow, sans-serif', fontWeight: '700', lineHeight: '1.3' }}>
+            {p.processName}
           </Title>
 
-          <Flex vertical gap={4} style={{ backgroundColor: '#fafafa', padding: '10px', borderRadius: '6px', border: '1px solid #f5f5f5' }}>
+          <Flex vertical gap={4} style={{ backgroundColor: '#fafafa', padding: '10px', borderRadius: '6px', border: '1px solid #f0f0f0' }}>
             <Flex justify="space-between">
-              <Text type="secondary" style={{ fontSize: '12px' }}>Método:</Text>
-              <Text strong style={{ fontSize: '12px', color: '#1677ff' }}>{t.formattedInstanceId}</Text>
+              <Text type="secondary" style={{ fontSize: '12px' }}>Etapa Atual:</Text>
+              <Text strong style={{ fontSize: '12px', color: '#434343' }}>{p.activeStepName}</Text>
             </Flex>
             <Flex justify="space-between">
-              <Text type="secondary" style={{ fontSize: '12px' }}>Etapa:</Text>
-              <Text style={{ fontSize: '12px', color: '#595959', fontWeight: '500' }}>{t.stepName}</Text>
+              <Text type="secondary" style={{ fontSize: '12px' }}>Ação Pendente:</Text>
+              <Text style={{ fontSize: '12px', color: '#1677ff', fontWeight: '600' }}>
+                {p.responsibleRoles.length > 0 ? p.responsibleRoles.join(', ') : 'Ninguém (Concluído)'}
+              </Text>
             </Flex>
-            <Flex justify="space-between">
-              <Text type="secondary" style={{ fontSize: '12px' }}>Responsável:</Text>
-              <Text style={{ fontSize: '12px', color: '#8c8c8c' }}>{t.role}</Text>
+          </Flex>
+
+          <Divider style={{ margin: '8px 0' }} />
+
+          <Flex vertical gap={2}>
+            <Flex align="center" gap={4}>
+              <CalendarOutlined style={{ color: '#8c8c8c', fontSize: '12px' }} />
+              <Text type="secondary" style={{ fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+                Última Ação ({daysText}):
+              </Text>
             </Flex>
+            <Text style={{ fontSize: '12px', color: '#7f7f7f', fontStyle: 'italic' }} ellipsis={{ tooltip: p.lastDescription }}>
+              <strong>{p.lastAction}</strong>: {p.lastDescription}
+            </Text>
           </Flex>
         </Flex>
       </Card>
     )
   }
 
-  const renderColumn = (title, icon, list, bgColor, badgeColor) => {
+  const renderKanbanColumn = (title, icon, list, colKey, bgColor, borderCol, accentColor) => {
+    const isCollapsed = list.length === 0
+
+    if (isCollapsed) {
+      return (
+        <Col key={colKey} style={{ transition: 'all 0.3s ease', width: '60px', flex: '0 0 60px' }}>
+          <div style={{
+            backgroundColor: '#fafafa',
+            border: '1px dashed #d9d9d9',
+            borderRadius: '12px',
+            padding: '20px 8px',
+            height: '100%',
+            minHeight: '450px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            gap: '12px'
+          }}>
+            <Badge count={0} showZero style={{ backgroundColor: '#bfbfbf' }} />
+            <div style={{
+              writingMode: 'vertical-rl',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              fontWeight: '700',
+              fontSize: '11px',
+              color: '#8c8c8c',
+              fontFamily: 'Barlow, sans-serif',
+              transform: 'rotate(180deg)',
+              whiteSpace: 'nowrap'
+            }}>
+              {title}
+            </div>
+          </div>
+        </Col>
+      )
+    }
+
     return (
-      <Col xs={24} sm={12} lg={6}>
+      <Col key={colKey} style={{ flex: 1, minWidth: '260px', transition: 'all 0.3s ease' }}>
         <div style={{
           backgroundColor: bgColor,
-          padding: '16px 12px',
+          border: `1px solid ${borderCol}`,
           borderRadius: '12px',
-          minHeight: '500px',
+          padding: '16px 12px',
           height: '100%',
-          border: '1px solid #f0f0f0'
+          minHeight: '450px',
+          display: 'flex',
+          flexDirection: 'column'
         }}>
           <Flex align="center" justify="space-between" style={{ marginBottom: '16px', padding: '0 4px' }}>
             <Space size={8}>
               {icon}
-              <Text strong style={{ fontSize: '14px', fontFamily: 'Barlow, sans-serif', color: '#434343', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+              <Text strong style={{
+                fontSize: '13px',
+                fontFamily: 'Barlow, sans-serif',
+                color: '#434343',
+                textTransform: 'uppercase',
+                letterSpacing: '0.03em'
+              }}>
                 {title}
               </Text>
             </Space>
-            <Badge count={list.length} showZero style={{ backgroundColor: badgeColor }} />
+            <Badge count={list.length} style={{ backgroundColor: accentColor }} />
           </Flex>
 
-          <div style={{ maxHeight: 'calc(100vh - 220px)', overflowY: 'auto', paddingRight: '4px' }}>
-            {list.length === 0 ? (
-              <Flex vertical align="center" justify="center" style={{ minHeight: '180px', border: '2.5px dashed #e8e8e8', borderRadius: '8px', padding: '16px' }}>
-                <Text type="secondary" style={{ fontSize: '12px', textAlign: 'center' }}>Nenhuma tarefa nesta coluna</Text>
-              </Flex>
-            ) : (
-              list.map(t => renderTaskCard(t))
-            )}
+          <div style={{ flex: 1, overflowY: 'auto', maxHeight: 'calc(100vh - 350px)', paddingRight: '4px' }}>
+            {list.map(p => renderKanbanCard(p))}
           </div>
         </div>
       </Col>
     )
   }
 
+  // --- LOADING STATE ---
+  const isLoading = isLoadingAvailable || isLoadingInstances || isLoadingInstanceSteps || isLoadingInstanceTasks || isLoadingSteps || isLoadingLogs
+
   return (
     <div style={{ padding: '24px' }}>
+      {/* Top Header */}
       <Flex justify="space-between" align="center" style={{ marginBottom: '24px' }}>
         <div>
-          <Title level={2} style={{ margin: 0 }}>Kanban</Title>
-          <Text type="secondary">Quadro Kanban de acompanhamento de pendências do estudo</Text>
+          <Title level={2} style={{ margin: 0, fontFamily: 'Lexend, sans-serif' }}>Kanban</Title>
+          <Text type="secondary">Visualização integrada dos métodos em validação no estudo</Text>
         </div>
-        <Button type="default" onClick={() => navigate('/workspace')} style={{ borderRadius: '8px' }}>
+        <Button type="default" onClick={() => navigate('/workspace')} style={{ borderRadius: '8px', fontFamily: 'Lexend, sans-serif' }}>
           Ir para Meus Métodos
         </Button>
       </Flex>
 
       {isLoading ? (
         <Card loading style={{ borderRadius: '12px' }} />
-      ) : tasks.length === 0 ? (
-        <Card style={{ borderRadius: '12px', padding: '48px 0', border: '1.5px solid #f0f0f0' }}>
-          <Empty
-            description={
-              <Flex vertical gap={4} align="center">
-                <Text strong style={{ fontSize: '16px' }}>Nenhuma tarefa pendente encontrada.</Text>
-                <Text type="secondary">Você está em dia com todas as suas atribuições e responsabilidades!</Text>
-              </Flex>
-            }
-          >
-            <Button type="primary" onClick={() => navigate('/workspace')} style={{ borderRadius: '8px' }}>
-              Visualizar Meus Métodos
-            </Button>
-          </Empty>
-        </Card>
       ) : (
         <>
-          {/* Barra de Filtros (semelhante ao carrossel) */}
+          {/* Indicadores Consolidados */}
+          <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+            <Col xs={12} sm={6}>
+              <Card style={{ borderRadius: '12px', border: '1px solid #e6f7ff', background: 'linear-gradient(135deg, #e6f7ff 0%, #ffffff 100%)', boxShadow: '0 4px 12px rgba(24, 144, 255, 0.03)' }} bodyStyle={{ padding: '16px' }}>
+                <Statistic
+                  title={<span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Processos Ativos</span>}
+                  value={activeCount}
+                  valueStyle={{ color: '#1890ff', fontWeight: '800', fontFamily: 'Lexend, sans-serif' }}
+                  prefix={<ProjectOutlined />}
+                />
+              </Card>
+            </Col>
+            <Col xs={12} sm={6}>
+              <Card style={{ borderRadius: '12px', border: '1px solid #f6ffed', background: 'linear-gradient(135deg, #f6ffed 0%, #ffffff 100%)', boxShadow: '0 4px 12px rgba(82, 196, 26, 0.03)' }} bodyStyle={{ padding: '16px' }}>
+                <Statistic
+                  title={<span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Processos Concluídos</span>}
+                  value={completedCount}
+                  valueStyle={{ color: '#52c41a', fontWeight: '800', fontFamily: 'Lexend, sans-serif' }}
+                  prefix={<CheckCircleOutlined />}
+                />
+              </Card>
+            </Col>
+            <Col xs={12} sm={6}>
+              <Card style={{ borderRadius: '12px', border: '1px solid #fff1f0', background: 'linear-gradient(135deg, #fff1f0 0%, #ffffff 100%)', boxShadow: '0 4px 12px rgba(255, 77, 79, 0.03)' }} bodyStyle={{ padding: '16px' }}>
+                <Statistic
+                  title={<span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Minhas Pendências</span>}
+                  value={myPendingCount}
+                  valueStyle={{ color: '#ff4d4f', fontWeight: '800', fontFamily: 'Lexend, sans-serif' }}
+                  prefix={<AlertOutlined />}
+                />
+              </Card>
+            </Col>
+            <Col xs={12} sm={6}>
+              <Card style={{ borderRadius: '12px', border: '1px solid #fffbe6', background: 'linear-gradient(135deg, #fffbe6 0%, #ffffff 100%)', boxShadow: '0 4px 12px rgba(250, 140, 22, 0.03)' }} bodyStyle={{ padding: '16px' }}>
+                <Statistic
+                  title={<span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Sem Movimento ({inactivityDays}d+)</span>}
+                  value={delayedCount}
+                  valueStyle={{ color: '#fa8c16', fontWeight: '800', fontFamily: 'Lexend, sans-serif' }}
+                  prefix={<ClockCircleOutlined />}
+                />
+              </Card>
+            </Col>
+          </Row>
+
+          {/* Filtros */}
           <Card
             style={{
               borderRadius: '16px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
               border: '1px solid #f0f0f0',
               marginBottom: '24px',
-              background: 'linear-gradient(135deg, #ffffff 0%, #fafafa 100%)'
+              background: '#fafafa'
             }}
             bodyStyle={{ padding: '16px 24px' }}
           >
-            <Row gutter={[16, 16]} align="middle" justify="space-between" style={{ width: '100%' }}>
-              <Col xs={24} lg={20}>
+            <Row gutter={[24, 16]} align="middle" justify="space-between">
+              <Col xs={24} xl={20}>
                 <Flex gap={16} wrap="wrap" align="center">
-                  <Radio.Group
-                    value={actorFilter ? 'my' : 'all'}
-                    onChange={(e) => setActorFilter(e.target.value === 'my')}
-                    size="middle"
-                  >
-                    <Radio.Button value="all" style={{ borderRadius: '8px 0 0 8px', fontFamily: 'Lexend, sans-serif' }}>
-                      Todas as Tarefas
-                    </Radio.Button>
-                    <Radio.Button value="my" style={{ borderRadius: '0 8px 8px 0', fontFamily: 'Lexend, sans-serif' }}>
-                      Minhas Tarefas
-                    </Radio.Button>
-                  </Radio.Group>
+                  <Flex align="center" gap={8}>
+                    <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px', fontWeight: '500' }}>Processo:</span>
+                    <Select
+                      value={processFilter}
+                      onChange={setProcessFilter}
+                      style={{ width: 180, fontFamily: 'Lexend, sans-serif' }}
+                      options={processOptions}
+                    />
+                  </Flex>
 
                   <Divider type="vertical" style={{ height: '24px', margin: 0 }} />
 
                   <Flex align="center" gap={8}>
-                    <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Etapas:</span>
+                    <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px', fontWeight: '500' }}>Etapa Atual:</span>
                     <Select
                       value={stepFilter}
                       onChange={setStepFilter}
                       style={{ width: 180, fontFamily: 'Lexend, sans-serif' }}
+                      options={stepOptions}
+                    />
+                  </Flex>
+
+                  <Divider type="vertical" style={{ height: '24px', margin: 0 }} />
+
+                  <Flex align="center" gap={8}>
+                    <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px', fontWeight: '500' }}>Inatividade (Atraso):</span>
+                    <Select
+                      value={inactivityDays}
+                      onChange={setInactivityDays}
+                      style={{ width: 130, fontFamily: 'Lexend, sans-serif' }}
                       options={[
-                        { value: 'current', label: 'Etapa Ativa' },
-                        { value: 'all', label: 'Todas as Etapas' }
+                        { value: 3, label: '3 dias' },
+                        { value: 5, label: '5 dias' },
+                        { value: 7, label: '7 dias (Padrão)' },
+                        { value: 10, label: '10 dias' },
+                        { value: 15, label: '15 dias' }
                       ]}
                     />
                   </Flex>
 
-                  <Flex align="center" gap={8}>
-                    <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Status:</span>
-                    <Select
-                      value={statusFilter}
-                      onChange={setStatusFilter}
-                      style={{ width: 180, fontFamily: 'Lexend, sans-serif' }}
-                      options={[
-                        { value: 'all', label: 'Todos' },
-                        { value: 'pending', label: 'Pendente' },
-                        { value: 'pending_review', label: 'Em Revisão' },
-                        { value: 'completed', label: 'Concluída' }
-                      ]}
-                    />
-                  </Flex>
+                  <Divider type="vertical" style={{ height: '24px', margin: 0 }} />
 
-                  <Flex align="center" gap={8}>
-                    <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Tipo:</span>
-                    <Select
-                      value={typeFilter}
-                      onChange={setTypeFilter}
-                      style={{ width: 180, fontFamily: 'Lexend, sans-serif' }}
-                      options={[
-                        { value: 'all', label: 'Todos os Tipos' },
-                        { value: 'form', label: 'Formulário' },
-                        { value: 'assignment', label: 'Atribuição' },
-                        { value: 'approval', label: 'Aprovação' },
-                        { value: 'sample_definition', label: 'Amostras' },
-                        { value: 'data_template_definition', label: 'Templates de Coleta' },
-                        { value: 'review_decision', label: 'Revisão e Decisão' }
-                      ]}
+                  <Flex align="center" gap={12}>
+                    <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px', fontWeight: '500' }}>Minhas Pendências:</span>
+                    <Switch
+                      checked={onlyMyPending}
+                      onChange={setOnlyMyPending}
                     />
                   </Flex>
                 </Flex>
               </Col>
-              <Col xs={24} lg={4} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Col xs={24} xl={4} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                 {hasActiveFilters && (
                   <Button
                     type="link"
@@ -315,23 +529,21 @@ export function TasksPage() {
             </Row>
           </Card>
 
-          {filteredTasks.length === 0 ? (
+          {/* Quadro Kanban */}
+          {filteredProcesses.length === 0 ? (
             <Card style={{ borderRadius: '12px', padding: '48px 0', border: '1.5px solid #f0f0f0' }}>
-              <Empty
-                description="Nenhuma tarefa corresponde aos filtros selecionados."
-                style={{ padding: '32px 0' }}
-              >
+              <Empty description="Nenhum método ou processo corresponde aos filtros ativos." style={{ padding: '32px 0' }}>
                 <Button type="primary" onClick={handleResetFilters} style={{ fontFamily: 'Lexend, sans-serif', borderRadius: '8px' }}>
                   Limpar Filtros
                 </Button>
               </Empty>
             </Card>
           ) : (
-            <Row gutter={[16, 16]}>
-              {renderColumn('A Fazer', <ClockCircleOutlined style={{ color: '#fa8c16' }} />, todoTasks, '#fffbe6', '#fa8c16')}
-              {renderColumn('Em Revisão', <SlidersOutlined style={{ color: '#1890ff' }} />, reviewTasks, '#e6f7ff', '#1890ff')}
-              {renderColumn('Bloqueadas', <LockOutlined style={{ color: '#ff4d4f' }} />, blockedTasks, '#fff1f0', '#f5222d')}
-              {renderColumn('Concluídas', <CheckCircleOutlined style={{ color: '#52c41a' }} />, completedTasks, '#f6ffed', '#52c41a')}
+            <Row gutter={[12, 12]} style={{ display: 'flex', flexFlow: 'row nowrap', overflowX: 'auto', paddingBottom: '8px' }}>
+              {renderKanbanColumn('Não Iniciado', <InfoCircleOutlined style={{ color: '#8c8c8c' }} />, colNotStarted, 'not_started', '#ffffff', '#e8e8e8', '#8c8c8c')}
+              {renderKanbanColumn('Em Andamento', <SlidersOutlined style={{ color: '#1890ff' }} />, colInProgress, 'in_progress', '#e6f7ff', '#bae7ff', '#1890ff')}
+              {renderKanbanColumn('Em Atraso', <ClockCircleOutlined style={{ color: '#fa8c16' }} />, colDelayed, 'delayed', '#fffbe6', '#ffe58f', '#fa8c16')}
+              {renderKanbanColumn('Concluído', <CheckCircleOutlined style={{ color: '#52c41a' }} />, colCompleted, 'completed', '#f6ffed', '#b7eb8f', '#52c41a')}
             </Row>
           )}
         </>
@@ -339,4 +551,3 @@ export function TasksPage() {
     </div>
   )
 }
-

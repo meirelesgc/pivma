@@ -1,9 +1,8 @@
-import { Typography, Card, Flex, Button, Tag, Progress } from 'antd'
-import { ArrowLeftOutlined } from '@ant-design/icons'
+import { Typography, Card, Flex, Tag, Progress } from 'antd'
 
 const { Title, Text } = Typography
 
-export function ProcessInstanceHeader({ instance, overallProgress, onBack }) {
+export function ProcessInstanceHeader({ instance, overallProgress, _onBack }) {
   if (!instance) return null
 
   return (

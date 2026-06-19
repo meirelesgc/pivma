@@ -1,8 +1,6 @@
 import { useState, useMemo } from 'react'
 import {
   Typography,
-  Row,
-  Col,
   Card,
   Tag,
   Button,
@@ -314,7 +312,7 @@ export function TasksPage() {
 
     if (isCollapsed) {
       return (
-        <Col key={colKey} style={{ transition: 'all 0.3s ease', width: '60px', flex: '0 0 60px' }}>
+        <div key={colKey} style={{ transition: 'all 0.3s ease', width: '60px', flex: '0 0 60px' }}>
           <div style={{
             backgroundColor: '#fafafa',
             border: '1px dashed #d9d9d9',
@@ -343,12 +341,12 @@ export function TasksPage() {
               {title}
             </div>
           </div>
-        </Col>
+        </div>
       )
     }
 
     return (
-      <Col key={colKey} style={{ flex: 1, minWidth: '260px', transition: 'all 0.3s ease' }}>
+      <div key={colKey} style={{ flex: 1, minWidth: '260px', transition: 'all 0.3s ease' }}>
         <div style={{
           backgroundColor: bgColor,
           border: `1px solid ${borderCol}`,
@@ -379,7 +377,7 @@ export function TasksPage() {
             {list.map(p => renderKanbanCard(p))}
           </div>
         </div>
-      </Col>
+      </div>
     )
   }
 
@@ -406,72 +404,69 @@ export function TasksPage() {
             }}
             bodyStyle={{ padding: '16px 24px' }}
           >
-            <Row gutter={[24, 16]} align="middle" justify="space-between">
-              <Col xs={24} xl={20}>
-                <Flex gap={16} wrap="wrap" align="center">
-                  <Flex align="center" gap={8}>
-                    <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px', fontWeight: '500' }}>Processo:</span>
-                    <Select
-                      value={processFilter}
-                      onChange={setProcessFilter}
-                      style={{ width: 180, fontFamily: 'Lexend, sans-serif' }}
-                      options={processOptions}
-                    />
-                  </Flex>
-
-                  <Divider type="vertical" style={{ height: '24px', margin: 0 }} />
-
-                  <Flex align="center" gap={8}>
-                    <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px', fontWeight: '500' }}>Etapa Atual:</span>
-                    <Select
-                      value={stepFilter}
-                      onChange={setStepFilter}
-                      style={{ width: 180, fontFamily: 'Lexend, sans-serif' }}
-                      options={stepOptions}
-                    />
-                  </Flex>
-
-                  <Divider type="vertical" style={{ height: '24px', margin: 0 }} />
-
-                  <Flex align="center" gap={8}>
-                    <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px', fontWeight: '500' }}>Inatividade (Atraso):</span>
-                    <Select
-                      value={inactivityDays}
-                      onChange={setInactivityDays}
-                      style={{ width: 130, fontFamily: 'Lexend, sans-serif' }}
-                      options={[
-                        { value: 3, label: '3 dias' },
-                        { value: 5, label: '5 dias' },
-                        { value: 7, label: '7 dias (Padrão)' },
-                        { value: 10, label: '10 dias' },
-                        { value: 15, label: '15 dias' }
-                      ]}
-                    />
-                  </Flex>
-
-                  <Divider type="vertical" style={{ height: '24px', margin: 0 }} />
-
-                  <Flex align="center" gap={12}>
-                    <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px', fontWeight: '500' }}>Minhas Pendências:</span>
-                    <Switch
-                      checked={onlyMyPending}
-                      onChange={setOnlyMyPending}
-                    />
-                  </Flex>
+            <Flex wrap="wrap" justify="space-between" align="center" gap={16}>
+              <Flex gap={8} wrap="wrap" align="center">
+                <Flex align="center" gap={4}>
+                  <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px', fontWeight: '500' }}>Processo:</span>
+                  <Select
+                    value={processFilter}
+                    onChange={setProcessFilter}
+                    style={{ width: 160, fontFamily: 'Lexend, sans-serif' }}
+                    options={processOptions}
+                  />
                 </Flex>
-              </Col>
-              <Col xs={24} xl={4} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                {hasActiveFilters && (
-                  <Button
-                    type="link"
-                    onClick={handleResetFilters}
-                    style={{ fontFamily: 'Lexend, sans-serif', color: '#ff4d4f', padding: 0 }}
-                  >
-                    Limpar Filtros
-                  </Button>
-                )}
-              </Col>
-            </Row>
+
+                <Divider type="vertical" style={{ height: '24px', margin: 0 }} />
+
+                <Flex align="center" gap={4}>
+                  <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px', fontWeight: '500' }}>Etapa Atual:</span>
+                  <Select
+                    value={stepFilter}
+                    onChange={setStepFilter}
+                    style={{ width: 160, fontFamily: 'Lexend, sans-serif' }}
+                    options={stepOptions}
+                  />
+                </Flex>
+
+                <Divider type="vertical" style={{ height: '24px', margin: 0 }} />
+
+                <Flex align="center" gap={4}>
+                  <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px', fontWeight: '500' }}>Inatividade:</span>
+                  <Select
+                    value={inactivityDays}
+                    onChange={setInactivityDays}
+                    style={{ width: 100, fontFamily: 'Lexend, sans-serif' }}
+                    options={[
+                      { value: 3, label: '3 dias' },
+                      { value: 5, label: '5 dias' },
+                      { value: 7, label: '7 dias' },
+                      { value: 10, label: '10 dias' },
+                      { value: 15, label: '15 dias' }
+                    ]}
+                  />
+                </Flex>
+
+                <Divider type="vertical" style={{ height: '24px', margin: 0 }} />
+
+                <Flex align="center" gap={8}>
+                  <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px', fontWeight: '500' }}>Minhas Pendências:</span>
+                  <Switch
+                    checked={onlyMyPending}
+                    onChange={setOnlyMyPending}
+                  />
+                </Flex>
+              </Flex>
+
+              {hasActiveFilters && (
+                <Button
+                  type="link"
+                  onClick={handleResetFilters}
+                  style={{ fontFamily: 'Lexend, sans-serif', color: '#ff4d4f', padding: 0 }}
+                >
+                  Limpar Filtros
+                </Button>
+              )}
+            </Flex>
           </Card>
 
           {filteredProcesses.length === 0 ? (
@@ -483,12 +478,12 @@ export function TasksPage() {
               </Empty>
             </Card>
           ) : (
-            <Row gutter={[12, 12]} style={{ display: 'flex', flexFlow: 'row nowrap', overflowX: 'auto', paddingBottom: '8px' }}>
+            <Flex gap={12} style={{ flexFlow: 'row nowrap', overflowX: 'auto', paddingBottom: '8px' }}>
               {renderKanbanColumn('Não Iniciado', <InfoCircleOutlined style={{ color: '#8c8c8c' }} />, colNotStarted, 'not_started', '#ffffff', '#e8e8e8', '#8c8c8c')}
               {renderKanbanColumn('Em Andamento', <SlidersOutlined style={{ color: '#1890ff' }} />, colInProgress, 'in_progress', '#e6f7ff', '#bae7ff', '#1890ff')}
               {renderKanbanColumn('Em Atraso', <ClockCircleOutlined style={{ color: '#fa8c16' }} />, colDelayed, 'delayed', '#fffbe6', '#ffe58f', '#fa8c16')}
               {renderKanbanColumn('Concluído', <CheckCircleOutlined style={{ color: '#52c41a' }} />, colCompleted, 'completed', '#f6ffed', '#b7eb8f', '#52c41a')}
-            </Row>
+            </Flex>
           )}
         </>
       )}

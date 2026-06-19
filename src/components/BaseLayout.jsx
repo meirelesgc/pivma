@@ -22,9 +22,9 @@ export function BaseLayout() {
     } else if (path.startsWith('/workspace/method/')) {
       const match = path.match(/\/workspace\/method\/(\d+)/)
       const id = match ? match[1] : ''
-      
+
       items.push({ title: <Link to="/workspace">Meus métodos</Link> })
-      
+
       if (path.endsWith('/audit-log')) {
         items.push({ title: <Link to={`/workspace/method/${id}`}>Método (BRA-2026-{id})</Link> })
         items.push({ title: 'Auditoria' })
@@ -33,9 +33,6 @@ export function BaseLayout() {
       }
     } else if (path === '/tasks') {
       items.push({ title: 'Kanban' })
-    } else if (path === '/workspace/configure-processes') {
-      items.push({ title: <Link to="/workspace">Meus métodos</Link> })
-      items.push({ title: 'Configurar processos' })
     }
 
     return items
@@ -46,11 +43,11 @@ export function BaseLayout() {
       <Header />
       <Layout style={{ overflow: 'hidden' }}>
         {user && <Sidebar collapsed={collapsed} />}
-        <Content style={{ 
-          display: 'flex', 
-          flexDirection: 'column', 
-          height: '100%', 
-          overflow: 'hidden' 
+        <Content style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          overflow: 'hidden'
         }}>
           {user && (
             <div style={{
@@ -58,7 +55,7 @@ export function BaseLayout() {
               alignItems: 'center',
               padding: '12px 24px',
               borderBottom: '1px solid #d9d9d9',
-              backgroundColor: '#fff',
+              backgroundColor: '#efefef',
             }}>
               <Button
                 type="text"
@@ -73,7 +70,7 @@ export function BaseLayout() {
                   justifyContent: 'center',
                 }}
               />
-              <Divider type="vertical" style={{ height: '20px', margin: '0 12px' }} />
+              <Divider type="vertical" style={{ height: '20px', margin: '0 12px', borderColor: '#d9d9d9' }} />
               <Breadcrumb items={getBreadcrumbs()} />
             </div>
           )}

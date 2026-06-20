@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { Card, Typography, Table, Tag, Input, Radio, Button, Space, Flex, Alert, Divider, Descriptions, Tooltip } from 'antd'
+import { Card, Typography, Table, Tag, Input, Radio, Button, Space, Flex, Alert, Divider, Descriptions, Tooltip, Row, Col } from 'antd'
 import { FilePdfOutlined, CheckCircleOutlined, InfoCircleOutlined, SafetyCertificateOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
 import { useAuth } from '../../../hooks/useAuth'
 import { useProcesses, useAdhocOpinions, useSampleDefinitions, useDataTemplates } from '../../../hooks/useProcesses'
@@ -10,7 +10,7 @@ export function AdhocEvaluationTask({ task }) {
   const instanceId = task.process_instance_id
   const { user: currentUser } = useAuth()
   const { processInstanceRoles = [] } = useProcesses()
-  
+
   const { opinions = [], saveOpinion, isSavingOpinion } = useAdhocOpinions(instanceId)
   const { samples = [] } = useSampleDefinitions(instanceId)
   const { templates = [] } = useDataTemplates(instanceId)
@@ -101,23 +101,23 @@ export function AdhocEvaluationTask({ task }) {
 
   return (
     <Space direction="vertical" size="large" style={{ width: '100%', fontFamily: 'Lexend, sans-serif' }}>
-      
+
       {/* DOSSIÊ COMPLETO (MODALIDADE CEGA) */}
-      <Card 
+      <Card
         title={
           <Flex align="center" gap={8}>
             <EyeInvisibleOutlined style={{ color: '#025ECC' }} />
             <span style={{ fontFamily: 'Barlow, sans-serif', color: '#014E2A' }}>Dossiê Completo de Validação (Cego)</span>
           </Flex>
         }
-        size="small" 
+        size="small"
         style={{ borderRadius: '20px', border: '1px solid #EFEFEF', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}
       >
         <Paragraph>
           Os dados abaixo representam a compilação cega dos resultados obtidos nos ensaios interlaboratoriais.
           As identidades dos laboratórios foram ofuscadas para garantir a imparcialidade dos avaliadores independentes.
         </Paragraph>
-        
+
         <Divider orientation="left" style={{ margin: '12px 0' }}><Text strong style={{ fontSize: '13px' }}>1. Parâmetros Metodológicos Estabelecidos</Text></Divider>
         <Descriptions bordered size="small" column={{ xs: 1, sm: 2 }} style={{ marginBottom: '16px' }}>
           <Descriptions.Item label="Nome do Método">Método In-Vitro de Viabilidade Epicutânea</Descriptions.Item>
@@ -137,92 +137,26 @@ export function AdhocEvaluationTask({ task }) {
         </Descriptions>
 
         <Divider orientation="left" style={{ margin: '12px 0' }}><Text strong style={{ fontSize: '13px' }}>2. Resultados Consolidados dos Laboratórios</Text></Divider>
-        <Table 
-          dataSource={simulatedResults} 
-          columns={resultsColumns} 
-          pagination={false} 
-          size="small" 
-          bordered 
+        <Table
+          dataSource={simulatedResults}
+          columns={resultsColumns}
+          pagination={false}
+          size="small"
+          bordered
           style={{ marginBottom: '24px' }}
         />
 
-        <Divider orientation="left" style={{ margin: '12px 0' }}><Text strong style={{ fontSize: '13px' }}>3. Relatórios de Variância Intra e Interlaboratorial</Text></Divider>
-        <Card style={{ backgroundColor: '#FAFAFA', borderRadius: '12px', border: '1px solid #EFEFEF', padding: '8px' }}>
-          <Row gutter={[16, 16]} align="middle">
-            <Col xs={24} md={12}>
-              <Title level={5} style={{ margin: '0 0 12px 0', fontSize: '14px', textAlign: 'center' }}>Gráfico de Dispersão e Desvios de Viabilidade</Title>
-              {/* SVG PREMIUM CHART FOR VARIANCE */}
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <svg width="320" height="180" viewBox="0 0 320 180">
-                  <defs>
-                    <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#025ECC" stopOpacity="0.2"/>
-                      <stop offset="100%" stopColor="#025ECC" stopOpacity="0.0"/>
-                    </linearGradient>
-                  </defs>
-                  
-                  {/* Grid Lines */}
-                  <line x1="40" y1="20" x2="300" y2="20" stroke="#EFEFEF" strokeDasharray="3,3"/>
-                  <line x1="40" y1="60" x2="300" y2="60" stroke="#EFEFEF" strokeDasharray="3,3"/>
-                  <line x1="40" y1="100" x2="300" y2="100" stroke="#EFEFEF" strokeDasharray="3,3"/>
-                  <line x1="40" y1="140" x2="300" y2="140" stroke="#D9D9D9"/>
-                  
-                  {/* Axis labels */}
-                  <text x="32" y="24" fill="#8C8C8C" fontSize="10" textAnchor="end">100%</text>
-                  <text x="32" y="64" fill="#8C8C8C" fontSize="10" textAnchor="end">95%</text>
-                  <text x="32" y="104" fill="#8C8C8C" fontSize="10" textAnchor="end">90%</text>
-                  <text x="32" y="144" fill="#8C8C8C" fontSize="10" textAnchor="end">85%</text>
-                  
-                  {/* Confidence Interval Band */}
-                  <rect x="40" y="30" width="260" height="40" fill="#A3ED40" fillOpacity="0.15" />
-                  <text x="295" y="52" fill="#014E2A" fontSize="9" fontWeight="bold" textAnchor="end">Limite de Aceitação</text>
-
-                  {/* Scatter Plot Points & Error Bars */}
-                  {/* Lab 1 */}
-                  <line x1="90" y1="35" x2="90" y2="45" stroke="#025ECC" strokeWidth="2"/>
-                  <circle cx="90" cy="40" r="5" fill="#025ECC"/>
-                  <text x="90" y="160" fill="#595959" fontSize="9" textAnchor="middle">Lab Cego 1</text>
-                  
-                  {/* Lab 2 */}
-                  <line x1="170" y1="42" x2="170" y2="58" stroke="#025ECC" strokeWidth="2"/>
-                  <circle cx="170" cy="50" r="5" fill="#025ECC"/>
-                  <text x="170" y="160" fill="#595959" fontSize="9" textAnchor="middle">Lab Cego 2</text>
-                  
-                  {/* Lab 3 */}
-                  <line x1="250" y1="28" x2="250" y2="36" stroke="#025ECC" strokeWidth="2"/>
-                  <circle cx="250" cy="32" r="5" fill="#025ECC"/>
-                  <text x="250" y="160" fill="#595959" fontSize="9" textAnchor="middle">Lab Cego 3</text>
-                </svg>
-              </div>
-            </Col>
-            
-            <Col xs={24} md={12}>
-              <Title level={5} style={{ margin: '0 0 8px 0', fontSize: '14px' }}>Estatísticas de Consistência e Variância</Title>
-              <Descriptions size="small" column={1} style={{ fontSize: '13px' }}>
-                <Descriptions.Item label={<Text type="secondary">Variância Intralaboratorial (Repetibilidade)</Text>}>
-                  <Tag color="success">Adequada</Tag> (CV médio: 1.13%)
-                </Descriptions.Item>
-                <Descriptions.Item label={<Text type="secondary">Variância Interlaboratorial (Reprodutibilidade)</Text>}>
-                  <Tag color="success">Consistente</Tag> (Coeficiente de correlação R²: 0.982)
-                </Descriptions.Item>
-                <Descriptions.Item label={<Text type="secondary">Critério de Aceitação Estatística</Text>}>
-                  <Text strong style={{ color: '#014E2A' }}>Aprovado</Text> (Todos os laboratórios dentro do limite de confiança de 95%)
-                </Descriptions.Item>
-              </Descriptions>
-            </Col>
-          </Row>
-        </Card>
       </Card>
 
       {/* PARECER TÉCNICO E DECISÃO PRELIMINAR */}
-      <Card 
+      <Card
         title={
           <Flex align="center" gap={8}>
             <SafetyCertificateOutlined style={{ color: '#014E2A' }} />
             <span style={{ fontFamily: 'Barlow, sans-serif', color: '#014E2A' }}>Emissão de Parecer Técnico Independente</span>
           </Flex>
         }
-        size="small" 
+        size="small"
         style={{ borderRadius: '20px', border: '1px solid #EFEFEF', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}
       >
         {task.is_completed ? (
@@ -261,7 +195,7 @@ export function AdhocEvaluationTask({ task }) {
               <Alert
                 message="Acesso Restrito"
                 description={
-                  isGestor 
+                  isGestor
                     ? "Como membro do Grupo Gestor, você poderá visualizar o parecer assim que ele for emitido pelos especialistas do Comitê ADHOC."
                     : "Apenas membros designados do Comitê ADHOC (Especialistas Temáticos) podem emitir pareceres independentes nesta etapa."
                 }
@@ -271,7 +205,7 @@ export function AdhocEvaluationTask({ task }) {
                 style={{ borderRadius: '12px' }}
               />
             )}
-            
+
             <div>
               <Text strong style={{ display: 'block', marginBottom: '8px' }}>1. Observações Técnicas e Justificativas:</Text>
               <Input.TextArea
@@ -286,8 +220,8 @@ export function AdhocEvaluationTask({ task }) {
 
             <div>
               <Text strong style={{ display: 'block', marginBottom: '8px' }}>2. Decisão do Parecer (Preliminar):</Text>
-              <Radio.Group 
-                value={decision} 
+              <Radio.Group
+                value={decision}
                 onChange={(e) => setDecision(e.target.value)}
                 disabled={!canExecute}
                 style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}

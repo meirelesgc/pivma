@@ -29,7 +29,13 @@ import {
   getDataTemplateColumns,
   deleteDataTemplate,
   saveDataTemplate,
-  getAuditLogsByInstanceId
+  getAuditLogsByInstanceId,
+  getAdhocOpinions,
+  saveAdhocOpinion,
+  getGestorConsolidations,
+  saveGestorConsolidation,
+  getFinalDeliberations,
+  saveFinalDeliberation
 } from '../services/processes'
 
 export function useProcesses() {
@@ -325,6 +331,87 @@ export function useAuditLogs(instanceId) {
   return {
     auditLogs: auditLogsQuery.data || [],
     isLoadingAuditLogs: auditLogsQuery.isLoading
+  }
+}
+
+export function useAdhocOpinions(instanceId) {
+  const queryClient = useQueryClient()
+
+  const opinionsQuery = useQuery({
+    queryKey: ['adhocOpinions', instanceId],
+    queryFn: () => getAdhocOpinions(instanceId),
+    enabled: !!instanceId
+  })
+
+  const saveOpinionMutation = useMutation({
+    mutationFn: saveAdhocOpinion,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adhocOpinions', instanceId] })
+      queryClient.invalidateQueries({ queryKey: ['processInstanceTasks'] })
+      queryClient.invalidateQueries({ queryKey: ['processInstanceSteps'] })
+      queryClient.invalidateQueries({ queryKey: ['allAuditLogs'] })
+    }
+  })
+
+  return {
+    opinions: opinionsQuery.data || [],
+    isLoadingOpinions: opinionsQuery.isLoading,
+    saveOpinion: saveOpinionMutation.mutate,
+    isSavingOpinion: saveOpinionMutation.isPending
+  }
+}
+
+export function useGestorConsolidations(instanceId) {
+  const queryClient = useQueryClient()
+
+  const consolidationsQuery = useQuery({
+    queryKey: ['gestorConsolidations', instanceId],
+    queryFn: () => getGestorConsolidations(instanceId),
+    enabled: !!instanceId
+  })
+
+  const saveConsolidationMutation = useMutation({
+    mutationFn: saveGestorConsolidation,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['gestorConsolidations', instanceId] })
+      queryClient.invalidateQueries({ queryKey: ['processInstanceTasks'] })
+      queryClient.invalidateQueries({ queryKey: ['processInstanceSteps'] })
+      queryClient.invalidateQueries({ queryKey: ['allAuditLogs'] })
+    }
+  })
+
+  return {
+    consolidations: consolidationsQuery.data || [],
+    isLoadingConsolidations: consolidationsQuery.isLoading,
+    saveConsolidation: saveConsolidationMutation.mutate,
+    isSavingConsolidation: saveConsolidationMutation.isPending
+  }
+}
+
+export function useFinalDeliberations(instanceId) {
+  const queryClient = useQueryClient()
+
+  const deliberationsQuery = useQuery({
+    queryKey: ['finalDeliberations', instanceId],
+    queryFn: () => getFinalDeliberations(instanceId),
+    enabled: !!instanceId
+  })
+
+  const saveDeliberationMutation = useMutation({
+    mutationFn: saveFinalDeliberation,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['finalDeliberations', instanceId] })
+      queryClient.invalidateQueries({ queryKey: ['processInstanceTasks'] })
+      queryClient.invalidateQueries({ queryKey: ['processInstanceSteps'] })
+      queryClient.invalidateQueries({ queryKey: ['allAuditLogs'] })
+    }
+  })
+
+  return {
+    deliberations: deliberationsQuery.data || [],
+    isLoadingDeliberations: deliberationsQuery.isLoading,
+    saveDeliberation: saveDeliberationMutation.mutate,
+    isSavingDeliberation: saveDeliberationMutation.isPending
   }
 }
 

@@ -14,6 +14,9 @@ import initialSampleBlindCodes from '../data/mock/sample_blind_codes.json'
 import initialDataTemplates from '../data/mock/data_templates.json'
 import initialDataTemplateColumns from '../data/mock/data_template_columns.json'
 import initialAuditLogs from '../data/mock/audit_logs.json'
+import initialAdhocOpinions from '../data/mock/adhoc_opinions.json'
+import initialGestorConsolidations from '../data/mock/gestor_consolidations.json'
+import initialFinalDeliberations from '../data/mock/final_deliberations.json'
 
 // Carrega os dados em memória para simular operações em um banco de dados local mutável
 let users = [...initialUsers]
@@ -32,6 +35,9 @@ let sampleBlindCodes = [...initialSampleBlindCodes]
 let dataTemplates = [...initialDataTemplates]
 let dataTemplateColumns = [...initialDataTemplateColumns]
 let auditLogs = [...initialAuditLogs]
+let adhocOpinions = [...initialAdhocOpinions]
+let gestorConsolidations = [...initialGestorConsolidations]
+let finalDeliberations = [...initialFinalDeliberations]
 let formAnswers = {
   1: {
     "1": "Método de Citotoxicidade In Vitro",
@@ -750,6 +756,124 @@ export const db = {
   getAuditLogs: () => auditLogs.map(l => ({ ...l })),
   getAuditLogsByInstanceId: (instanceId) =>
     auditLogs.filter(l => Number(l.process_instance_id) === Number(instanceId)).map(l => ({ ...l })),
+
+  // Opiniões ADHOC
+  getAdhocOpinions: (instanceId) => adhocOpinions.filter(o => Number(o.process_instance_id) === Number(instanceId)).map(o => ({ ...o })),
+  saveAdhocOpinion: (instanceId, opinion) => {
+    const currentUser = getCurrentUser() || { id: 13, name: 'Marcos Comitê ADHOC' }
+    const index = adhocOpinions.findIndex(o => Number(o.process_instance_id) === Number(instanceId) && Number(o.user_id) === Number(currentUser.id))
+    const opinionData = {
+      process_instance_id: Number(instanceId),
+      user_id: currentUser.id,
+      user_name: currentUser.name,
+      technical_observations: opinion.technical_observations,
+      preliminary_decision: opinion.preliminary_decision,
+      createdAt: new Date().toISOString()
+    }
+    if (index !== -1) {
+      adhocOpinions[index] = { ...adhocOpinions[index], ...opinionData }
+    } else {
+      const newId = adhocOpinions.length > 0 ? Math.max(...adhocOpinions.map(o => o.id)) + 1 : 1
+      adhocOpinions.push({ id: newId, ...opinionData })
+    }
+    
+    // Completa a tarefa 17
+    const pit = processInstanceTasks.find(t => Number(t.process_instance_id) === Number(instanceId) && t.task_id === 17)
+    if (pit) {
+      pit.is_completed = true
+      pit.status = 'completed'
+      pit.editable = false
+      
+      // Libera a tarefa 18
+      const pit18 = processInstanceTasks.find(t => Number(t.process_instance_id) === Number(instanceId) && t.task_id === 18)
+      if (pit18) {
+        pit18.editable = true
+      }
+      
+      const stepInstance = processInstanceSteps.find(s => s.id === pit.process_instance_step_id)
+      const stepDef = processSteps.find(s => s.id === stepInstance?.step_id)
+      addAuditLog(instanceId, "Emitir Parecer ADHOC", `Parecer independente emitido pelo especialista ${currentUser.name} com decisão preliminar: ${opinion.preliminary_decision}.`, stepDef?.name || "Revisão e Decisão")
+    }
+
+    return opinionData
+  },
+
+  // Consolidações do Grupo Gestor
+  getGestorConsolidations: (instanceId) => gestorConsolidations.filter(c => Number(c.process_instance_id) === Number(instanceId)).map(c => ({ ...c })),
+  saveGestorConsolidation: (instanceId, consolidation) => {
+    const index = gestorConsolidations.findIndex(c => Number(c.process_instance_id) === Number(instanceId))
+    const consolidationData = {
+      process_instance_id: Number(instanceId),
+      discussion_notes: consolidation.discussion_notes,
+      divergences: consolidation.divergences,
+      methodological_limitations: consolidation.methodological_limitations,
+      documentation_needs: consolidation.documentation_needs,
+      adjustments_requested: consolidation.adjustments_requested || [],
+      createdAt: new Date().toISOString()
+    }
+    if (index !== -1) {
+      gestorConsolidations[index] = { ...gestorConsolidations[index], ...consolidationData }
+    } else {
+      const newId = gestorConsolidations.length > 0 ? Math.max(...gestorConsolidations.map(c => c.id)) + 1 : 1
+      gestorConsolidations.push({ id: newId, ...consolidationData })
+    }
+
+    const pit = processInstanceTasks.find(t => Number(t.process_instance_id) === Number(instanceId) && t.task_id === 18)
+    if (pit) {
+      pit.is_completed = true
+      pit.status = 'completed'
+      pit.editable = false
+      
+      // Libera a tarefa 19
+      const pit19 = processInstanceTasks.find(t => Number(t.process_instance_id) === Number(instanceId) && t.task_id === 19)
+      if (pit19) {
+        pit19.editable = true
+      }
+      
+      const stepInstance = processInstanceSteps.find(s => s.id === pit.process_instance_step_id)
+      const stepDef = processSteps.find(s => s.id === stepInstance?.step_id)
+      addAuditLog(instanceId, "Salvar Consolidação Técnica", `Consolidação técnica entre Comitê ADHOC e Grupo Gestor salva pelo Grupo Gestor.`, stepDef?.name || "Revisão e Decisão")
+    }
+
+    return consolidationData
+  },
+
+  // Deliberações Finais
+  getFinalDeliberations: (instanceId) => finalDeliberations.filter(d => Number(d.process_instance_id) === Number(instanceId)).map(d => ({ ...d })),
+  saveFinalDeliberation: (instanceId, deliberation) => {
+    const index = finalDeliberations.findIndex(d => Number(d.process_instance_id) === Number(instanceId))
+    const deliberationData = {
+      process_instance_id: Number(instanceId),
+      final_decision: deliberation.final_decision,
+      institutional_opinion: deliberation.institutional_opinion,
+      institutional_approval: deliberation.institutional_approval || false,
+      official_documentation: deliberation.official_documentation || '',
+      regulatory_recommendation: deliberation.regulatory_recommendation || '',
+      published_at: deliberation.is_published ? new Date().toISOString() : null,
+      is_published: deliberation.is_published || false
+    }
+    if (index !== -1) {
+      finalDeliberations[index] = { ...finalDeliberations[index], ...deliberationData }
+    } else {
+      const newId = finalDeliberations.length > 0 ? Math.max(...finalDeliberations.map(d => d.id)) + 1 : 1
+      finalDeliberations.push({ id: newId, ...deliberationData })
+    }
+
+    const pit = processInstanceTasks.find(t => Number(t.process_instance_id) === Number(instanceId) && t.task_id === 19)
+    if (pit && deliberation.is_published) {
+      pit.is_completed = true
+      pit.status = 'completed'
+      pit.editable = false
+      
+      const stepInstance = processInstanceSteps.find(s => s.id === pit.process_instance_step_id)
+      if (stepInstance) {
+        stepInstance.is_completed = true // Fecha a etapa de Revisão e Decisão
+      }
+      addAuditLog(instanceId, "Publicar Deliberação Final", `Validação concluída e publicada oficialmente com decisão final: ${deliberation.final_decision}.`, "Revisão e Decisão")
+    }
+
+    return deliberationData
+  }
 }
 
 

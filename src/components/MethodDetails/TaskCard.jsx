@@ -12,7 +12,7 @@ import {
   UploadOutlined,
   RollbackOutlined
 } from '@ant-design/icons'
-import { FormTask, ReviewTask, DefaultTask, AssignmentTask, ApprovalTask, SampleDefinitionTask, DataTemplateDefinitionTask, ReviewDecisionTask, SampleReceptionTask, ResultsUploadTask, SampleReturnTask } from './tasks'
+import { FormTask, ReviewTask, DefaultTask, AssignmentTask, ApprovalTask, SampleDefinitionTask, DataTemplateDefinitionTask, ReviewDecisionTask, SampleReceptionTask, ResultsUploadTask, SampleReturnTask, AdhocEvaluationTask, GestorConsolidationTask, GestorDeliberationTask } from './tasks'
 
 import { useAuth } from '../../hooks/useAuth'
 import { useProcesses } from '../../hooks/useProcesses'
@@ -29,7 +29,10 @@ const taskTypeColors = {
   review_decision: { color: 'red', label: 'Revisão e Decisão', icon: <AuditOutlined /> },
   sample_reception: { color: 'blue', label: 'Recebimento de Amostras', icon: <CheckCircleOutlined /> },
   results_upload: { color: 'green', label: 'Upload de Resultados', icon: <UploadOutlined /> },
-  sample_return: { color: 'orange', label: 'Devolução de Amostras', icon: <RollbackOutlined /> }
+  sample_return: { color: 'orange', label: 'Devolução de Amostras', icon: <RollbackOutlined /> },
+  adhoc_evaluation: { color: 'purple', label: 'Avaliação ADHOC', icon: <EyeOutlined /> },
+  gestor_consolidation: { color: 'orange', label: 'Consolidação Técnica', icon: <TeamOutlined /> },
+  gestor_deliberation: { color: 'red', label: 'Deliberação Final', icon: <SafetyCertificateOutlined /> }
 }
 
 export function TaskCard({ task, onToggle }) {
@@ -72,6 +75,12 @@ export function TaskCard({ task, onToggle }) {
         return <ResultsUploadTask task={task} onToggle={onToggle} />
       case 'sample_return':
         return <SampleReturnTask task={task} onToggle={onToggle} />
+      case 'adhoc_evaluation':
+        return <AdhocEvaluationTask task={task} />
+      case 'gestor_consolidation':
+        return <GestorConsolidationTask task={task} />
+      case 'gestor_deliberation':
+        return <GestorDeliberationTask task={task} />
       default:
         return <DefaultTask task={task} />
     }
@@ -158,7 +167,7 @@ export function TaskCard({ task, onToggle }) {
 
         {renderTaskContent()}
 
-        {task.type !== 'form' && task.type !== 'assignment' && task.type !== 'approval' && task.type !== 'sample_definition' && task.type !== 'data_template_definition' && task.type !== 'review_decision' && task.type !== 'sample_reception' && task.type !== 'results_upload' && task.type !== 'sample_return' && (
+        {task.type !== 'form' && task.type !== 'assignment' && task.type !== 'approval' && task.type !== 'sample_definition' && task.type !== 'data_template_definition' && task.type !== 'review_decision' && task.type !== 'sample_reception' && task.type !== 'results_upload' && task.type !== 'sample_return' && task.type !== 'adhoc_evaluation' && task.type !== 'gestor_consolidation' && task.type !== 'gestor_deliberation' && (
           <Button
             type={isCompleted ? 'default' : 'primary'}
             onClick={onToggle}

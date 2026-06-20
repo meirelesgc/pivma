@@ -128,8 +128,22 @@
   {
     "id": 17,
     "step_id": 4,
-    "name": "Revisão e Decisão - Placeholder",
-    "type": "default",
-    "role": "BraCVAM"
+    "name": "Avaliação Independente do Comitê ADHOC",
+    "type": "adhoc_evaluation",
+    "role": "Especialistas Temáticos (Comitê ADHOC)"
+  },
+  {
+    "id": 18,
+    "step_id": 4,
+    "name": "Consolidação Técnica entre Comitê ADHOC e Grupo Gestor",
+    "type": "gestor_consolidation",
+    "role": "Grupo Gestor"
+  },
+  {
+    "id": 19,
+    "step_id": 4,
+    "name": "Deliberação Final e Publicação",
+    "type": "gestor_deliberation",
+    "role": "Grupo Gestor"
   }
 ]

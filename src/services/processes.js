@@ -124,3 +124,27 @@ export async function getAuditLogsByInstanceId(instanceId) {
   return db.getAuditLogsByInstanceId(instanceId)
 }
 
+export async function getAdhocOpinions(instanceId) {
+  return db.getAdhocOpinions(instanceId)
+}
+
+export async function saveAdhocOpinion({ instanceId, opinion }) {
+  return db.saveAdhocOpinion(instanceId, opinion)
+}
+
+export async function getGestorConsolidations(instanceId) {
+  return db.getGestorConsolidations(instanceId)
+}
+
+export async function saveGestorConsolidation({ instanceId, consolidation }) {
+  return db.saveGestorConsolidation(instanceId, consolidation)
+}
+
+export async function getFinalDeliberations(instanceId) {
+  return db.getFinalDeliberations(instanceId)
+}
+
+export async function saveFinalDeliberation({ instanceId, deliberation }) {
+  return db.saveFinalDeliberation(instanceId, deliberation)
+}
+

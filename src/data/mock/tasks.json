@@ -107,12 +107,26 @@
   {
     "id": 14,
     "step_id": 3,
-    "name": "Execução da Validação - Placeholder",
-    "type": "default",
-    "role": "Proponente"
+    "name": "Confirmação de Recebimento de Amostras",
+    "type": "sample_reception",
+    "role": "Laboratórios Participantes"
   },
   {
     "id": 15,
+    "step_id": 3,
+    "name": "Upload de Resultados Obtidos",
+    "type": "results_upload",
+    "role": "Laboratórios Participantes"
+  },
+  {
+    "id": 16,
+    "step_id": 3,
+    "name": "Confirmação de Devolução de Amostras",
+    "type": "sample_return",
+    "role": "Laboratórios Participantes"
+  },
+  {
+    "id": 17,
     "step_id": 4,
     "name": "Revisão e Decisão - Placeholder",
     "type": "default",

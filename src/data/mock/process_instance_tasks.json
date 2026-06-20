@@ -140,13 +140,35 @@
     "status": "pending",
     "current_reviewer_role": null,
     "current_review_round_id": null,
-    "editable": false
+    "editable": true
   },
   {
-    "id": 14,
+    "id": 15,
+    "process_instance_id": 1,
+    "process_instance_step_id": 3,
+    "task_id": 15,
+    "is_completed": false,
+    "status": "pending",
+    "current_reviewer_role": null,
+    "current_review_round_id": null,
+    "editable": true
+  },
+  {
+    "id": 16,
+    "process_instance_id": 1,
+    "process_instance_step_id": 3,
+    "task_id": 16,
+    "is_completed": false,
+    "status": "pending",
+    "current_reviewer_role": null,
+    "current_review_round_id": null,
+    "editable": true
+  },
+  {
+    "id": 17,
     "process_instance_id": 1,
     "process_instance_step_id": 4,
-    "task_id": 15,
+    "task_id": 17,
     "is_completed": false,
     "status": "pending",
     "current_reviewer_role": null,

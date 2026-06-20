@@ -7,9 +7,12 @@ import {
   SafetyCertificateOutlined,
   ExperimentOutlined,
   TableOutlined,
-  AuditOutlined
+  AuditOutlined,
+  CheckCircleOutlined,
+  UploadOutlined,
+  RollbackOutlined
 } from '@ant-design/icons'
-import { FormTask, ReviewTask, DefaultTask, AssignmentTask, ApprovalTask, SampleDefinitionTask, DataTemplateDefinitionTask, ReviewDecisionTask } from './tasks'
+import { FormTask, ReviewTask, DefaultTask, AssignmentTask, ApprovalTask, SampleDefinitionTask, DataTemplateDefinitionTask, ReviewDecisionTask, SampleReceptionTask, ResultsUploadTask, SampleReturnTask } from './tasks'
 
 import { useAuth } from '../../hooks/useAuth'
 import { useProcesses } from '../../hooks/useProcesses'
@@ -23,7 +26,10 @@ const taskTypeColors = {
   approval: { color: 'cyan', label: 'Aprovação Formal', icon: <SafetyCertificateOutlined /> },
   sample_definition: { color: 'magenta', label: 'Definição de Amostras', icon: <ExperimentOutlined /> },
   data_template_definition: { color: 'green', label: 'Template de Coleta', icon: <TableOutlined /> },
-  review_decision: { color: 'red', label: 'Revisão e Decisão', icon: <AuditOutlined /> }
+  review_decision: { color: 'red', label: 'Revisão e Decisão', icon: <AuditOutlined /> },
+  sample_reception: { color: 'blue', label: 'Recebimento de Amostras', icon: <CheckCircleOutlined /> },
+  results_upload: { color: 'green', label: 'Upload de Resultados', icon: <UploadOutlined /> },
+  sample_return: { color: 'orange', label: 'Devolução de Amostras', icon: <RollbackOutlined /> }
 }
 
 export function TaskCard({ task, onToggle }) {
@@ -60,6 +66,12 @@ export function TaskCard({ task, onToggle }) {
         return <DataTemplateDefinitionTask task={task} onToggle={onToggle} />
       case 'review_decision':
         return <ReviewDecisionTask task={task} onToggle={onToggle} />
+      case 'sample_reception':
+        return <SampleReceptionTask task={task} onToggle={onToggle} />
+      case 'results_upload':
+        return <ResultsUploadTask task={task} onToggle={onToggle} />
+      case 'sample_return':
+        return <SampleReturnTask task={task} onToggle={onToggle} />
       default:
         return <DefaultTask task={task} />
     }
@@ -146,7 +158,7 @@ export function TaskCard({ task, onToggle }) {
 
         {renderTaskContent()}
 
-        {task.type !== 'form' && task.type !== 'assignment' && task.type !== 'approval' && task.type !== 'sample_definition' && task.type !== 'data_template_definition' && task.type !== 'review_decision' && (
+        {task.type !== 'form' && task.type !== 'assignment' && task.type !== 'approval' && task.type !== 'sample_definition' && task.type !== 'data_template_definition' && task.type !== 'review_decision' && task.type !== 'sample_reception' && task.type !== 'results_upload' && task.type !== 'sample_return' && (
           <Button
             type={isCompleted ? 'default' : 'primary'}
             onClick={onToggle}

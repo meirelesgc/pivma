@@ -1,4 +1,4 @@
-import { Layout, Button, Typography, Divider, Avatar, Flex, Spin } from 'antd'
+import { Layout, Button, Typography, Divider, Avatar, Flex, Spin, Tooltip } from 'antd'
 import {
   UserOutlined,
   LogoutOutlined,
@@ -61,9 +61,11 @@ const UserProfile = ({ user, logout, collapsed }) => {
           {user.name}
         </Text>
       </Flex>
-      <Text type="secondary" style={{ fontSize: 12, wordBreak: 'break-all' }}>
-        {user.email}
-      </Text>
+      <Tooltip title={user.email} placement="right">
+        <Text type="secondary" ellipsis style={{ fontSize: 12, maxWidth: 180, display: 'block' }}>
+          {user.email}
+        </Text>
+      </Tooltip>
       <Button
         type="primary"
         danger

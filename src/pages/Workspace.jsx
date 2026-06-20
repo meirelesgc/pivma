@@ -56,6 +56,7 @@ export function WorkspacePage() {
       creatorName: creator ? creator.name : `Usuário #${instance.created_by}`,
       createdAt: instance.createdAt,
       myRole: userRoleObj ? userRoleObj.role : null,
+      methodName: instance.methodName || null,
     }
   })
 
@@ -67,7 +68,8 @@ export function WorkspacePage() {
     return (
       item.processName.toLowerCase().includes(searchLower) ||
       item.creatorName.toLowerCase().includes(searchLower) ||
-      item.formattedId.toLowerCase().includes(searchLower)
+      item.formattedId.toLowerCase().includes(searchLower) ||
+      (item.methodName && item.methodName.toLowerCase().includes(searchLower))
     )
   })
 
@@ -174,12 +176,31 @@ export function WorkspacePage() {
                 </Flex>
 
                 <div>
-                  <Text type="secondary" style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    Tipo do Processo
-                  </Text>
-                  <Title level={4} style={{ margin: '2px 0 0 0', fontSize: '16px' }}>
-                    {item.processName}
-                  </Title>
+                  {item.methodName ? (
+                    <>
+                      <Text type="secondary" style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        Nome do Método
+                      </Text>
+                      <Title level={4} style={{ margin: '2px 0 8px 0', fontSize: '16px', color: '#1677ff' }} ellipsis={{ tooltip: item.methodName }}>
+                        {item.methodName}
+                      </Title>
+                      <Text type="secondary" style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        Tipo do Processo
+                      </Text>
+                      <div style={{ fontSize: '13px', fontWeight: '500', color: '#595959' }}>
+                        {item.processName}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <Text type="secondary" style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        Tipo do Processo
+                      </Text>
+                      <Title level={4} style={{ margin: '2px 0 0 0', fontSize: '16px' }}>
+                        {item.processName}
+                      </Title>
+                    </>
+                  )}
                 </div>
 
                 <Divider style={{ margin: '8px 0' }} />

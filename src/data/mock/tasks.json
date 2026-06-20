@@ -22,7 +22,7 @@
     "step_id": 2,
     "name": "Definir os integrantes do Grupo Gestor",
     "type": "assignment",
-    "role": "Patrocinador",
+    "role": "Proponente",
     "target_role": "Grupo Gestor"
   },
   {

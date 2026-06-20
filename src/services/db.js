@@ -32,7 +32,21 @@ let sampleBlindCodes = [...initialSampleBlindCodes]
 let dataTemplates = [...initialDataTemplates]
 let dataTemplateColumns = [...initialDataTemplateColumns]
 let auditLogs = [...initialAuditLogs]
-let formAnswers = {} // Chaveada por process_instance_task_id
+let formAnswers = {
+  1: {
+    "1": "Método de Citotoxicidade In Vitro",
+    "2": "Substituição do ensaio in vivo em animais por linhagem celular estável.",
+    "3": "3",
+    "4": "100.0",
+    "5": "pop_citotoxicidade_v1.pdf"
+  },
+  11: {
+    "6": "desenho_estudo_final.pdf",
+    "7": "criterios_aceitacao_v2.pdf",
+    "8": "plano_estatistico_aprovado.pdf",
+    "9": "analise_erros_mitigacao.pdf"
+  }
+} // Chaveada por process_instance_task_id
 
 const getCurrentUser = () => {
   const token = localStorage.getItem('token')
@@ -122,7 +136,15 @@ export const db = {
   getAvailableProcesses: () => availableProcesses.map(p => ({ ...p })),
 
   // Instâncias de Processos
-  getProcessInstances: () => processInstances.map(p => ({ ...p })),
+  getProcessInstances: () => processInstances.map(p => {
+    const pit = processInstanceTasks.find(t => t.process_instance_id === p.id && t.task_id === 1)
+    const answers = pit ? formAnswers[pit.id] : null
+    const methodName = answers ? answers["1"] : null
+    return {
+      ...p,
+      methodName: methodName || null
+    }
+  }),
   addProcessInstance: (instance) => {
     const newId = processInstances.length > 0 ? Math.max(...processInstances.map(p => p.id)) + 1 : 1
     const newInstance = { 

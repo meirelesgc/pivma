@@ -34,9 +34,16 @@ export function FormTask({ task, onToggle }) {
     task.current_reviewer_role &&
     userRole === task.current_reviewer_role.toLowerCase()
 
+  const isExecutor = userRole === task.role?.toLowerCase()
+
   const roleMode = isCurrentRevisor
     ? 'revisor'
-    : (userRole === 'proponente' ? 'proponente' : 'view')
+    : (isExecutor ? 'proponente' : 'view')
+
+  // Determine if the current user is a future reviewer for this form task
+  const isFutureRevisor = (task.status === 'pending_submission' || task.status === 'analyzing_ai') &&
+    task.required_reviewers &&
+    task.required_reviewers.map(r => r.toLowerCase()).includes(userRole)
 
   // Filter reviews for this process instance
   const instanceReviews = fieldReviews.filter(r => r.process_instance_id === task.process_instance_id)
@@ -155,11 +162,35 @@ export function FormTask({ task, onToggle }) {
     )
   }
 
-  // Disable edits if not editable, completed or under review
-  const disabled = !task.editable || task.is_completed || isActionPending
+  // Disable edits if not editable, completed, under review, or if user is not the task executor
+  const disabled = !task.editable || task.is_completed || isActionPending || !isExecutor
 
   return (
     <Flex vertical gap={16}>
+      {isFutureRevisor && (
+        <Alert
+          message={
+            <span style={{ fontWeight: 600, color: '#b25900', fontFamily: 'Lexend, sans-serif' }}>
+              Sua Revisão Será Requerida
+            </span>
+          }
+          description={
+            <span style={{ fontSize: '13px', color: '#595959', fontFamily: 'Lexend, sans-serif' }}>
+              Este formulário está sendo preenchido pelo perfil <strong>{task.role}</strong>. 
+              Sua análise (perfil <strong>{userRole.toUpperCase()}</strong>) será iniciada assim que a submissão for concluída pelo proponente.
+            </span>
+          }
+          type="warning"
+          showIcon
+          style={{
+            borderRadius: '12px',
+            border: '1.5px solid #ffe58f',
+            background: 'linear-gradient(135deg, #fffbe6 0%, #fff1b8 100%)',
+            boxShadow: '0 4px 12px rgba(255, 197, 61, 0.05)'
+          }}
+        />
+      )}
+
       {task.status === 'pending_review' && (
         <Alert
           message={`Aguardando Revisão: Atualmente com o perfil ${task.current_reviewer_role?.toUpperCase()}`}

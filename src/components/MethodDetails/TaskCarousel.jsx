@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { Typography, Card, Flex, Button, Tag } from 'antd'
 import {
   LeftOutlined,
@@ -28,6 +29,18 @@ export function TaskCarousel({
   onPrev,
   onSetSlide
 }) {
+  const selectedRef = useRef(null)
+
+  useEffect(() => {
+    if (selectedRef.current) {
+      selectedRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center'
+      })
+    }
+  }, [currentSlide])
+
   if (enrichedTasks.length === 0) {
     return null
   }
@@ -67,35 +80,43 @@ export function TaskCarousel({
       </Flex>
 
       {/* Carousel Track para Seleção */}
-      <Flex gap={16} style={{ width: '100%', overflowX: 'auto', paddingBottom: '12px' }}>
+      <Flex gap={16} style={{ width: '100%', overflowX: 'auto', paddingBottom: '12px', scrollSnapType: 'x mandatory' }}>
         {enrichedTasks.map((task, idx) => {
           const typeConfig = taskTypeColors[task.type] || { color: 'default', label: task.type, icon: <FileTextOutlined /> }
           const isCompleted = task.is_completed
           const isSelected = idx === currentSlide
 
           return (
-            <Card
+            <div
               key={task.id}
-              hoverable
-              onClick={() => onSetSlide(idx)}
+              ref={isSelected ? selectedRef : null}
               style={{
                 flex: '1 0 calc(33.33% - 11px)',
                 maxWidth: 'calc(33.33% - 11px)',
                 minWidth: '240px',
-                borderRadius: '12px',
-                transition: 'all 0.3s ease',
-                border: isSelected
-                  ? '2px solid #1677ff'
-                  : (isCompleted ? '1.5px solid #b7eb8f' : '1px solid #f0f0f0'),
-                background: isSelected
-                  ? '#e6f4ff'
-                  : (isCompleted ? '#f6ffed' : '#ffffff'),
-                boxShadow: isSelected
-                  ? '0 4px 12px rgba(22, 119, 255, 0.15)'
-                  : 'none',
+                display: 'flex',
+                scrollSnapAlign: 'center'
               }}
-              bodyStyle={{ padding: '16px' }}
             >
+              <Card
+                hoverable
+                onClick={() => onSetSlide(idx)}
+                style={{
+                  width: '100%',
+                  borderRadius: '12px',
+                  transition: 'all 0.3s ease',
+                  border: isSelected
+                    ? '2px solid #1677ff'
+                    : (isCompleted ? '1.5px solid #b7eb8f' : '1px solid #f0f0f0'),
+                  background: isSelected
+                    ? '#e6f4ff'
+                    : (isCompleted ? '#f6ffed' : '#ffffff'),
+                  boxShadow: isSelected
+                    ? '0 4px 12px rgba(22, 119, 255, 0.15)'
+                    : 'none',
+                }}
+                bodyStyle={{ padding: '16px' }}
+              >
               <Flex justify="space-between" align="center" style={{ marginBottom: '8px' }}>
                 <Tag color={typeConfig.color} style={{ fontSize: '10px', fontWeight: 'bold' }}>
                   {typeConfig.label.toUpperCase()}
@@ -129,6 +150,7 @@ export function TaskCarousel({
                 </Text>
               )}
             </Card>
+            </div>
           )
         })}
       </Flex>

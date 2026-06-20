@@ -11,6 +11,9 @@ import {
 } from '@ant-design/icons'
 import { FormTask, ReviewTask, DefaultTask, AssignmentTask, ApprovalTask, SampleDefinitionTask, DataTemplateDefinitionTask, ReviewDecisionTask } from './tasks'
 
+import { useAuth } from '../../hooks/useAuth'
+import { useProcesses } from '../../hooks/useProcesses'
+
 const { Title } = Typography
 
 const taskTypeColors = {
@@ -24,8 +27,22 @@ const taskTypeColors = {
 }
 
 export function TaskCard({ task, onToggle }) {
+  const { user: currentUser } = useAuth()
+  const { processInstanceRoles = [] } = useProcesses()
+
   const typeConfig = taskTypeColors[task.type] || { color: 'default', label: task.type, icon: <FileTextOutlined /> }
   const isCompleted = task.is_completed
+
+  // Determine user role in this process instance
+  const userRoleObj = processInstanceRoles.find(
+    r => r.instance_id === task.process_instance_id && r.user_id === currentUser?.id
+  )
+  const userRole = userRoleObj ? userRoleObj.role.toLowerCase() : 'view'
+
+  const isFutureRevisor = task.type === 'form' &&
+    (task.status === 'pending_submission' || task.status === 'analyzing_ai') &&
+    task.required_reviewers &&
+    task.required_reviewers.map(r => r.toLowerCase()).includes(userRole)
 
   const renderTaskContent = () => {
     switch (task.type) {
@@ -66,19 +83,35 @@ export function TaskCard({ task, onToggle }) {
     >
       <Space direction="vertical" size={16} style={{ width: '100%' }}>
         <Space justify="space-between" align="center" style={{ width: '100%', display: 'flex' }}>
-          <Tag
-            color={typeConfig.color}
-            icon={typeConfig.icon}
-            style={{
-              padding: '4px 12px',
-              borderRadius: '6px',
-              fontSize: '12px',
-              fontWeight: 'bold',
-              fontFamily: 'Lexend, sans-serif'
-            }}
-          >
-            {typeConfig.label.toUpperCase()}
-          </Tag>
+          <Space size={8}>
+            <Tag
+              color={typeConfig.color}
+              icon={typeConfig.icon}
+              style={{
+                padding: '4px 12px',
+                borderRadius: '6px',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                fontFamily: 'Lexend, sans-serif'
+              }}
+            >
+              {typeConfig.label.toUpperCase()}
+            </Tag>
+            {isFutureRevisor && (
+              <Tag
+                color="gold"
+                style={{
+                  padding: '4px 12px',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                  fontFamily: 'Lexend, sans-serif'
+                }}
+              >
+                SUA REVISÃO SERÁ NECESSÁRIA
+              </Tag>
+            )}
+          </Space>
           <Tag
             color={isCompleted ? 'success' : 'warning'}
             style={{

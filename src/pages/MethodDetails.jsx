@@ -94,7 +94,7 @@ function useMethodDetailsData(instanceId) {
   }, [queryStepId])
 
   // Estados dos Filtros
-  const [actorFilter, setActorFilter] = useState(false) // true = "Minhas Tarefas"
+  const [actorFilter, setActorFilter] = useState(true) // true = "Minhas Tarefas"
   const [statusFilter, setStatusFilter] = useState('all') // all, pending, pending_review, completed
   const [typeFilter, setTypeFilter] = useState('all') // all, form, assignment, approval, sample_definition, data_template_definition
   const [stepFilter, setStepFilter] = useState('current') // current, all
@@ -273,7 +273,7 @@ function useMethodDetailsData(instanceId) {
   }, [processes, tasksForSelectedStep, enrichedTasks, steps, currentSelectedStepId])
 
   const handleResetFilters = () => {
-    setActorFilter(false)
+    setActorFilter(true)
     setStatusFilter('all')
     setTypeFilter('all')
     setStepFilter('current')
@@ -340,9 +340,7 @@ export function MethodDetailsPage() {
     statusFilter,
     setStatusFilter,
     typeFilter,
-    setTypeFilter,
     stepFilter,
-    setStepFilter,
     totalInstanceTasks,
     handleResetFilters
   } = useMethodDetailsData(instanceId)
@@ -352,7 +350,7 @@ export function MethodDetailsPage() {
   if (isLoading) return <LoadingView />
   if (!instance) return <NotFoundView onBack={() => navigate('/workspace')} />
 
-  const hasActiveFilters = actorFilter || statusFilter !== 'all' || typeFilter !== 'all' || stepFilter !== 'current'
+  const hasActiveFilters = !actorFilter || statusFilter !== 'all' || typeFilter !== 'all' || stepFilter !== 'current'
 
   return (
     <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
@@ -397,19 +395,6 @@ export function MethodDetailsPage() {
                     <Divider type="vertical" style={{ height: '24px', margin: 0 }} />
 
                     <Flex align="center" gap={8}>
-                      <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Etapas:</span>
-                      <Select
-                        value={stepFilter}
-                        onChange={setStepFilter}
-                        style={{ width: 180, fontFamily: 'Lexend, sans-serif' }}
-                        options={[
-                          { value: 'current', label: 'Etapa Selecionada' },
-                          { value: 'all', label: 'Todas as Etapas' }
-                        ]}
-                      />
-                    </Flex>
-
-                    <Flex align="center" gap={8}>
                       <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Status:</span>
                       <Select
                         value={statusFilter}
@@ -420,24 +405,6 @@ export function MethodDetailsPage() {
                           { value: 'pending', label: 'Pendente' },
                           { value: 'pending_review', label: 'Em Revisão' },
                           { value: 'completed', label: 'Concluída' }
-                        ]}
-                      />
-                    </Flex>
-
-                    <Flex align="center" gap={8}>
-                      <span style={{ fontFamily: 'Lexend, sans-serif', color: '#595959', fontSize: '13px' }}>Tipo:</span>
-                      <Select
-                        value={typeFilter}
-                        onChange={setTypeFilter}
-                        style={{ width: 180, fontFamily: 'Lexend, sans-serif' }}
-                        options={[
-                          { value: 'all', label: 'Todos os Tipos' },
-                          { value: 'form', label: 'Formulário' },
-                          { value: 'assignment', label: 'Atribuição' },
-                          { value: 'approval', label: 'Aprovação' },
-                          { value: 'sample_definition', label: 'Amostras' },
-                          { value: 'data_template_definition', label: 'Templates de Coleta' },
-                          { value: 'review_decision', label: 'Revisão e Decisão' }
                         ]}
                       />
                     </Flex>

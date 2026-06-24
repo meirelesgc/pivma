@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { Card, Typography, Table, Tag, Input, Radio, Button, Space, Flex, Alert, Divider, Descriptions, Tooltip, Row, Col } from 'antd'
-import { FilePdfOutlined, CheckCircleOutlined, InfoCircleOutlined, SafetyCertificateOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
+import { FilePdfOutlined, CheckCircleOutlined, InfoCircleOutlined, SafetyCertificateOutlined, EyeInvisibleOutlined, DownloadOutlined } from '@ant-design/icons'
 import { useAuth } from '../../../hooks/useAuth'
 import { useProcesses, useAdhocOpinions, useSampleDefinitions, useDataTemplates } from '../../../hooks/useProcesses'
 
@@ -70,6 +70,29 @@ export function AdhocEvaluationTask({ task }) {
     })
   }
 
+  const handleDownloadResults = () => {
+    const headers = ['Laboratório (Cego)', 'Código Cego Amostra', 'Réplica', 'Viabilidade Celular Média', 'Desvio Padrão (SD)', 'Status do Ensaio']
+    const rows = simulatedResults.map(r => [
+      r.lab,
+      r.sampleCode,
+      r.replicate,
+      r.value,
+      r.sd,
+      r.status
+    ])
+    
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(row => row.join(','))].join('\n')
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.setAttribute('href', url)
+    link.setAttribute('download', `resultados_consolidados_cegos_processo_${instanceId}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   const getDecisionTagColor = (dec) => {
     switch (dec) {
       case 'approved':
@@ -119,11 +142,20 @@ export function AdhocEvaluationTask({ task }) {
         </Paragraph>
 
         <Divider orientation="left" style={{ margin: '12px 0' }}><Text strong style={{ fontSize: '13px' }}>1. Parâmetros Metodológicos Estabelecidos</Text></Divider>
-        <Descriptions bordered size="small" column={{ xs: 1, sm: 2 }} style={{ marginBottom: '16px' }}>
+        <Descriptions 
+          bordered 
+          size="small" 
+          column={1} 
+          style={{ marginBottom: '16px' }}
+          labelStyle={{ width: '30%', minWidth: '220px', fontWeight: '500' }}
+          contentStyle={{ wordBreak: 'normal' }}
+        >
           <Descriptions.Item label="Nome do Método">Método In-Vitro de Viabilidade Epicutânea</Descriptions.Item>
           <Descriptions.Item label="Princípio Relevante">Princípio dos 3Rs (Substituição in-vivo por modelo celular)</Descriptions.Item>
           <Descriptions.Item label="Replicatas de Teste">3 réplicas técnicas</Descriptions.Item>
-          <Descriptions.Item label="Concentração Máxima">100.0 μg/mL</Descriptions.Item>
+          <Descriptions.Item label="Concentração Máxima">
+            <span style={{ whiteSpace: 'nowrap' }}>100.0 μg/mL</span>
+          </Descriptions.Item>
           <Descriptions.Item label="Protocolo POP Original">
             <Button type="link" icon={<FilePdfOutlined />} size="small" style={{ color: '#025ECC', padding: 0 }}>
               pop_citotoxicidade_v1.pdf
@@ -137,6 +169,18 @@ export function AdhocEvaluationTask({ task }) {
         </Descriptions>
 
         <Divider orientation="left" style={{ margin: '12px 0' }}><Text strong style={{ fontSize: '13px' }}>2. Resultados Consolidados dos Laboratórios</Text></Divider>
+        <Flex justify="end" style={{ marginBottom: '12px' }}>
+          <Button 
+            type="primary" 
+            ghost
+            icon={<DownloadOutlined />} 
+            size="small" 
+            style={{ borderRadius: '12px' }}
+            onClick={handleDownloadResults}
+          >
+            Exportar Resultados (CSV)
+          </Button>
+        </Flex>
         <Table
           dataSource={simulatedResults}
           columns={resultsColumns}

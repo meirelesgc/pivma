@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { Card, Typography, Table, Tag, Input, Button, Space, Flex, Alert, Divider, Descriptions, Select, Row, Col, List } from 'antd'
-import { FilePdfOutlined, CheckCircleOutlined, InfoCircleOutlined, TeamOutlined, SendOutlined, SlidersOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
+import { FilePdfOutlined, CheckCircleOutlined, InfoCircleOutlined, TeamOutlined, SendOutlined, SlidersOutlined, ExclamationCircleOutlined, DownloadOutlined } from '@ant-design/icons'
 import { useAuth } from '../../../hooks/useAuth'
 import { useProcesses, useAdhocOpinions, useGestorConsolidations, useSampleDefinitions } from '../../../hooks/useProcesses'
 
@@ -96,6 +96,29 @@ export function GestorConsolidationTask({ task }) {
     { title: 'Desvio Padrão', dataIndex: 'sd', key: 'sd' },
     { title: 'Status', dataIndex: 'status', key: 'status', render: (s) => <Tag color="success">{s.toUpperCase()}</Tag> }
   ]
+
+  const handleDownloadResults = () => {
+    const headers = ['Laboratório Participante', 'Substância Química', 'Código Cego', 'Viabilidade Média', 'Desvio Padrão', 'Status']
+    const rows = identifiedResults.map(r => [
+      r.lab,
+      r.chemical,
+      r.blindCode,
+      r.value,
+      r.sd,
+      r.status
+    ])
+    
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(row => row.join(','))].join('\n')
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.setAttribute('href', url)
+    link.setAttribute('download', `resultados_consolidados_identificados_processo_${instanceId}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
 
   const handleAddAdjustment = () => {
     if (!selectedLabId || !adjustmentDesc.trim()) return
@@ -220,11 +243,20 @@ export function GestorConsolidationTask({ task }) {
         </Paragraph>
         
         <Divider orientation="left" style={{ margin: '12px 0' }}><Text strong style={{ fontSize: '13px' }}>1. Parâmetros Metodológicos Estabelecidos</Text></Divider>
-        <Descriptions bordered size="small" column={{ xs: 1, sm: 2 }} style={{ marginBottom: '16px' }}>
+        <Descriptions 
+          bordered 
+          size="small" 
+          column={1} 
+          style={{ marginBottom: '16px' }}
+          labelStyle={{ width: '30%', minWidth: '220px', fontWeight: '500' }}
+          contentStyle={{ wordBreak: 'normal' }}
+        >
           <Descriptions.Item label="Nome do Método">Método In-Vitro de Viabilidade Epicutânea</Descriptions.Item>
           <Descriptions.Item label="Princípio Relevante">Princípio dos 3Rs (Substituição in-vivo por modelo celular)</Descriptions.Item>
           <Descriptions.Item label="Replicatas de Teste">3 réplicas técnicas</Descriptions.Item>
-          <Descriptions.Item label="Concentração Máxima">100.0 μg/mL</Descriptions.Item>
+          <Descriptions.Item label="Concentração Máxima">
+            <span style={{ whiteSpace: 'nowrap' }}>100.0 μg/mL</span>
+          </Descriptions.Item>
           <Descriptions.Item label="Protocolo POP Original">
             <Button type="link" icon={<FilePdfOutlined />} size="small" style={{ color: '#025ECC', padding: 0 }}>
               pop_citotoxicidade_v1.pdf
@@ -238,6 +270,18 @@ export function GestorConsolidationTask({ task }) {
         </Descriptions>
 
         <Divider orientation="left" style={{ margin: '12px 0' }}><Text strong style={{ fontSize: '13px' }}>2. Resultados Consolidados dos Laboratórios</Text></Divider>
+        <Flex justify="end" style={{ marginBottom: '12px' }}>
+          <Button 
+            type="primary" 
+            ghost
+            icon={<DownloadOutlined />} 
+            size="small" 
+            style={{ borderRadius: '12px' }}
+            onClick={handleDownloadResults}
+          >
+            Exportar Resultados (CSV)
+          </Button>
+        </Flex>
         <Table 
           dataSource={identifiedResults} 
           columns={resultsColumns} 

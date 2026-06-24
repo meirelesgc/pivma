@@ -28,21 +28,7 @@ export function ProcessInstanceHeader({ instance, overallProgress, _onBack }) {
             </Text>
           </div>
 
-          <Flex vertical style={{ minWidth: '200px' }} gap={4}>
-            <Flex justify="space-between">
-              <Text strong>Progresso Geral</Text>
-              <Text strong style={{ color: '#52c41a' }}>{overallProgress}%</Text>
-            </Flex>
-            <Progress
-              percent={overallProgress}
-              status="active"
-              strokeColor={{
-                '0%': '#1677ff',
-                '100%': '#52c41a',
-              }}
-              style={{ margin: 0 }}
-            />
-          </Flex>
+
         </Flex>
       </Card>
     </>
